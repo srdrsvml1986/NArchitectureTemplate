@@ -24,16 +24,15 @@ public class AuthorizationBehavior<TRequest, TResponse> : IPipelineBehavior<TReq
     )
     {
         if (!_httpContextAccessor.HttpContext.User.Claims.Any())
-            throw new AuthorizationException("You are not authenticated.");
+            throw new AuthorizationException("Kimliğiniz doğrulanmadı");
 
         if (request.Roles.Any())
         {
             ICollection<string>? userRoleClaims = _httpContextAccessor.HttpContext.User.GetRoleClaims() ?? [];
-            bool isNotMatchedAUserRoleClaimWithRequestRoles = 
-                string.IsNullOrEmpty(userRoleClaims.Intersect(request.Roles).FirstOrDefault());
+            var notMatchedAUserRoleClaimWithRequestRoles = userRoleClaims.Intersect(request.Roles).ToList();
 
-            if (isNotMatchedAUserRoleClaimWithRequestRoles)
-                throw new AuthorizationException("You are not authorized.");
+            if (notMatchedAUserRoleClaimWithRequestRoles.Count == 0)
+                throw new AuthorizationException("Sayfayı görüntüleme izniniz yok");
         }
 
         TResponse response = await next();
