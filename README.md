@@ -1,32 +1,32 @@
 <p align="center">
-  <a href="https://github.com/kodlamaio-projects/nArchitecture/graphs/contributors"><img src="https://img.shields.io/github/contributors/kodlamaio-projects/nArchitecture.svg?style=for-the-badge"></a>
-  <a href="https://github.com/kodlamaio-projects/nArchitecture/network/members"><img src="https://img.shields.io/github/forks/kodlamaio-projects/nArchitecture.svg?style=for-the-badge"></a>
-  <a href="https://github.com/kodlamaio-projects/nArchitecture/stargazers"><img src="https://img.shields.io/github/stars/kodlamaio-projects/nArchitecture.svg?style=for-the-badge"></a>
-  <a href="https://github.com/kodlamaio-projects/nArchitecture/issues"><img src="https://img.shields.io/github/issues/kodlamaio-projects/nArchitecture.svg?style=for-the-badge"></a>
-  <a href="https://github.com/kodlamaio-projects/nArchitecture/blob/master/LICENSE"><img src="https://img.shields.io/github/license/kodlamaio-projects/nArchitecture.svg?style=for-the-badge"></a>
+  <a href="https://github.com/srdrsvml1986/NArchitectureTemplate/graphs/contributors"><img src="https://img.shields.io/github/contributors/kodlamaio-projects/nArchitecture.svg?style=for-the-badge"></a>
+  <a href="https://github.com/srdrsvml1986/NArchitectureTemplate/network/members"><img src="https://img.shields.io/github/forks/kodlamaio-projects/nArchitecture.svg?style=for-the-badge"></a>
+  <a href="https://github.com/srdrsvml1986/NArchitectureTemplate/stargazers"><img src="https://img.shields.io/github/stars/kodlamaio-projects/nArchitecture.svg?style=for-the-badge"></a>
+  <a href="https://github.com/srdrsvml1986/NArchitectureTemplate/issues"><img src="https://img.shields.io/github/issues/kodlamaio-projects/nArchitecture.svg?style=for-the-badge"></a>
+  <a href="https://github.com/srdrsvml1986/NArchitectureTemplate/blob/master/LICENSE"><img src="https://img.shields.io/github/license/kodlamaio-projects/nArchitecture.svg?style=for-the-badge"></a>
 </p><br />
 
 <p align="center">
-  <a href="https://github.com/kodlamaio-projects/nArchitecture"><img src="https://user-images.githubusercontent.com/53148314/194872467-827dc967-acee-4bca-88a2-59ed5695bebf.png" height="125"></a>
+  <a href="https://github.com/srdrsvml1986/NArchitectureTemplate"><img src="https://user-images.githubusercontent.com/53148314/194872467-827dc967-acee-4bca-88a2-59ed5695bebf.png" height="125"></a>
   <h3 align="center">nArchitecture Project
 </h3>
   <p align="center">
     <!-- PROJECT_DESCRIPTION -->
     <!-- <br />
-    <a href="https://github.com/kodlamaio-projects/nArchitecture"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/srdrsvml1986/NArchitectureTemplate"><strong>Explore the docs »</strong></a>
     <br /> -->
     <!-- <br />
-    <a href="https://github.com/kodlamaio-projects/nArchitecture">View Demo</a>
+    <a href="https://github.com/srdrsvml1986/NArchitectureTemplate">View Demo</a>
     · -->
-    <a href="https://github.com/kodlamaio-projects/nArchitecture/issues">Report Bug</a>
+    <a href="https://github.com/srdrsvml1986/NArchitectureTemplate/issues">Report Bug</a>
     ·
-    <a href="https://github.com/kodlamaio-projects/nArchitecture/discussions">Request Feature</a>
+    <a href="https://github.com/srdrsvml1986/NArchitectureTemplate/discussions">Request Feature</a>
   </p>
 </p>
 
 ## 💻 About The Project
 
-As Kodlama.io, we decided to share examples of completed projects. Inspired by Clean Architecture, nArchitecture is a monolith project that showcases advanced development techniques. The project includes Clean Architecture, CQRS, Advanced Repository, Dynamic Querying, JWT, OTP, Google & Microsoft Auth, Role-Based Management, Distributed Caching (Redis), Logging (Serilog), Elastic Search, [Code Generator](https://github.com/kodlamaio-projects/nArchitecture.Gen) and much more. By contributing, you can support the project and learn new things.
+As Kodlama.io, we decided to share examples of completed projects. Inspired by Clean Architecture, nArchitecture is a monolith project that showcases advanced development techniques. The project includes Clean Architecture, CQRS, Advanced Repository, Dynamic Querying, JWT, OTP, Google & Microsoft Auth, Role-Based Management, Distributed Caching (Redis), Logging (Serilog), Elastic Search, [Code Generator](https://github.com/srdrsvml1986/NArchitectureTemplate.Gen) and much more. By contributing, you can support the project and learn new things.
 
 ### Built With
 
@@ -44,7 +44,7 @@ To get a local copy up and running follow these simple steps.
 
 1. Clone the repo
    ```sh
-   git clone --recurse-submodules https://github.com/kodlamaio-projects/nArchitecture.git
+   git clone --recurse-submodules https://github.com/srdrsvml1986/NArchitectureTemplate.git
    ```
 2. Configure `appsettings.json` in WebAPI.
 3. Run `Update-Database` command with Package Manager Console in WebAPI to create tables in sql server.
@@ -70,7 +70,7 @@ To get a local copy up and running follow these simple steps.
 
 ## 🚧 Roadmap
 
-See the [open issues](https://github.com/kodlamaio-projects/nArchitecture/issues) for a list of proposed features (and known issues).
+See the [open issues](https://github.com/srdrsvml1986/NArchitectureTemplate/issues) for a list of proposed features (and known issues).
 
 ## 🤝 Contributing
 
@@ -86,7 +86,7 @@ Contributions are what make the open source community such an amazing place to b
 
 Contributing on Core Packages With This Repo:
 
-1. Fork the [nArchitecture.Core](https://github.com/kodlamaio-projects/nArchitecture.Core) project
+1. Fork the [nArchitecture.Core](https://github.com/srdrsvml1986/NArchitectureTemplate.Core) project
 2. Locate to `src/corePackages` path (`cd .\src\corePackages\`)
 3. Add your forked nArchitecture.Core repository remote address (`git remote add <YourUserName> https://github.com/<YourUserName>/nArchitecture.Core.git`)
 4. Create your Feature Branch (`git checkout -b <Feature>/<AmazingFeature>'`)
@@ -112,7 +112,7 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 ## 📧 Contact
 
-**Project Link:** [https://github.com/kodlamaio-projects/nArchitecture](https://github.com/kodlamaio-projects/nArchitecture)
+**Project Link:** [https://github.com/srdrsvml1986/NArchitectureTemplate](https://github.com/srdrsvml1986/NArchitectureTemplate)
 
 <!-- ## 🙏 Acknowledgements
 - []() -->
