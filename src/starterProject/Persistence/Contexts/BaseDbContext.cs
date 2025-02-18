@@ -25,4 +25,30 @@ public class BaseDbContext : DbContext
     {
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
     }
+    ///// <summary> 
+    ///// Bu metot, veritabanı bağlantısını yapılandırmak için kullanılır.
+    ///// sadece MsSqlConfiguration için kullanılmaktadır.
+    ///// </summary>
+    //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    //{
+    //    // TODO 
+    //    // burası önemli
+    //    //base.OnConfiguring(optionsBuilder);
+    //    var cn = Configuration.GetSection("SeriLogConfigurations")
+    //             .GetSection("MsSqlConfiguration")
+    //             .GetSection("ConnectionString");
+
+    //    if (!optionsBuilder.IsConfigured)
+    //    {
+    //        optionsBuilder.UseSqlServer(cn.Value);
+    //    }
+
+    //    optionsBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+
+    //    // PendingModelChangesWarning uyarısını bastırmak için
+    //    optionsBuilder.ConfigureWarnings(warnings => warnings.Ignore(RelationalEventId.PendingModelChangesWarning));
+
+    //}
+
+
 }
