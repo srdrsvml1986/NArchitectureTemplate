@@ -52,7 +52,7 @@ public class EfRepositoryBase<TEntity, TEntityId, TContext>
         return entities;
     }
 
-    public async Task<ICollection<TEntity>> AddAllStockAsync(
+    public async Task<ICollection<TEntity>> AddOrUpdateEntityFromListAsync(
     ICollection<TEntity> entities,
     CancellationToken cancellationToken = default
 )
@@ -236,7 +236,7 @@ public class EfRepositoryBase<TEntity, TEntityId, TContext>
     {
         foreach (TEntity entity in entities)
             EditEntityPropertiesToAdd(entity);
-        Context.AddRange(entities);       
+        Context.AddRange(entities);
         Context.SaveChanges();
         Context.ChangeTracker.Clear();
         return entities;

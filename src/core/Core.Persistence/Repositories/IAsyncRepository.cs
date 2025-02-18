@@ -48,7 +48,7 @@ public interface IAsyncRepository<TEntity, TEntityId> : IQuery<TEntity>
     Task<TEntity> AddAsync(TEntity entity, CancellationToken cancellationToken = default);
 
     Task<ICollection<TEntity>> AddRangeAsync(ICollection<TEntity> entities, CancellationToken cancellationToken = default);
-    Task<ICollection<TEntity>> AddAllStockAsync(ICollection<TEntity> entities, CancellationToken cancellationToken = default);
+    Task<ICollection<TEntity>> AddOrUpdateEntityFromListAsync(ICollection<TEntity> entities, CancellationToken cancellationToken = default);
 
     Task<TEntity> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default);
 

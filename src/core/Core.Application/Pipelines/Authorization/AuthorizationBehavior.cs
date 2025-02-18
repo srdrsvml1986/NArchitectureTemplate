@@ -31,9 +31,10 @@ public class AuthorizationBehavior<TRequest, TResponse> : IPipelineBehavior<TReq
             ICollection<string>? userRoleClaims = _httpContextAccessor.HttpContext.User.GetRoleClaims() ?? [];
             var notMatchedAUserRoleClaimWithRequestRoles = userRoleClaims.Intersect(request.Roles).ToList();
 
-            if (notMatchedAUserRoleClaimWithRequestRoles.Count == 0)
-                throw new AuthorizationException("Sayfayı görüntüleme izniniz yok");
+            if (notMatchedAUserRoleClaimWithRequestRoles.Count == 0 && !userRoleClaims.Contains("Admin"))
+                throw new AuthorizationException("İşlem yetkiniz yok");
         }
+
 
         TResponse response = await next();
         return response;

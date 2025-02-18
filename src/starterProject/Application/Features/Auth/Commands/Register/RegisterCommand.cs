@@ -29,6 +29,8 @@ public class RegisterCommand : IRequest<RegisteredResponse>
     public class RegisterCommandHandler : IRequestHandler<RegisterCommand, RegisteredResponse>
     {
         private readonly IUserRepository _userRepository;
+        private readonly IUserOperationClaimRepository _userOperationClaimRepository;
+        private readonly IOperationClaimRepository _operationClaimRepository;
         private readonly IAuthService _authService;
         private readonly AuthBusinessRules _authBusinessRules;
 
@@ -36,11 +38,13 @@ public class RegisterCommand : IRequest<RegisteredResponse>
             IUserRepository userRepository,
             IAuthService authService,
             AuthBusinessRules authBusinessRules
-        )
+,
+            IOperationClaimRepository operationClaimRepository)
         {
             _userRepository = userRepository;
             _authService = authService;
             _authBusinessRules = authBusinessRules;
+            _operationClaimRepository = operationClaimRepository;
         }
 
         public async Task<RegisteredResponse> Handle(RegisterCommand request, CancellationToken cancellationToken)
@@ -60,6 +64,19 @@ public class RegisterCommand : IRequest<RegisteredResponse>
                     PasswordSalt = passwordSalt,
                 };
             User createdUser = await _userRepository.AddAsync(newUser);
+            var allClaims = _operationClaimRepository.Query().ToList();
+
+            foreach (var claim in allClaims)
+            {
+                await _userOperationClaimRepository.AddAsync(new UserOperationClaim
+                {
+                    Id = new Guid(),
+                    UserId = createdUser.Id,
+                    OperationClaimId = claim.Id,
+                    CreatedDate = DateTime.UtcNow,
+                    User = createdUser
+                });
+            }
 
             AccessToken createdAccessToken = await _authService.CreateAccessToken(createdUser);
 
