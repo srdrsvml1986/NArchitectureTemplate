@@ -89,10 +89,6 @@ public class EfRepositoryBase<TEntity, TEntityId, TContext>
         }
         await Context.SaveChangesAsync(cancellationToken);
 
-        //foreach (TEntity entity in entities)
-        //    EditEntityPropertiesToAdd(entity);
-        //await Context.AddRangeAsync(entities, cancellationToken);
-        //await Context.SaveChangesAsync(cancellationToken);
         return entities;
     }
 
