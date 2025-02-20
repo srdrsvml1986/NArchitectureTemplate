@@ -17,6 +17,9 @@ public class GroupClaimConfiguration : IEntityTypeConfiguration<GroupClaim>
         builder.Property(gc => gc.UpdatedDate).HasColumnName("UpdatedDate");
         builder.Property(gc => gc.DeletedDate).HasColumnName("DeletedDate");
 
+        builder.HasOne(uoc => uoc.Group);
+        builder.HasOne(uoc => uoc.Claim);
+
         builder.HasQueryFilter(gc => !gc.DeletedDate.HasValue);
         builder.HasData(_seeds);
 

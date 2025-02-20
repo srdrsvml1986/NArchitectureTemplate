@@ -17,6 +17,9 @@ public class UserGroupConfiguration : IEntityTypeConfiguration<UserGroup>
         builder.Property(ug => ug.UpdatedDate).HasColumnName("UpdatedDate");
         builder.Property(ug => ug.DeletedDate).HasColumnName("DeletedDate");
 
+        builder.HasOne(uoc => uoc.User);
+        builder.HasOne(uoc => uoc.Group);
+
         builder.HasQueryFilter(ug => !ug.DeletedDate.HasValue);
         builder.HasData(_seeds);
 
