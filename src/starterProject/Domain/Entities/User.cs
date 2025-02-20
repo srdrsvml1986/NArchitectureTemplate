@@ -12,7 +12,7 @@ public class User : NArchitecture.Core.Security.Entities.User<Guid>
     public bool Status { get; set; } = true;
     public string? FirstName { get; set; }
     public string? LastName { get; set; }
-    [Display(Name = "Full Code")]
+    [Display(Name = "Full Name")]
     public string FullName
     {
         get
