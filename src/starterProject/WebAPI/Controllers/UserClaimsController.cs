@@ -11,7 +11,7 @@ namespace WebAPI.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class UserOperationClaimsController : BaseController
+public class UserClaimsController : BaseController
 {
     [HttpGet("{Id}")]
     public async Task<IActionResult> GetById([FromRoute] GetByIdUserClaimQuery getByIdUserOperationClaimQuery)
@@ -23,29 +23,29 @@ public class UserOperationClaimsController : BaseController
     [HttpGet]
     public async Task<IActionResult> GetList([FromQuery] PageRequest pageRequest)
     {
-        GetListUserClaimQuery getListUserOperationClaimQuery = new() { PageRequest = pageRequest };
-        GetListResponse<GetListUserClaimListItemDto> result = await Mediator.Send(getListUserOperationClaimQuery);
+        GetListUserClaimQuery getListUserClaimQuery = new() { PageRequest = pageRequest };
+        GetListResponse<GetListUserClaimListItemDto> result = await Mediator.Send(getListUserClaimQuery);
         return Ok(result);
     }
 
     [HttpPost]
-    public async Task<IActionResult> Add([FromBody] CreateUserClaimCommand createUserOperationClaimCommand)
+    public async Task<IActionResult> Add([FromBody] CreateUserClaimCommand createUserClaimCommand)
     {
-        CreatedUserClaimResponse result = await Mediator.Send(createUserOperationClaimCommand);
+        CreatedUserClaimResponse result = await Mediator.Send(createUserClaimCommand);
         return Created(uri: "", result);
     }
 
     [HttpPut]
-    public async Task<IActionResult> Update([FromBody] UpdateUserClaimCommand updateUserOperationClaimCommand)
+    public async Task<IActionResult> Update([FromBody] UpdateUserClaimCommand updateUserClaimCommand)
     {
-        UpdatedUserClaimResponse result = await Mediator.Send(updateUserOperationClaimCommand);
+        UpdatedUserClaimResponse result = await Mediator.Send(updateUserClaimCommand);
         return Ok(result);
     }
 
     [HttpDelete]
-    public async Task<IActionResult> Delete([FromBody] DeleteUserClaimCommand deleteUserOperationClaimCommand)
+    public async Task<IActionResult> Delete([FromBody] DeleteUserClaimCommand deleteUserClaimCommand)
     {
-        DeletedUserClaimResponse result = await Mediator.Send(deleteUserOperationClaimCommand);
+        DeletedUserClaimResponse result = await Mediator.Send(deleteUserClaimCommand);
         return Ok(result);
     }
 }
