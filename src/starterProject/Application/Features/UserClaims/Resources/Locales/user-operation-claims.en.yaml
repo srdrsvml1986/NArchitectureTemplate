@@ -1,0 +1,2 @@
+UserClaimNotExists: "The user hasn't the operation claim."
+UserClaimAlreadyExists: "The user has the operation claim already."

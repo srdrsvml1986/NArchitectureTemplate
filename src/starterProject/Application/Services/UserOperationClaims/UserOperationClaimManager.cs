@@ -1,5 +1,5 @@
 ﻿using System.Linq.Expressions;
-using Application.Features.UserOperationClaims.Rules;
+using Application.Features.UserClaims.Rules;
 using Application.Services.Repositories;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore.Query;
@@ -9,27 +9,27 @@ namespace Application.Services.UserOperationClaims;
 
 public class UserUserOperationClaimManager : IUserOperationClaimService
 {
-    private readonly IUserOperationClaimRepository _userUserOperationClaimRepository;
-    private readonly UserOperationClaimBusinessRules _userUserOperationClaimBusinessRules;
+    private readonly IUserClaimRepository _userUserOperationClaimRepository;
+    private readonly UserClaimBusinessRules _userUserOperationClaimBusinessRules;
 
     public UserUserOperationClaimManager(
-        IUserOperationClaimRepository userUserOperationClaimRepository,
-        UserOperationClaimBusinessRules userUserOperationClaimBusinessRules
+        IUserClaimRepository userUserOperationClaimRepository,
+        UserClaimBusinessRules userUserOperationClaimBusinessRules
     )
     {
         _userUserOperationClaimRepository = userUserOperationClaimRepository;
         _userUserOperationClaimBusinessRules = userUserOperationClaimBusinessRules;
     }
 
-    public async Task<UserOperationClaim?> GetAsync(
-        Expression<Func<UserOperationClaim, bool>> predicate,
-        Func<IQueryable<UserOperationClaim>, IIncludableQueryable<UserOperationClaim, object>>? include = null,
+    public async Task<UserClaim?> GetAsync(
+        Expression<Func<UserClaim, bool>> predicate,
+        Func<IQueryable<UserClaim>, IIncludableQueryable<UserClaim, object>>? include = null,
         bool withDeleted = false,
         bool enableTracking = true,
         CancellationToken cancellationToken = default
     )
     {
-        UserOperationClaim? userUserOperationClaim = await _userUserOperationClaimRepository.GetAsync(
+        UserClaim? userUserOperationClaim = await _userUserOperationClaimRepository.GetAsync(
             predicate,
             include,
             withDeleted,
@@ -39,10 +39,10 @@ public class UserUserOperationClaimManager : IUserOperationClaimService
         return userUserOperationClaim;
     }
 
-    public async Task<IPaginate<UserOperationClaim>?> GetListAsync(
-        Expression<Func<UserOperationClaim, bool>>? predicate = null,
-        Func<IQueryable<UserOperationClaim>, IOrderedQueryable<UserOperationClaim>>? orderBy = null,
-        Func<IQueryable<UserOperationClaim>, IIncludableQueryable<UserOperationClaim, object>>? include = null,
+    public async Task<IPaginate<UserClaim>?> GetListAsync(
+        Expression<Func<UserClaim, bool>>? predicate = null,
+        Func<IQueryable<UserClaim>, IOrderedQueryable<UserClaim>>? orderBy = null,
+        Func<IQueryable<UserClaim>, IIncludableQueryable<UserClaim, object>>? include = null,
         int index = 0,
         int size = 10,
         bool withDeleted = false,
@@ -50,7 +50,7 @@ public class UserUserOperationClaimManager : IUserOperationClaimService
         CancellationToken cancellationToken = default
     )
     {
-        IPaginate<UserOperationClaim> userUserOperationClaimList = await _userUserOperationClaimRepository.GetListAsync(
+        IPaginate<UserClaim> userUserOperationClaimList = await _userUserOperationClaimRepository.GetListAsync(
             predicate,
             orderBy,
             include,
@@ -63,36 +63,36 @@ public class UserUserOperationClaimManager : IUserOperationClaimService
         return userUserOperationClaimList;
     }
 
-    public async Task<UserOperationClaim> AddAsync(UserOperationClaim userUserOperationClaim)
+    public async Task<UserClaim> AddAsync(UserClaim userUserOperationClaim)
     {
-        await _userUserOperationClaimBusinessRules.UserShouldNotHasOperationClaimAlreadyWhenInsert(
+        await _userUserOperationClaimBusinessRules.UserShouldNotHasClaimAlreadyWhenInsert(
             userUserOperationClaim.UserId,
-            userUserOperationClaim.OperationClaimId
+            userUserOperationClaim.ClaimId
         );
 
-        UserOperationClaim addedUserOperationClaim = await _userUserOperationClaimRepository.AddAsync(userUserOperationClaim);
+        UserClaim addedUserOperationClaim = await _userUserOperationClaimRepository.AddAsync(userUserOperationClaim);
 
         return addedUserOperationClaim;
     }
 
-    public async Task<UserOperationClaim> UpdateAsync(UserOperationClaim userUserOperationClaim)
+    public async Task<UserClaim> UpdateAsync(UserClaim userUserOperationClaim)
     {
-        await _userUserOperationClaimBusinessRules.UserShouldNotHasOperationClaimAlreadyWhenUpdated(
+        await _userUserOperationClaimBusinessRules.UserShouldNotHasClaimAlreadyWhenUpdated(
             userUserOperationClaim.Id,
             userUserOperationClaim.UserId,
-            userUserOperationClaim.OperationClaimId
+            userUserOperationClaim.ClaimId
         );
 
-        UserOperationClaim updatedUserOperationClaim = await _userUserOperationClaimRepository.UpdateAsync(
+        UserClaim updatedUserOperationClaim = await _userUserOperationClaimRepository.UpdateAsync(
             userUserOperationClaim
         );
 
         return updatedUserOperationClaim;
     }
 
-    public async Task<UserOperationClaim> DeleteAsync(UserOperationClaim userUserOperationClaim, bool permanent = false)
+    public async Task<UserClaim> DeleteAsync(UserClaim userUserOperationClaim, bool permanent = false)
     {
-        UserOperationClaim deletedUserOperationClaim = await _userUserOperationClaimRepository.DeleteAsync(
+        UserClaim deletedUserOperationClaim = await _userUserOperationClaimRepository.DeleteAsync(
             userUserOperationClaim
         );
 

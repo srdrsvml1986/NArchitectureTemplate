@@ -7,8 +7,6 @@ public class UpdateUserFromAuthCommandValidator : AbstractValidator<UpdateUserFr
 {
     public UpdateUserFromAuthCommandValidator()
     {
-        RuleFor(c => c.FirstName).NotEmpty().MinimumLength(2);
-        RuleFor(c => c.LastName).NotEmpty().MinimumLength(2);
         RuleFor(c => c.Password).NotEmpty().MinimumLength(8);
         RuleFor(c => c.NewPassword)
             .NotEmpty()
@@ -21,7 +19,7 @@ public class UpdateUserFromAuthCommandValidator : AbstractValidator<UpdateUserFr
 
     private bool StrongPassword(string arg)
     {
-        Regex regex = new("/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/");
+        Regex regex = new(@"^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?+!@$%^&*-]).{8,}$");
         return regex.IsMatch(arg);
     }
 }

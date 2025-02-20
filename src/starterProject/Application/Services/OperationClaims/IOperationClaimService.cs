@@ -7,18 +7,18 @@ namespace Application.Services.OperationClaims;
 
 public interface IOperationClaimService
 {
-    Task<OperationClaim?> GetAsync(
-        Expression<Func<OperationClaim, bool>> predicate,
-        Func<IQueryable<OperationClaim>, IIncludableQueryable<OperationClaim, object>>? include = null,
+    Task<Claim?> GetAsync(
+        Expression<Func<Claim, bool>> predicate,
+        Func<IQueryable<Claim>, IIncludableQueryable<Claim, object>>? include = null,
         bool withDeleted = false,
         bool enableTracking = true,
         CancellationToken cancellationToken = default
     );
 
-    Task<IPaginate<OperationClaim>?> GetListAsync(
-        Expression<Func<OperationClaim, bool>>? predicate = null,
-        Func<IQueryable<OperationClaim>, IOrderedQueryable<OperationClaim>>? orderBy = null,
-        Func<IQueryable<OperationClaim>, IIncludableQueryable<OperationClaim, object>>? include = null,
+    Task<IPaginate<Claim>?> GetListAsync(
+        Expression<Func<Claim, bool>>? predicate = null,
+        Func<IQueryable<Claim>, IOrderedQueryable<Claim>>? orderBy = null,
+        Func<IQueryable<Claim>, IIncludableQueryable<Claim, object>>? include = null,
         int index = 0,
         int size = 10,
         bool withDeleted = false,
@@ -26,7 +26,7 @@ public interface IOperationClaimService
         CancellationToken cancellationToken = default
     );
 
-    Task<OperationClaim> AddAsync(OperationClaim operationClaim);
-    Task<OperationClaim> UpdateAsync(OperationClaim operationClaim);
-    Task<OperationClaim> DeleteAsync(OperationClaim operationClaim, bool permanent = false);
+    Task<Claim> AddAsync(Claim operationClaim);
+    Task<Claim> UpdateAsync(Claim operationClaim);
+    Task<Claim> DeleteAsync(Claim operationClaim, bool permanent = false);
 }

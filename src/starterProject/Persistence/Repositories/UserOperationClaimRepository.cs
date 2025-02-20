@@ -7,18 +7,18 @@ using Persistence.Contexts;
 namespace Persistence.Repositories;
 
 public class UserOperationClaimRepository
-    : EfRepositoryBase<UserOperationClaim, Guid, BaseDbContext>,
-        IUserOperationClaimRepository
+    : EfRepositoryBase<UserClaim, Guid, BaseDbContext>,
+        IUserClaimRepository
 {
     public UserOperationClaimRepository(BaseDbContext context)
         : base(context) { }
 
-    public async Task<IList<OperationClaim>> GetOperationClaimsByUserIdAsync(Guid userId)
+    public async Task<IList<Claim>> GetOperationClaimsByUserIdAsync(Guid userId)
     {
-        List<OperationClaim> operationClaims = await Query()
+        List<Claim> operationClaims = await Query()
             .AsNoTracking()
             .Where(p => p.UserId.Equals(userId))
-            .Select(p => new OperationClaim { Id = p.OperationClaimId, Name = p.OperationClaim.Name })
+            .Select(p => new Claim { Id = p.ClaimId, Name = p.Claim.Name })
             .ToListAsync();
         return operationClaims;
     }

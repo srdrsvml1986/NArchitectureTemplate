@@ -1,4 +1,4 @@
-﻿using Application.Services.Repositories;
+using Application.Services.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,12 +16,18 @@ public static class PersistenceServiceRegistration
         services.AddDbMigrationApplier(buildServices => buildServices.GetRequiredService<BaseDbContext>());
 
         services.AddScoped<IEmailAuthenticatorRepository, EmailAuthenticatorRepository>();
-        services.AddScoped<IOperationClaimRepository, OperationClaimRepository>();
+        services.AddScoped<IClaimRepository, OperationClaimRepository>();
         services.AddScoped<IOtpAuthenticatorRepository, OtpAuthenticatorRepository>();
         services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
-        services.AddScoped<IUserOperationClaimRepository, UserOperationClaimRepository>();
+        services.AddScoped<IUserClaimRepository, UserOperationClaimRepository>();
 
+        services.AddScoped<IGroupRepository, GroupRepository>();
+        services.AddScoped<IGroupClaimRepository, GroupClaimRepository>();
+        services.AddScoped<IUserGroupRepository, UserGroupRepository>();
+        services.AddScoped<IGroupRepository, GroupRepository>();
+        services.AddScoped<IGroupClaimRepository, GroupClaimRepository>();
+        services.AddScoped<IUserGroupRepository, UserGroupRepository>();
         return services;
     }
 }
