@@ -22,7 +22,7 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
 
         builder.HasQueryFilter(u => !u.DeletedDate.HasValue);
 
-        builder.HasMany(u => u.UserOperationClaims);
+        builder.HasMany(u => u.UserClaims);
         builder.HasMany(u => u.RefreshTokens);
         builder.HasMany(u => u.EmailAuthenticators);
         builder.HasMany(u => u.OtpAuthenticators);
