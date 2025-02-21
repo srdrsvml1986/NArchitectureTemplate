@@ -2,6 +2,7 @@
 using Application.Features.Users.Commands.Delete;
 using Application.Features.Users.Commands.Update;
 using Application.Features.Users.Commands.UpdateFromAuth;
+using Application.Features.Users.Commands.UpdatePhotoURL;
 using Application.Features.Users.Queries.GetById;
 using Application.Features.Users.Queries.GetList;
 using Microsoft.AspNetCore.Mvc;
@@ -51,8 +52,8 @@ public class UsersController : BaseController
         return Ok(result);
     }
 
-    [HttpPut("FromAuth")]
-    public async Task<IActionResult> UpdateFromAuth([FromBody] UpdateUserFromAuthCommand updateUserFromAuthCommand)
+    [HttpPut("UpdatePasswordFromAuth")]
+    public async Task<IActionResult> UpdatePasswordFromAuth([FromBody] UpdateUserPasswordFromAuthCommand updateUserFromAuthCommand)
     {
         updateUserFromAuthCommand.Id = getUserIdFromRequest();
         UpdatedUserFromAuthResponse result = await Mediator.Send(updateUserFromAuthCommand);
@@ -63,6 +64,13 @@ public class UsersController : BaseController
     public async Task<IActionResult> Delete([FromBody] DeleteUserCommand deleteUserCommand)
     {
         DeletedUserResponse result = await Mediator.Send(deleteUserCommand);
+        return Ok(result);
+    }
+    [HttpPut("{userId}/photo-url")]
+    public async Task<IActionResult> UpdatePhotoUrl([FromRoute] Guid id, [FromBody] UpdatePhotoUrlCommand updatePhotoUrlCommand)
+    {
+        updatePhotoUrlCommand.Id = id;
+        UpdatedUserResponse result = await Mediator.Send(updatePhotoUrlCommand);
         return Ok(result);
     }
 }

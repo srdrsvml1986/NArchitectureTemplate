@@ -3,23 +3,22 @@ using FluentValidation;
 
 namespace Application.Features.Users.Commands.UpdateFromAuth;
 
-public class UpdateUserFromAuthCommandValidator : AbstractValidator<UpdateUserFromAuthCommand>
+public class UpdateUserFromAuthCommandValidator : AbstractValidator<UpdateUserPasswordFromAuthCommand>
 {
     public UpdateUserFromAuthCommandValidator()
     {
-        RuleFor(c => c.Password).NotEmpty().MinimumLength(8);
         RuleFor(c => c.NewPassword)
             .NotEmpty()
-            .MinimumLength(8)
+            .MinimumLength(5)
             .Must(StrongPassword)
             .WithMessage(
-                "Your password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, and one special character."
+                "Şifreniz en az 5 karakter uzunluğunda olmalı ve en az bir büyük harf, bir küçük harf ve bir özel karakter içermelidir."
             );
     }
 
     private bool StrongPassword(string arg)
     {
-        Regex regex = new(@"^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?+!@$%^&*-]).{8,}$");
+        Regex regex = new(@"^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?+!@$%^&*-]).{5,}$");
         return regex.IsMatch(arg);
     }
 }

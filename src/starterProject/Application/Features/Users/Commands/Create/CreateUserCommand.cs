@@ -12,10 +12,11 @@ namespace Application.Features.Users.Commands.Create;
 
 public class CreateUserCommand : IRequest<CreatedUserResponse>, ISecuredRequest
 {
-    public string FirstName { get; set; }
-    public string LastName { get; set; }
+    public string? FirstName { get; set; }
+    public string? LastName { get; set; }
     public string Email { get; set; }
     public string Password { get; set; }
+    public bool Status { get; set; }
 
     public CreateUserCommand()
     {
@@ -25,12 +26,20 @@ public class CreateUserCommand : IRequest<CreatedUserResponse>, ISecuredRequest
         Password = string.Empty;
     }
 
-    public CreateUserCommand(string firstName, string lastName, string email, string password)
+    public CreateUserCommand(string email, string password, bool status = false)
+    {
+        Email = email;
+        Password = password;
+        Status = status;
+    }
+
+    public CreateUserCommand(string? firstName, string? lastName, string email, string password, bool status)
     {
         FirstName = firstName;
         LastName = lastName;
         Email = email;
         Password = password;
+        Status = status;
     }
 
     public string[] Roles => new[] { Admin, Write, UsersOperationClaims.Create };
