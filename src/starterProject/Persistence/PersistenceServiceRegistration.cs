@@ -12,6 +12,7 @@ public static class PersistenceServiceRegistration
 {
     public static IServiceCollection AddPersistenceServices(this IServiceCollection services, IConfiguration configuration)
     {
+        //services.AddDbContext<BaseDbContext>(); //MS SQL için
         services.AddDbContext<BaseDbContext>(options => options.UseInMemoryDatabase("BaseDb"));
         services.AddDbMigrationApplier(buildServices => buildServices.GetRequiredService<BaseDbContext>());
 
