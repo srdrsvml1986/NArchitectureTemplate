@@ -9,6 +9,14 @@ public class GetListUserListItemDto : IDto
     public string LastName { get; set; }
     public string Email { get; set; }
     public bool Status { get; set; }
+    public string? PhotoURL { get; set; }
+    public string? Gender { get; set; }
+    public string? PhoneNumber { get; set; }
+    public string? Notes { get; set; }
+    public DateTime? BirthDate { get; set; }
+    public DateTime CreatedDate { get; set; }
+    public DateTime? UpdatedDate { get; set; }
+    public DateTime? DeletedDate { get; set; }
 
     public GetListUserListItemDto()
     {
@@ -24,5 +32,15 @@ public class GetListUserListItemDto : IDto
         LastName = lastName;
         Email = email;
         Status = status;
+    }
+
+    public GetListUserListItemDto(Guid ýd, string firstName, string lastName, string email, bool status, string? photoURL, string? gender, DateTime? birthDate, DateTime createdDate, DateTime? updatedDate, DateTime? deletedDate) : this(ýd, firstName, lastName, email, status)
+    {
+        PhotoURL = photoURL;
+        Gender = gender;
+        BirthDate = birthDate;
+        CreatedDate = createdDate;
+        UpdatedDate = updatedDate;
+        DeletedDate = deletedDate;
     }
 }

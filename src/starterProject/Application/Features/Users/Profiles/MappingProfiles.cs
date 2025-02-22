@@ -19,7 +19,7 @@ public class MappingProfiles : Profile
         CreateMap<User, CreatedUserResponse>().ReverseMap();
         CreateMap<User, UpdateUserCommand>().ReverseMap();
         CreateMap<User, UpdatedUserResponse>().ReverseMap();
-        CreateMap<User, UpdateUserFromAuthCommand>().ReverseMap();
+        CreateMap<User, UpdateUserPasswordFromAuthCommand>().ReverseMap();
         CreateMap<User, UpdatedUserFromAuthResponse>().ReverseMap();
         CreateMap<User, DeleteUserCommand>().ReverseMap();
         CreateMap<User, DeletedUserResponse>().ReverseMap();

@@ -23,6 +23,7 @@ using NArchitecture.Core.Security.JWT;
 using Application.Services.Groups;
 using Application.Services.GroupClaims;
 using Application.Services.UserGroups;
+using Application.Services.PasswordResetTokens;
 
 namespace Application;
 
@@ -70,6 +71,7 @@ public static class ApplicationServiceRegistration
         services.AddScoped<IGroupService, GroupManager>();
         services.AddScoped<IGroupClaimService, GroupClaimManager>();
         services.AddScoped<IUserGroupService, UserGroupManager>();
+        services.AddScoped<IPasswordResetTokenService, PasswordResetTokenManager>();
         return services;
     }
 

@@ -12,7 +12,7 @@ public static class PersistenceServiceRegistration
 {
     public static IServiceCollection AddPersistenceServices(this IServiceCollection services, IConfiguration configuration)
     {
-        //services.AddDbContext<BaseDbContext>(); //MS SQL için
+        //services.AddDbContext<BaseDbContext>(); //MS SQL iï¿½in
         services.AddDbContext<BaseDbContext>(options => options.UseInMemoryDatabase("BaseDb"));
         services.AddDbMigrationApplier(buildServices => buildServices.GetRequiredService<BaseDbContext>());
 
@@ -29,6 +29,7 @@ public static class PersistenceServiceRegistration
         services.AddScoped<IGroupRepository, GroupRepository>();
         services.AddScoped<IGroupClaimRepository, GroupClaimRepository>();
         services.AddScoped<IUserGroupRepository, UserGroupRepository>();
+        services.AddScoped<IPasswordResetTokenRepository, PasswordResetTokenRepository>();
         return services;
     }
 }

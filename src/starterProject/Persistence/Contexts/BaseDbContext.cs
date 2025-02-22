@@ -17,6 +17,7 @@ public class BaseDbContext : DbContext
     public DbSet<Group> Groups { get; set; }
     public DbSet<GroupClaim> GroupClaims { get; set; }
     public DbSet<UserGroup> UserGroups { get; set; }
+    public DbSet<ResetPasswordToken> ResetPasswordTokens { get; set; }
 
     public BaseDbContext(DbContextOptions dbContextOptions, IConfiguration configuration)
         : base(dbContextOptions)
