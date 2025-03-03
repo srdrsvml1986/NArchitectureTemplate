@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using MediatR;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
@@ -59,7 +60,13 @@ public class CachingBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, 
         TimeSpan slidingExpiration = request.SlidingExpiration ?? TimeSpan.FromDays(_cacheSettings.SlidingExpiration);
         DistributedCacheEntryOptions cacheOptions = new() { SlidingExpiration = slidingExpiration };
 
-        byte[] serializeData = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(response));
+        var options = new JsonSerializerOptions
+        {
+            //ReferenceHandler = ReferenceHandler.Preserve, // Döngüyü kırmak için
+            WriteIndented = true, // Okunabilir JSON (isteğe bağlı)
+            //MaxDepth = 32 // Sonsuz döngüyü engellemek için
+        };
+        byte[] serializeData = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(response, options));
         await _cache.SetAsync(request.CacheKey, serializeData, cacheOptions, cancellationToken);
         _logger.LogInformation($"Added to Cache -> {request.CacheKey}");
 

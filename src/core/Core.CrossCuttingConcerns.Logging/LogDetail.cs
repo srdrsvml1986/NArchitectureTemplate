@@ -5,6 +5,8 @@ public class LogDetail
     public string FullName { get; set; }
     public string MethodName { get; set; }
     public string User { get; set; }
+    public DateTime Timestamp { get; set; }
+
     public List<LogParameter> Parameters { get; set; }
 
     public LogDetail()
@@ -13,6 +15,7 @@ public class LogDetail
         MethodName = string.Empty;
         User = string.Empty;
         Parameters = [];
+        Timestamp = DateTime.UtcNow;
     }
 
     public LogDetail(string fullName, string methodName, string user, List<LogParameter> parameters)
@@ -21,5 +24,6 @@ public class LogDetail
         MethodName = methodName;
         User = user;
         Parameters = parameters;
+        Timestamp = DateTime.UtcNow;
     }
 }

@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using NArchitecture.Core.CrossCuttingConcerns.Exception.Types;
 using NArchitecture.Core.Security.Constants;
@@ -11,10 +12,14 @@ public class AuthorizationBehavior<TRequest, TResponse> : IPipelineBehavior<TReq
     where TRequest : IRequest<TResponse>, ISecuredRequest
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
+    // Yapılandırma dosyasına eklenmesi gereken ayar:
+    // "AuthorizationSettings": { "AdminRole": "Admin" }
+    private readonly AuthorizationSettings _authorizationSettings;
 
-    public AuthorizationBehavior(IHttpContextAccessor httpContextAccessor)
+    public AuthorizationBehavior(IHttpContextAccessor httpContextAccessor, IConfiguration configuration)
     {
         _httpContextAccessor = httpContextAccessor;
+        _authorizationSettings = configuration.GetSection("AuthorizationSettings").Get<AuthorizationSettings>();
     }
 
     public async Task<TResponse> Handle(
@@ -28,10 +33,11 @@ public class AuthorizationBehavior<TRequest, TResponse> : IPipelineBehavior<TReq
 
         if (request.Roles.Any())
         {
-            ICollection<string>? userRoleClaims = _httpContextAccessor.HttpContext.User.GetRoleClaims() ?? [];
-            var notMatchedAUserRoleClaimWithRequestRoles = userRoleClaims.Intersect(request.Roles).ToList();
+            ICollection<string> userRoleClaims = _httpContextAccessor.HttpContext.User.GetRoleClaims() ?? [];
+            bool hasMatchingRole = userRoleClaims.Intersect(request.Roles).Any();
+            bool isAdmin = userRoleClaims.Contains(_authorizationSettings.AdminRole);
 
-            if (notMatchedAUserRoleClaimWithRequestRoles.Count == 0 && !userRoleClaims.Contains("Admin"))
+            if (!hasMatchingRole && !isAdmin)
                 throw new AuthorizationException("İşlem yetkiniz yok");
         }
 
