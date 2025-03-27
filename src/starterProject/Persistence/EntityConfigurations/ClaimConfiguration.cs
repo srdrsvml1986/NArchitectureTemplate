@@ -16,7 +16,7 @@ public class ClaimConfiguration : IEntityTypeConfiguration<Claim>
 {
     public void Configure(EntityTypeBuilder<Claim> builder)
     {
-        builder.ToTable("OperationClaims").HasKey(oc => oc.Id);
+        builder.ToTable("Claims").HasKey(oc => oc.Id);
 
         builder.Property(oc => oc.Id).HasColumnName("Id").IsRequired();
         builder.Property(oc => oc.Name).HasColumnName("Name").IsRequired();
