@@ -1,4 +1,5 @@
 ﻿using Application.Features.Users.Commands.AddUserClaims;
+using Application.Features.Users.Commands.AddUserGroups;
 using Application.Features.Users.Commands.Create;
 using Application.Features.Users.Commands.Delete;
 using Application.Features.Users.Commands.ForgotPassword;
@@ -7,8 +8,10 @@ using Application.Features.Users.Commands.Update;
 using Application.Features.Users.Commands.UpdateFromAuth;
 using Application.Features.Users.Commands.UpdatePhotoURL;
 using Application.Features.Users.Commands.UpdateUserClaims;
+using Application.Features.Users.Commands.UpdateUserGroups;
 using Application.Features.Users.Queries.GetById;
 using Application.Features.Users.Queries.GetClaimsByUserId;
+using Application.Features.Users.Queries.GetGroupsByUserId;
 using Application.Features.Users.Queries.GetList;
 using Microsoft.AspNetCore.Mvc;
 using NArchitecture.Core.Application.Requests;
@@ -114,6 +117,37 @@ public class UsersController : BaseController
     {
         UpdateUserClaimsCommand updateUserClaimsCommand = new() { UserId = userId, ClaimIds = claimIds };
         UpdateUserClaimsResponse result = await Mediator.Send(updateUserClaimsCommand);
+        return Ok(result);
+    }
+    [HttpGet("{userId}/groups")]
+    public async Task<IActionResult> GetUserGroups([FromRoute] Guid userId)
+    {
+        GetGroupsByUserIdQuery getGroupsByUserIdQuery = new() { UserId = userId };
+        GetGroupsByUserIdResponse result = await Mediator.Send(getGroupsByUserIdQuery);
+        return Ok(result);
+    }
+
+    [HttpPost("{userId}/groups")]
+    public async Task<IActionResult> AddUserGroups([FromRoute] Guid userId, [FromBody] IList<int> groupIds)
+    {
+        AddUserGroupsCommand addUserGroupsCommand = new()
+        {
+            UserId = userId,
+            GroupIds = groupIds
+        };
+        AddUserGroupsResponse result = await Mediator.Send(addUserGroupsCommand);
+        return Created(uri: "", result);
+    }
+
+    [HttpPut("{userId}/groups")]
+    public async Task<IActionResult> UpdateUserGroups([FromRoute] Guid userId, [FromBody] IList<int> groupIds)
+    {
+        UpdateUserGroupsCommand updateUserGroupsCommand = new()
+        {
+            UserId = userId,
+            GroupIds = groupIds
+        };
+        UpdateUserGroupsResponse result = await Mediator.Send(updateUserGroupsCommand);
         return Ok(result);
     }
 
