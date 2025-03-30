@@ -1,11 +1,14 @@
-﻿using Application.Features.Users.Commands.Create;
+﻿using Application.Features.Users.Commands.AddUserClaims;
+using Application.Features.Users.Commands.Create;
 using Application.Features.Users.Commands.Delete;
 using Application.Features.Users.Commands.ForgotPassword;
 using Application.Features.Users.Commands.ResetPassword;
 using Application.Features.Users.Commands.Update;
 using Application.Features.Users.Commands.UpdateFromAuth;
 using Application.Features.Users.Commands.UpdatePhotoURL;
+using Application.Features.Users.Commands.UpdateUserClaims;
 using Application.Features.Users.Queries.GetById;
+using Application.Features.Users.Queries.GetClaimsByUserId;
 using Application.Features.Users.Queries.GetList;
 using Microsoft.AspNetCore.Mvc;
 using NArchitecture.Core.Application.Requests;
@@ -89,4 +92,29 @@ public class UsersController : BaseController
         ResetPasswordResponse result = await Mediator.Send(resetPasswordCommand);
         return Ok(result);
     }
+    // UsersController'a eklenecek metodlar
+    [HttpGet("{userId}/claims")]
+    public async Task<IActionResult> GetUserClaims([FromRoute] Guid userId)
+    {
+        GetClaimsByUserIdQuery getClaimsByUserIdQuery = new() { UserId = userId };
+        GetClaimsByUserIdResponse result = await Mediator.Send(getClaimsByUserIdQuery);
+        return Ok(result);
+    }
+
+    [HttpPost("{userId}/claims")]
+    public async Task<IActionResult> AddUserClaims([FromRoute] Guid userId, [FromBody] IList<int> claimIds)
+    {
+        AddUserClaimsCommand addUserClaimsCommand = new() { UserId = userId, ClaimIds = claimIds };
+        AddUserClaimsResponse result = await Mediator.Send(addUserClaimsCommand);
+        return Created(uri: "", result);
+    }
+
+    [HttpPut("{userId}/claims")]
+    public async Task<IActionResult> UpdateUserClaims([FromRoute] Guid userId, [FromBody] IList<int> claimIds)
+    {
+        UpdateUserClaimsCommand updateUserClaimsCommand = new() { UserId = userId, ClaimIds = claimIds };
+        UpdateUserClaimsResponse result = await Mediator.Send(updateUserClaimsCommand);
+        return Ok(result);
+    }
+
 }

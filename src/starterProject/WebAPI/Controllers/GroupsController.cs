@@ -6,6 +6,9 @@ using Application.Features.Groups.Queries.GetList;
 using NArchitecture.Core.Application.Requests;
 using NArchitecture.Core.Application.Responses;
 using Microsoft.AspNetCore.Mvc;
+using Application.Features.Groups.Commands.AddClaimsToGroup;
+using Application.Features.Groups.Commands.UpdateClaimsInGroup;
+using Application.Features.Groups.Queries.GetClaimsByGroupId;
 
 namespace WebAPI.Controllers;
 
@@ -57,5 +60,37 @@ public class GroupsController : BaseController
         GetListResponse<GetListGroupListItemDto> response = await Mediator.Send(query);
 
         return Ok(response);
+    }
+
+    [HttpGet("{groupId}/claims")]
+    public async Task<IActionResult> GetGroupClaims([FromRoute] int groupId)
+    {
+        GetClaimsByGroupIdGroupQuery getClaimsByGroupIdQuery = new() { Id = groupId };
+        GetClaimsByGroupIdGroupResponse result = await Mediator.Send(getClaimsByGroupIdQuery);
+        return Ok(result);
+    }
+
+    [HttpPost("{groupId}/claims")]
+    public async Task<IActionResult> AddClaimsToGroup([FromRoute] int groupId, [FromBody] IList<int> claimIds)
+    {
+        AddClaimsToGroupCommand addClaimsToGroupCommand = new()
+        {
+            GroupId = groupId,
+            ClaimIds = claimIds
+        };
+        AddClaimsToGroupResponse result = await Mediator.Send(addClaimsToGroupCommand);
+        return Created(uri: "", result);
+    }
+
+    [HttpPut("{groupId}/claims")]
+    public async Task<IActionResult> UpdateGroupClaims([FromRoute] int groupId, [FromBody] IList<int> claimIds)
+    {
+        UpdateClaimsInGroupCommand updateClaimsInGroupCommand = new()
+        {
+            GroupId = groupId,
+            ClaimIds = claimIds
+        };
+        UpdateClaimsInGroupResponse result = await Mediator.Send(updateClaimsInGroupCommand);
+        return Ok(result);
     }
 }
