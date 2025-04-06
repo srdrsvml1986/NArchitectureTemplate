@@ -1,6 +1,6 @@
 # NArchitecture.Core.Localization.Resource.Yaml
 
-This library provides YAML-based resource management for localization in kodlama.io projects. The `NArchitecture.Core.Localization.Resource.Yaml` package offers utilities to manage localized resources using YAML files within applications. It includes core classes and extensions for using YAML files as resource files for localization in both clean and union architectures, supporting the reading and parsing of YAML files, culture-specific translations, and essential utilities for YAML-based localization management.
+This library provides YAML-based resource management for localization in serdarsevimli.tr projects. The `NArchitecture.Core.Localization.Resource.Yaml` package offers utilities to manage localized resources using YAML files within applications. It includes core classes and extensions for using YAML files as resource files for localization in both clean and union architectures, supporting the reading and parsing of YAML files, culture-specific translations, and essential utilities for YAML-based localization management.
 
 ## Installation
 
@@ -12,4 +12,4 @@ dotnet add package NArchitecture.Core.Localization.Resource.Yaml
 
 ## Contribution
 
-If you would like to contribute, please visit the GitHub repository and submit a pull request: [NArchitecture.Core.Localization.Resource.Yaml GitHub Repository](https://github.com/kodlamaio-projects/nArchitecture.Core)
+If you would like to contribute, please visit the GitHub repository and submit a pull request: [NArchitecture.Core.Localization.Resource.Yaml GitHub Repository](https://github.com/srdrsvml1986/NArchitectureTemplate)

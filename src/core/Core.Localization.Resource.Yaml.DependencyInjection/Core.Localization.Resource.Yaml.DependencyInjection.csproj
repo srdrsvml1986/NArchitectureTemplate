@@ -11,11 +11,11 @@
     <Description>Provide dependency injection extensions for YAML-based resource management for
       NArchitecture.Core.Localization.Resource.Yaml.</Description>
     <Product>NArchitecture</Product>
-    <Authors>Kodlama.io, Contributors</Authors>
-    <Company>Kodlama.io</Company>
+    <Authors>serdarsevimli.tr, Contributors</Authors>
+    <Company>serdarsevimli.tr</Company>
     <PackageTags>Clean Architecture, Union Architecture, Core, NArchitecture, Localization,
       Resource, Yaml, Dependency Injection, Internationalization</PackageTags>
-    <RepositoryUrl>https://github.com/kodlamaio-projects/nArchitecture.Core</RepositoryUrl>
+    <RepositoryUrl>https://github.com/srdrsvml1986/NArchitectureTemplate</RepositoryUrl>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Core.Localization.Resource.Yaml\Core.Localization.Resource.Yaml.csproj" />

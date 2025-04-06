@@ -11,8 +11,8 @@
     <Description>Provides utilities for integrating security features with ASP.NET Web API projects,
       focusing on Swagger integration.</Description>
     <Product>NArchitecture</Product>
-    <Authors>Kodlama.io, Contributors</Authors>
-    <Company>Kodlama.io</Company>
+    <Authors>serdarsevimli.tr, Contributors</Authors>
+    <Company>serdarsevimli.tr</Company>
     <PackageTags>Clean Architecture, Union Architecture, Core, NArchitecture, Security,
       Authentication, Authorization, Swagger, Web API, Documentation, JWT, Two-Factor
       Authentication, OTP, Email Handling, Hashing, Encryption</PackageTags>

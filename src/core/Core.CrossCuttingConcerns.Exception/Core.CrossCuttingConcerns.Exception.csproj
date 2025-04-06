@@ -10,8 +10,8 @@
     <Title>NArchitecture $(AssemblyName)</Title>
     <Description>Provide cross-cutting concern components for effectively handling exceptions.</Description>
     <Product>NArchitecture</Product>
-    <Authors>Kodlama.io, Contributors</Authors>
-    <Company>Kodlama.io</Company>
+    <Authors>serdarsevimli.tr, Contributors</Authors>
+    <Company>serdarsevimli.tr</Company>
     <PackageTags>Clean Architecture, Union Architecture, Core, NArchitecture, Cross Cutting
       Concerns, Exception Handling</PackageTags>
   </PropertyGroup>

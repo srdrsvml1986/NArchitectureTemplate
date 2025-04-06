@@ -10,11 +10,11 @@
     <Title>NArchitecture $(AssemblyName)</Title>
     <Description>Provide integration with Elasticsearch for data storage and retrieval.</Description>
     <Product>NArchitecture</Product>
-    <Authors>Kodlama.io, Contributors</Authors>
-    <Company>Kodlama.io</Company>
+    <Authors>serdarsevimli.tr, Contributors</Authors>
+    <Company>serdarsevimli.tr</Company>
     <PackageTags>Clean Architecture, Union Architecture, Core, NArchitecture, Elasticsearch,
       Database, Search</PackageTags>
-    <RepositoryUrl>https://github.com/kodlamaio-projects/nArchitecture.Core</RepositoryUrl>
+    <RepositoryUrl>https://github.com/srdrsvml1986/NArchitectureTemplate</RepositoryUrl>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Elasticsearch.Net" Version="7.17.5" />

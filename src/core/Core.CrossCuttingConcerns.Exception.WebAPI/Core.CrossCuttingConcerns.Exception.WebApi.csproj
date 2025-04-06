@@ -11,8 +11,8 @@
     <Description>Provide exception handling components specifically tailored for ASP.NET Web API
       projects.</Description>
     <Product>NArchitecture</Product>
-    <Authors>Kodlama.io, Contributors</Authors>
-    <Company>Kodlama.io</Company>
+    <Authors>serdarsevimli.tr, Contributors</Authors>
+    <Company>serdarsevimli.tr</Company>
     <PackageTags>Clean Architecture, Union Architecture, Core, NArchitecture, Web API, Exception
       Handling, Cross Cutting Concerns</PackageTags>
   </PropertyGroup>

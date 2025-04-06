@@ -17,7 +17,7 @@ public class UserFakeData : BaseFakeData<User, Guid>
             new User
             {
                 Id = Ids[0],
-                Email = "example@kodlama.io",
+                Email = "example@serdarsevimli.tr",
                 PasswordHash = passwordHash,
                 PasswordSalt = passwordSalt,
                 CreatedDate = DateTime.Now,
@@ -25,7 +25,7 @@ public class UserFakeData : BaseFakeData<User, Guid>
             new User
             {
                 Id = Ids[1],
-                Email = "example2@kodlama.io",
+                Email = "example2@serdarsevimli.tr",
                 PasswordHash = passwordHash,
                 PasswordSalt = passwordSalt,
                 CreatedDate = DateTime.Now,
@@ -33,7 +33,7 @@ public class UserFakeData : BaseFakeData<User, Guid>
             new User
             {
                 Id = Ids[2],
-                Email = "example3@kodlama.io",
+                Email = "example3@serdarsevimli.tr",
                 PasswordHash = passwordHash,
                 PasswordSalt = passwordSalt,
                 CreatedDate = DateTime.Now,

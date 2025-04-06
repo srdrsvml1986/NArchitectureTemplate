@@ -10,8 +10,8 @@
     <Title>NArchitecture $(AssemblyName)</Title>
     <Description>Provides persistence utilities for data access using Entity Framework Core.</Description>
     <Product>NArchitecture</Product>
-    <Authors>Kodlama.io, Contributors</Authors>
-    <Company>Kodlama.io</Company>
+    <Authors>serdarsevimli.tr, Contributors</Authors>
+    <Company>serdarsevimli.tr</Company>
     <PackageTags>Clean Architecture, Union Architecture, Core, NArchitecture, Persistence, Data
       Access, Repository Pattern, Entity Framework, Unit of Work, Database, ORM, NoSQL, Relational,
       File System</PackageTags>

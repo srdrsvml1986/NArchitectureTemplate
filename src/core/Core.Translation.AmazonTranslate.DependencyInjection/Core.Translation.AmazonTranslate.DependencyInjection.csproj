@@ -11,8 +11,8 @@
     <Description>Provides dependency injection extensions for
       NArchitecture.Core.Translation.AmazonTranslate.</Description>
     <Product>NArchitecture</Product>
-    <Authors>Kodlama.io, Contributors</Authors>
-    <Company>Kodlama.io</Company>
+    <Authors>serdarsevimli.tr, Contributors</Authors>
+    <Company>serdarsevimli.tr</Company>
     <PackageTags>Clean Architecture, Union Architecture, Core, NArchitecture, Translation,
       Localization, Amazon Translate, Dependency Injection, AWS, Configuration, Options,
       Integration, Extension</PackageTags>

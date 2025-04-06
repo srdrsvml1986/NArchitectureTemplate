@@ -10,8 +10,8 @@
     <Title>NArchitecture $(AssemblyName)</Title>
     <Description>Provide cross-cutting concern components for effective logging.</Description>
     <Product>NArchitecture</Product>
-    <Authors>Kodlama.io, Contributors</Authors>
-    <Company>Kodlama.io</Company>
+    <Authors>serdarsevimli.tr, Contributors</Authors>
+    <Company>serdarsevimli.tr</Company>
     <PackageTags>Clean Architecture, Union Architecture, Core, NArchitecture, Logging, Cross Cutting
       Concerns</PackageTags>
   </PropertyGroup>

@@ -8,8 +8,8 @@ public static class MockConfiguration
     {
         var mockConfiguration = new Dictionary<string, string>
         {
-            { "TokenOptions:Audience", "Kodlamaio Users" },
-            { "TokenOptions:Issuer", "Kodlamaio" },
+            { "TokenOptions:Audience", "Serdar Sevimli" },
+            { "TokenOptions:Issuer", "Serdar Sevimli" },
             { "TokenOptions:AccessTokenExpiration", "10" },
             { "TokenOptions:SecurityKey", "StrongAndSecretKeyStrongAndSecretKeyStrongAndSecretKeyStrongAndSecretKey" },
             { "TokenOptions:RefreshTokenExpiration", "1440" },

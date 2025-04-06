@@ -10,8 +10,8 @@
     <Title>NArchitecture $(AssemblyName)</Title>
     <Description>Provides security utilities for hashing, encryption, JWT, authenticator, and more.</Description>
     <Product>NArchitecture</Product>
-    <Authors>Kodlama.io, Contributors</Authors>
-    <Company>Kodlama.io</Company>
+    <Authors>serdarsevimli.tr, Contributors</Authors>
+    <Company>serdarsevimli.tr</Company>
     <PackageTags>Clean Architecture, Union Architecture, Core, NArchitecture, Security,
       Authentication, Authorization, JWT, Two-Factor Authentication, OTP, Email Handling, Hashing,
       Encryption</PackageTags>

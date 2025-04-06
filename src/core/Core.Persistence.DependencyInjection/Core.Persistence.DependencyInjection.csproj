@@ -10,12 +10,12 @@
     <Title>NArchitecture $(AssemblyName)</Title>
     <Description>Provides dependency injection extensions for NArchitecture.Core.Persistence.</Description>
     <Product>NArchitecture</Product>
-    <Authors>Kodlama.io, Contributors</Authors>
-    <Company>Kodlama.io</Company>
+    <Authors>serdarsevimli.tr, Contributors</Authors>
+    <Company>serdarsevimli.tr</Company>
     <PackageTags>Clean Architecture, Union Architecture, Core, NArchitecture, Persistence, Data
       Access, Entity Framework, Dependency Injection, Repository Pattern, Unit of Work, Database,
       ORM, NoSQL, Relational, File System</PackageTags>
-    <RepositoryUrl>https://github.com/kodlamaio-projects/nArchitecture.Core</RepositoryUrl>
+    <RepositoryUrl>https://github.com/srdrsvml1986/NArchitectureTemplate</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
