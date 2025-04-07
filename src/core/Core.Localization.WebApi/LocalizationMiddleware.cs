@@ -18,10 +18,16 @@ public class LocalizationMiddleware
     {
         IList<StringWithQualityHeaderValue> acceptLanguages = context.Request.GetTypedHeaders().AcceptLanguage;
         if (acceptLanguages.Count > 0)
+        {
             localizationService.AcceptLocales = acceptLanguages
                 .OrderByDescending(x => x.Quality ?? 1)
                 .Select(x => x.Value.ToString())
                 .ToImmutableArray();
+        }
+        else
+        {
+            localizationService.AcceptLocales = new[] { "tr", "en" };
+        }
 
         await _next(context);
     }
