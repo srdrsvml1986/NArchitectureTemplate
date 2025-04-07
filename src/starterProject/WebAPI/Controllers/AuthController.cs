@@ -49,7 +49,7 @@ public class AuthController : BaseController
     }
 
     [HttpPost("RefreshToken")]
-    public async Task<IActionResult> RefreshToken([FromBody(EmptyBodyBehavior = EmptyBodyBehavior.Allow)] string? refreshToken)
+    public async Task<IActionResult> RefreshToken([FromRoute()] string? refreshToken)
     {
         RefreshTokenCommand refreshTokenCommand =
             new() { RefreshToken = refreshToken ?? getRefreshTokenFromCookies(), IpAddress = getIpAddress() };
