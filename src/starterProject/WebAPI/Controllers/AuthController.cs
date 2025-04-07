@@ -48,11 +48,11 @@ public class AuthController : BaseController
         return Created(uri: "", result.AccessToken);
     }
 
-    [HttpGet("RefreshToken")]
-    public async Task<IActionResult> RefreshToken()
+    [HttpPost("RefreshToken")]
+    public async Task<IActionResult> RefreshToken([FromBody(EmptyBodyBehavior = EmptyBodyBehavior.Allow)] string? refreshToken)
     {
         RefreshTokenCommand refreshTokenCommand =
-            new() { RefreshToken = getRefreshTokenFromCookies(), IpAddress = getIpAddress() };
+            new() { RefreshToken = refreshToken ?? getRefreshTokenFromCookies(), IpAddress = getIpAddress() };
         RefreshedTokensResponse result = await Mediator.Send(refreshTokenCommand);
         setRefreshTokenToCookie(result.RefreshToken);
         return Created(uri: "", result.AccessToken);
