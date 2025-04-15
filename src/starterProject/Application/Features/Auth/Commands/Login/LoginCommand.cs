@@ -1,5 +1,4 @@
 ﻿using Application.Features.Auth.Rules;
-using Application.Services.AuthenticatorService;
 using Application.Services.AuthService;
 using Application.Services.UsersService;
 using Domain.Entities;
@@ -30,7 +29,7 @@ public class LoginCommand : IRequest<LoggedResponse>
     public class LoginCommandHandler : IRequestHandler<LoginCommand, LoggedResponse>
     {
         private readonly AuthBusinessRules _authBusinessRules;
-        private readonly IAuthenticatorService _authenticatorService;
+        private readonly IAuthService _authenticatorService;
         private readonly IAuthService _authService;
         private readonly IUserService _userService;
 
@@ -38,7 +37,7 @@ public class LoginCommand : IRequest<LoggedResponse>
             IUserService userService,
             IAuthService authService,
             AuthBusinessRules authBusinessRules,
-            IAuthenticatorService authenticatorService
+            IAuthService authenticatorService
         )
         {
             _userService = userService;

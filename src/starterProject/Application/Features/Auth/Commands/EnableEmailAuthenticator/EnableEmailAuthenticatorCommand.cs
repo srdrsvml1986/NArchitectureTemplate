@@ -1,6 +1,6 @@
 ﻿using System.Web;
 using Application.Features.Auth.Rules;
-using Application.Services.AuthenticatorService;
+using Application.Services.AuthService;
 using Application.Services.Repositories;
 using Application.Services.UsersService;
 using Domain.Entities;
@@ -33,7 +33,7 @@ public class EnableEmailAuthenticatorCommand : IRequest, ISecuredRequest
     public class EnableEmailAuthenticatorCommandHandler : IRequestHandler<EnableEmailAuthenticatorCommand>
     {
         private readonly AuthBusinessRules _authBusinessRules;
-        private readonly IAuthenticatorService _authenticatorService;
+        private readonly IAuthService _authenticatorService;
         private readonly IEmailAuthenticatorRepository _emailAuthenticatorRepository;
         private readonly IMailService _mailService;
         private readonly IUserService _userService;
@@ -43,7 +43,7 @@ public class EnableEmailAuthenticatorCommand : IRequest, ISecuredRequest
             IEmailAuthenticatorRepository emailAuthenticatorRepository,
             IMailService mailService,
             AuthBusinessRules authBusinessRules,
-            IAuthenticatorService authenticatorService
+            IAuthService authenticatorService
         )
         {
             _userService = userService;

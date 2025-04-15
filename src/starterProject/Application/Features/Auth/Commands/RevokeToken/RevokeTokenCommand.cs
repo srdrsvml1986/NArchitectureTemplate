@@ -46,7 +46,7 @@ public class RevokeTokenCommand : IRequest<RevokedTokenResponse>, ISecuredReques
             await _authBusinessRules.RefreshTokenShouldBeExists(refreshToken);
             await _authBusinessRules.RefreshTokenShouldBeActive(refreshToken!);
 
-            await _authService.RevokeRefreshToken(token: refreshToken!, request.IpAddress, reason: "Revoked without replacement");
+            await _authService.RevokeRefreshToken(refreshToken!, request.IpAddress, reason: "Revoked without replacement");
 
             RevokedTokenResponse revokedTokenResponse = _mapper.Map<RevokedTokenResponse>(refreshToken);
             return revokedTokenResponse;

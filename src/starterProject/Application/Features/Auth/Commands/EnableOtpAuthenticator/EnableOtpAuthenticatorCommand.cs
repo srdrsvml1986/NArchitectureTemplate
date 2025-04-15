@@ -1,5 +1,5 @@
 ﻿using Application.Features.Auth.Rules;
-using Application.Services.AuthenticatorService;
+using Application.Services.AuthService;
 using Application.Services.Repositories;
 using Application.Services.UsersService;
 using Domain.Entities;
@@ -18,7 +18,7 @@ public class EnableOtpAuthenticatorCommand : IRequest<EnabledOtpAuthenticatorRes
         : IRequestHandler<EnableOtpAuthenticatorCommand, EnabledOtpAuthenticatorResponse>
     {
         private readonly AuthBusinessRules _authBusinessRules;
-        private readonly IAuthenticatorService _authenticatorService;
+        private readonly IAuthService _authenticatorService;
         private readonly IOtpAuthenticatorRepository _otpAuthenticatorRepository;
         private readonly IUserService _userService;
 
@@ -26,7 +26,7 @@ public class EnableOtpAuthenticatorCommand : IRequest<EnabledOtpAuthenticatorRes
             IUserService userService,
             IOtpAuthenticatorRepository otpAuthenticatorRepository,
             AuthBusinessRules authBusinessRules,
-            IAuthenticatorService authenticatorService
+            IAuthService authenticatorService
         )
         {
             _userService = userService;

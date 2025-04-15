@@ -1,5 +1,4 @@
 using System.Reflection;
-using Application.Services.AuthenticatorService;
 using Application.Services.AuthService;
 using Application.Services.UsersService;
 using FluentValidation;
@@ -57,8 +56,7 @@ public static class ApplicationServiceRegistration
         services.AddSingleton<ILogger, SerilogFileLogger>(_ => new SerilogFileLogger(fileLogConfiguration));
         services.AddSingleton<IElasticSearch, ElasticSearchManager>(_ => new ElasticSearchManager(elasticSearchConfig));
 
-        services.AddScoped<IAuthService, AuthManager>();
-        services.AddScoped<IAuthenticatorService, AuthenticatorManager>();
+        services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IUserService, UserManager>();
 
         services.AddYamlResourceLocalization();

@@ -11,7 +11,11 @@ using NArchitecture.Core.Mailing;
 using NArchitecture.Core.Persistence.WebApi;
 using NArchitecture.Core.Security.Encryption;
 using NArchitecture.Core.Security.JWT;
+using NArchitecture.Core.Security.OAuth.Configurations;
+using NArchitecture.Core.Security.OAuth.Middleware;
+using NArchitecture.Core.Security.OAuth.Services;
 using NArchitecture.Core.Security.WebApi.Swagger.Extensions;
+using NArchitecture.Core.Security.OAuth.Extensions;
 using Persistence;
 using Swashbuckle.AspNetCore.SwaggerUI;
 using WebAPI;
@@ -19,6 +23,25 @@ using WebAPI;
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
+builder.Services.Configure<GoogleAuthConfig>(
+    builder.Configuration.GetSection("Authentication:Google"));
+builder.Services.Configure<FacebookAuthConfig>(
+    builder.Configuration.GetSection("Authentication:Facebook"));
+EncryptionHelper.Initialize(builder.Configuration);
+builder.Services.AddAuthentication()
+    .AddGoogle(options =>
+    {
+        options.ClientId = builder.Configuration["Authentication:Google:ClientId"]!;
+        options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"]!;
+    })
+    .AddFacebook(options =>
+    {
+        options.AppId = builder.Configuration["Authentication:Facebook:AppId"]!;
+        options.AppSecret = builder.Configuration["Authentication:Facebook:AppSecret"]!;
+    });
+
+builder.Services.AddScoped<IGoogleAuthService, GoogleAuthService>();
+builder.Services.AddScoped<IFacebookAuthService, FacebookAuthService>();
 builder.Services.AddApplicationServices(
     mailSettings: builder.Configuration.GetSection("MailSettings").Get<MailSettings>()
         ?? throw new InvalidOperationException("MailSettings section cannot found in configuration."),
@@ -83,6 +106,8 @@ builder.Services.AddSwaggerGen(opt =>
     opt.OperationFilter<BearerSecurityRequirementOperationFilter>();
 });
 
+builder.Services.AddOAuthSecurity();
+
 WebApplication app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -95,8 +120,10 @@ if (app.Environment.IsDevelopment())
     });
 }
 
-if (app.Environment.IsProduction())
-    app.ConfigureCustomExceptionMiddleware();
+//if (app.Environment.IsProduction())
+app.ConfigureCustomExceptionMiddleware();
+app.UseMiddleware<OAuthRateLimitMiddleware>();
+app.UseOAuthSecurity();
 
 app.UseDbMigrationApplier();
 
@@ -112,5 +139,19 @@ WebApiConfiguration webApiConfiguration =
 app.UseCors(opt => opt.WithOrigins(webApiConfiguration.AllowedOrigins).AllowAnyHeader().AllowAnyMethod().AllowCredentials());
 
 app.UseResponseLocalization();
+app.UseHsts();
+app.UseHttpsRedirection();
 
+// OAuth callback'ler için HTTPS zorunluluðu
+app.Use(async (context, next) =>
+{
+    if (context.Request.Path.StartsWithSegments("/auth")
+        && !context.Request.IsHttps)
+    {
+        context.Response.StatusCode = 400;
+        await context.Response.WriteAsync("HTTPS required");
+        return;
+    }
+    await next();
+});
 app.Run();

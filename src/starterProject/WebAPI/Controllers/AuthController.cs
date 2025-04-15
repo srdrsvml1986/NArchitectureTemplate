@@ -6,10 +6,12 @@ using Application.Features.Auth.Commands.Register;
 using Application.Features.Auth.Commands.RevokeToken;
 using Application.Features.Auth.Commands.VerifyEmailAuthenticator;
 using Application.Features.Auth.Commands.VerifyOtpAuthenticator;
+using Application.Services.AuthService;
 using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using NArchitecture.Core.Application.Dtos;
+using NArchitecture.Core.Security.OAuth.Services;
 
 namespace WebAPI.Controllers;
 
@@ -18,13 +20,19 @@ namespace WebAPI.Controllers;
 public class AuthController : BaseController
 {
     private readonly WebApiConfiguration _configuration;
+    private readonly IGoogleAuthService _googleAuthService;
+    private readonly IFacebookAuthService _facebookAuthService;
+    private readonly IAuthService _authService;
 
-    public AuthController(IConfiguration configuration)
+    public AuthController(IConfiguration configuration, IGoogleAuthService googleAuthService, IFacebookAuthService facebookAuthService, IAuthService authService)
     {
         const string configurationSection = "WebAPIConfiguration";
         _configuration =
             configuration.GetSection(configurationSection).Get<WebApiConfiguration>()
             ?? throw new NullReferenceException($"\"{configurationSection}\" section cannot found in configuration.");
+        _googleAuthService = googleAuthService;
+        _facebookAuthService = facebookAuthService;
+        _authService = authService;
     }
 
     [HttpPost("Login")]
@@ -113,6 +121,47 @@ public class AuthController : BaseController
         return Ok();
     }
 
+    [HttpGet("google/login")]
+    public IActionResult GoogleLogin()
+    {
+        string authUrl = _googleAuthService.GetAuthorizationUrl();
+        return Redirect(authUrl);
+    }
+
+    [HttpGet("google/callback")]
+    public async Task<IActionResult> GoogleCallback([FromQuery] string code)
+    {
+        var result = await _googleAuthService.AuthenticateAsync(code);
+        if (!result.Success)
+            return BadRequest(result.Error);
+
+        // Kullanıcıyı sistemde kaydet/güncelle ve JWT token üret
+        // Token oluştur
+        var tokenResult = await _authService.CreateTokenForExternalUser(result.User);
+
+        // Refresh token'ı cookie'ye kaydet
+        setRefreshTokenToCookie(tokenResult.RefreshToken);
+
+        return Ok(result.User);
+    }
+
+    [HttpGet("facebook/login")]
+    public IActionResult FacebookLogin()
+    {
+        string authUrl = _facebookAuthService.GetAuthorizationUrl();
+        return Redirect(authUrl);
+    }
+
+    [HttpGet("facebook/callback")]
+    public async Task<IActionResult> FacebookCallback([FromQuery] string code)
+    {
+        var result = await _facebookAuthService.AuthenticateAsync(code);
+        if (!result.Success)
+            return BadRequest(result.Error);
+
+        // Kullanıcıyı sistemde kaydet/güncelle ve JWT token üret
+        return Ok(result.User);
+    }
     private string getRefreshTokenFromCookies()
     {
         return Request.Cookies["refreshToken"] ?? throw new ArgumentException("Refresh token is not found in request cookies.");

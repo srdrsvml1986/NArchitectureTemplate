@@ -26,4 +26,6 @@ public class User : NArchitecture.Core.Security.Entities.User<Guid>
     public string? Notes { get; set; }
     public DateTime? BirthDate { get; set; }
     public DateTime? lastActivityDate { get; set; } = DateTime.Now;
+    public string? ExternalAuthProvider { get; set; }
+    public string? ExternalAuthId { get; set; }
 }

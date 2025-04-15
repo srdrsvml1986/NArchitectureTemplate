@@ -2,6 +2,7 @@
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore.Query;
 using NArchitecture.Core.Persistence.Paging;
+using NArchitecture.Core.Security.OAuth.Models;
 
 namespace Application.Services.UsersService;
 
@@ -29,4 +30,6 @@ public interface IUserService
     Task<User> AddAsync(User user);
     Task<User> UpdateAsync(User user);
     Task<User> DeleteAsync(User user, bool permanent = false);
+    Task<User> CreateOrUpdateExternalUserAsync(ExternalAuthUser externalUser);
+
 }

@@ -1,5 +1,5 @@
 ﻿using Application.Features.Auth.Rules;
-using Application.Services.AuthenticatorService;
+using Application.Services.AuthService;
 using Application.Services.Repositories;
 using Application.Services.UsersService;
 using Domain.Entities;
@@ -30,7 +30,7 @@ public class VerifyOtpAuthenticatorCommand : IRequest, ISecuredRequest
     public class VerifyOtpAuthenticatorCommandHandler : IRequestHandler<VerifyOtpAuthenticatorCommand>
     {
         private readonly AuthBusinessRules _authBusinessRules;
-        private readonly IAuthenticatorService _authenticatorService;
+        private readonly IAuthService _authenticatorService;
         private readonly IOtpAuthenticatorRepository _otpAuthenticatorRepository;
         private readonly IUserService _userService;
 
@@ -38,7 +38,7 @@ public class VerifyOtpAuthenticatorCommand : IRequest, ISecuredRequest
             IOtpAuthenticatorRepository otpAuthenticatorRepository,
             AuthBusinessRules authBusinessRules,
             IUserService userService,
-            IAuthenticatorService authenticatorService
+            IAuthService authenticatorService
         )
         {
             _otpAuthenticatorRepository = otpAuthenticatorRepository;

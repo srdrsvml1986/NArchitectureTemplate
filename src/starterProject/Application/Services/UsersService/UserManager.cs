@@ -4,6 +4,7 @@ using Application.Services.Repositories;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore.Query;
 using NArchitecture.Core.Persistence.Paging;
+using NArchitecture.Core.Security.OAuth.Models;
 
 namespace Application.Services.UsersService;
 
@@ -77,5 +78,31 @@ public class UserManager : IUserService
         User deletedUser = await _userRepository.DeleteAsync(user);
 
         return deletedUser;
+    }
+    public async Task<User> CreateOrUpdateExternalUserAsync(ExternalAuthUser externalUser)
+    {
+        var user = await _userRepository.GetAsync(u => u.Email == externalUser.Email);
+
+        if (user == null)
+        {
+            user = new User
+            {
+                Email = externalUser.Email,
+                FirstName = externalUser.FirstName,
+                LastName = externalUser.LastName,
+                Status = true,
+                ExternalAuthProvider = externalUser.Provider
+            };
+            await _userRepository.AddAsync(user);
+        }
+        else
+        {
+            user.FirstName = externalUser.FirstName;
+            user.LastName = externalUser.LastName;
+            user.ExternalAuthProvider = externalUser.Provider;
+            await _userRepository.UpdateAsync(user);
+        }
+
+        return user;
     }
 }

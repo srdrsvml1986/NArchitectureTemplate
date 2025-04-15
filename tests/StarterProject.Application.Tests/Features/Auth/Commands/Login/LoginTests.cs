@@ -2,7 +2,6 @@
 using Application.Features.Auth.Profiles;
 using Application.Features.Auth.Rules;
 using Application.Features.Users.Rules;
-using Application.Services.AuthenticatorService;
 using Application.Services.AuthService;
 using Application.Services.Repositories;
 using Application.Services.UsersService;
@@ -67,25 +66,37 @@ public class LoginTests
         IMapper mapper = new Mapper(new MapperConfiguration(cfg => cfg.AddProfile<MappingProfiles>()));
         #endregion
         AuthBusinessRules authBusinessRules = new(_userRepository, localizationService);
-        IAuthService _authService = new AuthManager(
+        IAuthService _authService = new AuthService(
+                   _userOperationClaimRepository,
+                   _refreshTokenRepository,
+                   tokenHelper,
+                   _configuration,
+                   mapper,
+                   mailService, // Added missing argument for 'mailService'
+                   _userOtpAuthenticatorRepository,
+                   otpAuthenticatorHelper,
+                   _userEmailAuthenticatorRepository,
+                   emailAuthenticatorHelper,
+                   _userRepository
+               );
+        UserBusinessRules _userBusinessRules = new(_userRepository, localizationService);
+        IUserService _userService = new UserManager(_userRepository, _userBusinessRules);
+        IAuthService _authenticatorService = new AuthService(
             _userOperationClaimRepository,
             _refreshTokenRepository,
             tokenHelper,
             _configuration,
-            mapper
-        );
-        UserBusinessRules _userBusinessRules = new(_userRepository, localizationService);
-        IUserService _userService = new UserManager(_userRepository, _userBusinessRules);
-        IAuthenticatorService _authententicatorService = new AuthenticatorManager(
-            emailAuthenticatorHelper,
-            _userEmailAuthenticatorRepository,
+            mapper,
             mailService,
+            _userOtpAuthenticatorRepository,
             otpAuthenticatorHelper,
-            _userOtpAuthenticatorRepository
+            _userEmailAuthenticatorRepository,
+            emailAuthenticatorHelper,
+            _userRepository
         );
         _validator = new LoginCommandValidator();
         _loginCommand = new LoginCommand();
-        _loginCommandHandler = new LoginCommandHandler(_userService, _authService, authBusinessRules, _authententicatorService);
+        _loginCommandHandler = new LoginCommandHandler(_userService, _authService, authBusinessRules, _authenticatorService);
     }
 
     [Fact]
@@ -93,7 +104,7 @@ public class LoginTests
     {
         _loginCommand.UserForLoginDto = new() { Email = "example@serdarsevimli.tr", Password = "123456" };
         LoggedResponse result = await _loginCommandHandler.Handle(_loginCommand, CancellationToken.None);
-        Assert.NotNull(result.AccessToken.Token);
+        Assert.NotNull(result.AccessToken?.Token);
     }
 
     [Fact]
@@ -103,7 +114,7 @@ public class LoginTests
         LoggedResponse result = await _loginCommandHandler.Handle(_loginCommand, CancellationToken.None);
         TokenOptions? tokenOptions = _configuration.GetSection("TokenOptions").Get<TokenOptions>();
         bool tokenExpiresInTime =
-            DateTime.Now.AddMinutes(tokenOptions.AccessTokenExpiration + 1) > result.AccessToken.ExpirationDate;
+            DateTime.Now.AddMinutes(tokenOptions!.AccessTokenExpiration + 1) > result.AccessToken!.ExpirationDate;
         Assert.True(tokenExpiresInTime, "Access token expiration time is invalid.");
     }
 
