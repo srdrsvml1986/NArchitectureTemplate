@@ -1,5 +1,6 @@
 ﻿using System.Collections.Immutable;
 using Application.Services.Repositories;
+using Application.Services.UsersService;
 using AutoMapper;
 using Domain.DTos;
 using Domain.Entities;
@@ -28,6 +29,7 @@ public class AuthService : IAuthService
     private readonly IOtpAuthenticatorHelper _otpAuthenticatorHelper;
     private readonly IOtpAuthenticatorRepository _otpAuthenticatorRepository;
     private readonly IUserRepository _userRepository;
+    private readonly IUserService _userService;
 
     public AuthService(
         IUserClaimRepository userOperationClaimRepository,
@@ -41,7 +43,8 @@ public class AuthService : IAuthService
         IOtpAuthenticatorHelper otpAuthenticatorHelper,
         IEmailAuthenticatorRepository emailAuthenticatorRepository,
         IEmailAuthenticatorHelper emailAuthenticatorHelper,
-        IUserRepository userRepository)
+        IUserRepository userRepository,
+        IUserService userService)
     {
         _userOperationClaimRepository = userOperationClaimRepository;
         _refreshTokenRepository = refreshTokenRepository;
@@ -58,6 +61,7 @@ public class AuthService : IAuthService
         _emailAuthenticatorRepository = emailAuthenticatorRepository;
         _emailAuthenticatorHelper = emailAuthenticatorHelper;
         _userRepository = userRepository;
+        _userService = userService;
     }
 
     public async Task<AccessToken> CreateAccessToken(User user)
@@ -238,7 +242,7 @@ public class AuthService : IAuthService
     public async Task<TokenDto> CreateTokenForExternalUser(ExternalAuthUser externalUser)
     {       
         // Kullanıcıyı bul veya oluştur
-        var user = await GetOrCreateExternalUser(externalUser);
+        var user = await _userService.CreateOrUpdateExternalUserAsync(externalUser);
 
         // Access token oluştur
         var accessToken = await CreateAccessToken(user);
@@ -253,40 +257,4 @@ public class AuthService : IAuthService
             RefreshToken = refreshToken
         };
     }
-
-    private async Task<User> GetOrCreateExternalUser(ExternalAuthUser externalUser)
-    {
-        var user = await _userRepository.GetAsync(u => u.Email == externalUser.Email);
-
-        if (user == null)
-        {
-            // Yeni kullanıcı oluştur
-            user = new User
-            {
-                Email = externalUser.Email,
-                FirstName = externalUser.FirstName,
-                LastName = externalUser.LastName,
-                Status = true,
-                ExternalAuthProvider = externalUser.Provider,
-                ExternalAuthId = externalUser.Id
-            };
-            await _userRepository.AddAsync(user);
-        }
-        else
-        {
-            // Mevcut kullanıcıyı güncelle
-            user.FirstName = externalUser.FirstName;
-            user.LastName = externalUser.LastName;
-            user.ExternalAuthProvider = externalUser.Provider;
-            user.ExternalAuthId = externalUser.Id;
-            await _userRepository.UpdateAsync(user);
-        }
-
-        return user;
-    }
-
-
-
-
-
 }

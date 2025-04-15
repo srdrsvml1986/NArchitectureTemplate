@@ -142,7 +142,7 @@ public class AuthController : BaseController
         // Refresh token'ı cookie'ye kaydet
         setRefreshTokenToCookie(tokenResult.RefreshToken);
 
-        return Ok(result.User);
+        return Ok(tokenResult);
     }
 
     [HttpGet("facebook/login")]
@@ -159,8 +159,12 @@ public class AuthController : BaseController
         if (!result.Success)
             return BadRequest(result.Error);
 
-        // Kullanıcıyı sistemde kaydet/güncelle ve JWT token üret
-        return Ok(result.User);
+        var tokenResult = await _authService.CreateTokenForExternalUser(result.User);
+
+        // Refresh token'ı cookie'ye kaydet
+        setRefreshTokenToCookie(tokenResult.RefreshToken);
+
+        return Ok(tokenResult);
     }
     private string getRefreshTokenFromCookies()
     {
