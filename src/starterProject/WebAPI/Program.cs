@@ -109,6 +109,10 @@ builder.Services.AddCors(opt =>
 );
 builder.Services.AddSwaggerGen(opt =>
 {
+    var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    opt.IncludeXmlComments(xmlPath);
+
     opt.AddSecurityDefinition(
         name: "Bearer",
         securityScheme: new OpenApiSecurityScheme
@@ -118,13 +122,12 @@ builder.Services.AddSwaggerGen(opt =>
             Scheme = "Bearer",
             BearerFormat = "JWT",
             In = ParameterLocation.Header,
-            Description =
-                "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer YOUR_TOKEN\". \r\n\r\n"
-                + "`Enter your token in the text input below.`"
+            Description = "JWT Authorization header using the Bearer scheme."
         }
     );
     opt.OperationFilter<BearerSecurityRequirementOperationFilter>();
 });
+
 
 builder.Services.AddOAuthSecurity();
 
