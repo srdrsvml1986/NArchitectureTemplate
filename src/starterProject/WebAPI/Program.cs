@@ -109,6 +109,19 @@ builder.Services.AddCors(opt =>
 );
 builder.Services.AddSwaggerGen(opt =>
 {
+    // API'nin genel bilgilerini tanýmlama
+    opt.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Version = "v1",
+        Title = "Auth API",
+        Description = "Authentication ve Authorization iþlemleri için REST API",
+        Contact = new OpenApiContact
+        {
+            Name = "API Geliþtirici Ekibi",
+            Email = "bilgi@serdarsevimli.tr"
+        }
+    });
+
     var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
     opt.IncludeXmlComments(xmlPath);
