@@ -2,6 +2,7 @@
 using NArchitecture.Core.Security.OAuth.Configurations;
 using NArchitecture.Core.Security.OAuth.Models;
 using System.Net.Http.Json;
+using System.Text.Json.Serialization;
 
 namespace NArchitecture.Core.Security.OAuth.Services;
 
@@ -34,7 +35,7 @@ public class GoogleAuthService : IGoogleAuthService
 
         if (!tokenResponse.IsSuccessStatusCode)
             return new OAuthResponse { Success = false, Error = "Google token alınamadı." };
-
+        var content = await tokenResponse.Content.ReadAsStringAsync();
         var tokenData = await tokenResponse.Content.ReadFromJsonAsync<GoogleTokenResponse>();
 
         // Kullanıcı bilgilerini alma
@@ -62,13 +63,29 @@ public class GoogleAuthService : IGoogleAuthService
 }
 
 // Google token yanıt modeli
+// Google token yanıt modeli
+
 public class GoogleTokenResponse
 {
+    [JsonPropertyName("access_token")]
     public string AccessToken { get; set; } = string.Empty;
+
+    [JsonPropertyName("token_type")]
     public string TokenType { get; set; } = string.Empty;
+
+    [JsonPropertyName("expires_in")]
     public int ExpiresIn { get; set; }
+
+    [JsonPropertyName("refresh_token")]
     public string RefreshToken { get; set; } = string.Empty;
+
+    [JsonPropertyName("scope")]
+    public string Scope { get; set; } = string.Empty;
+
+    [JsonPropertyName("id_token")]
+    public string IdToken { get; set; } = string.Empty;
 }
+
 
 // Google kullanıcı bilgileri modeli
 public class GoogleUserInfo

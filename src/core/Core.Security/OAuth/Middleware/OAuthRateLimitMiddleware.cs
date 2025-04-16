@@ -10,20 +10,17 @@ public class OAuthRateLimitMiddleware
 {
     private readonly RateLimiter _loginLimiter;
     private readonly IAntiforgery _antiforgery;
+    private readonly RequestDelegate _next;
 
-    public OAuthRateLimitMiddleware(IAntiforgery antiforgery)
+    // Constructor'ı RateLimiter'ı da parametre olarak alacak şekilde değiştir
+    public OAuthRateLimitMiddleware(IAntiforgery antiforgery, RateLimiter loginLimiter, RequestDelegate next)
     {
         _antiforgery = antiforgery;
-        _loginLimiter = new FixedWindowRateLimiter(new FixedWindowRateLimiterOptions
-        {
-            PermitLimit = 5,
-            Window = TimeSpan.FromMinutes(5),
-            QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
-            QueueLimit = 0
-        });
+        _loginLimiter = loginLimiter; // DI'dan gelen RateLimiter'ı kullan
+        _next = next;
     }
 
-    public async Task InvokeAsync(HttpContext context, RequestDelegate next)
+    public async Task InvokeAsync(HttpContext context)
     {
         if (context.Request.Path.StartsWithSegments("/auth"))
         {
@@ -44,7 +41,7 @@ public class OAuthRateLimitMiddleware
             }
         }
 
-        await next(context);
+        await _next(context);
     }
 
     private async Task<bool> CheckRateLimit(HttpContext context)

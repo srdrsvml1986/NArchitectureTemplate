@@ -8,6 +8,8 @@ using Application.Features.Auth.Commands.VerifyEmailAuthenticator;
 using Application.Features.Auth.Commands.VerifyOtpAuthenticator;
 using Application.Services.AuthService;
 using Domain.Entities;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using NArchitecture.Core.Application.Dtos;
@@ -166,6 +168,14 @@ public class AuthController : BaseController
 
         return Ok(tokenResult);
     }
+    [HttpGet("logout")]
+    public async Task<IActionResult> Logout()
+    {
+        // Kullanıcıyı çıkış yapar ve ana sayfaya yönlendirir
+        await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        return Redirect("/");
+    }
+
     private string getRefreshTokenFromCookies()
     {
         return Request.Cookies["refreshToken"] ?? throw new ArgumentException("Refresh token is not found in request cookies.");

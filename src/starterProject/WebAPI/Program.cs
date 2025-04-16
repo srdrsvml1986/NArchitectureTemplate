@@ -19,26 +19,46 @@ using NArchitecture.Core.Security.OAuth.Extensions;
 using Persistence;
 using Swashbuckle.AspNetCore.SwaggerUI;
 using WebAPI;
+using System.Threading.RateLimiting;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Google;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
+builder.Services.AddAntiforgery();
+builder.Services.AddSingleton<RateLimiter>(_ =>
+    new FixedWindowRateLimiter(new FixedWindowRateLimiterOptions
+    {
+        PermitLimit = 5,
+        Window = TimeSpan.FromMinutes(5),
+        QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+        QueueLimit = 0
+    }));
+
 builder.Services.Configure<GoogleAuthConfig>(
     builder.Configuration.GetSection("Authentication:Google"));
 builder.Services.Configure<FacebookAuthConfig>(
     builder.Configuration.GetSection("Authentication:Facebook"));
 EncryptionHelper.Initialize(builder.Configuration);
-builder.Services.AddAuthentication()
-    .AddGoogle(options =>
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+}).AddGoogle(options =>
     {
         options.ClientId = builder.Configuration["Authentication:Google:ClientId"]!;
         options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"]!;
-    })
-    .AddFacebook(options =>
+    });
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+}).AddFacebook(options =>
     {
         options.AppId = builder.Configuration["Authentication:Facebook:AppId"]!;
         options.AppSecret = builder.Configuration["Authentication:Facebook:AppSecret"]!;
     });
+
 
 builder.Services.AddScoped<IGoogleAuthService, GoogleAuthService>();
 builder.Services.AddScoped<IFacebookAuthService, FacebookAuthService>();
@@ -122,11 +142,11 @@ if (app.Environment.IsDevelopment())
 
 //if (app.Environment.IsProduction())
 app.ConfigureCustomExceptionMiddleware();
-app.UseMiddleware<OAuthRateLimitMiddleware>();
 app.UseOAuthSecurity();
+app.UseMiddleware<OAuthRateLimitMiddleware>();
 
 app.UseDbMigrationApplier();
-
+app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 

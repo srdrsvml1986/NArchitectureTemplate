@@ -66,21 +66,22 @@ public class LoginTests
         IMapper mapper = new Mapper(new MapperConfiguration(cfg => cfg.AddProfile<MappingProfiles>()));
         #endregion
         AuthBusinessRules authBusinessRules = new(_userRepository, localizationService);
+        UserBusinessRules _userBusinessRules = new(_userRepository, localizationService);
+        IUserService _userService = new UserManager(_userRepository, _userBusinessRules);
         IAuthService _authService = new AuthService(
                    _userOperationClaimRepository,
                    _refreshTokenRepository,
                    tokenHelper,
                    _configuration,
                    mapper,
-                   mailService, // Added missing argument for 'mailService'
+                   mailService,
                    _userOtpAuthenticatorRepository,
                    otpAuthenticatorHelper,
                    _userEmailAuthenticatorRepository,
                    emailAuthenticatorHelper,
-                   _userRepository
+                   _userRepository,
+                   _userService // Added missing argument for 'userService'
                );
-        UserBusinessRules _userBusinessRules = new(_userRepository, localizationService);
-        IUserService _userService = new UserManager(_userRepository, _userBusinessRules);
         IAuthService _authenticatorService = new AuthService(
             _userOperationClaimRepository,
             _refreshTokenRepository,
@@ -92,7 +93,9 @@ public class LoginTests
             otpAuthenticatorHelper,
             _userEmailAuthenticatorRepository,
             emailAuthenticatorHelper,
-            _userRepository
+            _userRepository,
+            _userService // Added missing argument for 'userService'
+
         );
         _validator = new LoginCommandValidator();
         _loginCommand = new LoginCommand();
