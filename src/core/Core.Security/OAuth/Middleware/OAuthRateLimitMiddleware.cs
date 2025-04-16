@@ -28,7 +28,7 @@ public class OAuthRateLimitMiddleware
             if (!await ValidateAntiForgeryToken(context))
             {
                 context.Response.StatusCode = 400;
-                await context.Response.WriteAsync("Invalid request");
+                await context.Response.WriteAsync("Geçersiz istek");
                 return;
             }
 
@@ -36,7 +36,7 @@ public class OAuthRateLimitMiddleware
             if (!await CheckRateLimit(context))
             {
                 context.Response.StatusCode = 429;
-                await context.Response.WriteAsync("Too many requests");
+                await context.Response.WriteAsync("Çok fazla istekte bulunuldu. Lütfen 5dk sonra tekrar deneyiniz");
                 return;
             }
         }
