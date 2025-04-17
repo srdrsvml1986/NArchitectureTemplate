@@ -66,10 +66,10 @@ public class AuthService : IAuthService
 
     public async Task<AccessToken> CreateAccessToken(User user)
     {
-        IList<Claim> operationClaims = await _userOperationClaimRepository.GetOperationClaimsByUserIdAsync(user.Id);
+        IList<SecurityClaim> operationClaims = await _userOperationClaimRepository.GetOperationClaimsByUserIdAsync(user.Id);
         AccessToken accessToken = _tokenHelper.CreateToken(
             user,
-            operationClaims.Select(op => (NArchitecture.Core.Security.Entities.Claim<int>)op).ToImmutableList()
+            operationClaims.Select(op => (NArchitecture.Core.Security.Entities.SecurityClaim<int>)op).ToImmutableList()
         );
         return accessToken;
     }

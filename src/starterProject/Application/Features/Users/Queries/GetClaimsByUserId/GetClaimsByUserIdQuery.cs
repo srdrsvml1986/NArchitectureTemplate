@@ -19,14 +19,14 @@ public class GetClaimsByUserIdQuery : IRequest<GetClaimsByUserIdResponse>, ISecu
     {
         private readonly IUserRepository _userRepository;
         private readonly IUserClaimRepository _userClaimRepository;
-        private readonly IClaimRepository _claimRepository;
+        private readonly ISecurityClaimRepository _claimRepository;
         private readonly IMapper _mapper;
         private readonly UserBusinessRules _userBusinessRules;
 
         public GetClaimsByUserIdQueryHandler(
             IUserRepository userRepository,
             IUserClaimRepository userClaimRepository,
-            IClaimRepository claimRepository,
+            ISecurityClaimRepository claimRepository,
             IMapper mapper,
             UserBusinessRules userBusinessRules)
         {

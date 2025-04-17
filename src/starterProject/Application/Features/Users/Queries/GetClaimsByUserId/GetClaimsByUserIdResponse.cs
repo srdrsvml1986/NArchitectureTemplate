@@ -5,5 +5,5 @@ namespace Application.Features.Users.Queries.GetClaimsByUserId;
 
 public class GetClaimsByUserIdResponse : IResponse
 {
-    public IQueryable<Claim>? Claims { get; set; }
+    public IQueryable<SecurityClaim>? Claims { get; set; }
 }

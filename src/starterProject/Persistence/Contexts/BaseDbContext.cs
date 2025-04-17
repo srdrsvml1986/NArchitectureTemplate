@@ -9,7 +9,7 @@ public class BaseDbContext : DbContext
 {
     protected IConfiguration Configuration { get; set; }
     public DbSet<EmailAuthenticator> EmailAuthenticators { get; set; }
-    public DbSet<Claim> OperationClaims { get; set; }
+    public DbSet<SecurityClaim> OperationClaims { get; set; }
     public DbSet<OtpAuthenticator> OtpAuthenticators { get; set; }
     public DbSet<RefreshToken> RefreshTokens { get; set; }
     public DbSet<User> Users { get; set; }

@@ -1,5 +1,5 @@
 ﻿using System.Linq.Expressions;
-using Application.Features.Claims.Rules;
+using Application.Features.SecurityClaims.Rules;
 using Application.Services.Repositories;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore.Query;
@@ -9,27 +9,27 @@ namespace Application.Services.OperationClaims;
 
 public class OperationClaimManager : IOperationClaimService
 {
-    private readonly IClaimRepository _operationClaimRepository;
-    private readonly ClaimBusinessRules _operationClaimBusinessRules;
+    private readonly ISecurityClaimRepository _operationClaimRepository;
+    private readonly SecurityClaimBusinessRules _operationClaimBusinessRules;
 
     public OperationClaimManager(
-        IClaimRepository operationClaimRepository,
-        ClaimBusinessRules operationClaimBusinessRules
+        ISecurityClaimRepository operationClaimRepository,
+        SecurityClaimBusinessRules operationClaimBusinessRules
     )
     {
         _operationClaimRepository = operationClaimRepository;
         _operationClaimBusinessRules = operationClaimBusinessRules;
     }
 
-    public async Task<Claim?> GetAsync(
-        Expression<Func<Claim, bool>> predicate,
-        Func<IQueryable<Claim>, IIncludableQueryable<Claim, object>>? include = null,
+    public async Task<SecurityClaim?> GetAsync(
+        Expression<Func<SecurityClaim, bool>> predicate,
+        Func<IQueryable<SecurityClaim>, IIncludableQueryable<SecurityClaim, object>>? include = null,
         bool withDeleted = false,
         bool enableTracking = true,
         CancellationToken cancellationToken = default
     )
     {
-        Claim? operationClaim = await _operationClaimRepository.GetAsync(
+        SecurityClaim? operationClaim = await _operationClaimRepository.GetAsync(
             predicate,
             include,
             withDeleted,
@@ -39,10 +39,10 @@ public class OperationClaimManager : IOperationClaimService
         return operationClaim;
     }
 
-    public async Task<IPaginate<Claim>?> GetListAsync(
-        Expression<Func<Claim, bool>>? predicate = null,
-        Func<IQueryable<Claim>, IOrderedQueryable<Claim>>? orderBy = null,
-        Func<IQueryable<Claim>, IIncludableQueryable<Claim, object>>? include = null,
+    public async Task<IPaginate<SecurityClaim>?> GetListAsync(
+        Expression<Func<SecurityClaim, bool>>? predicate = null,
+        Func<IQueryable<SecurityClaim>, IOrderedQueryable<SecurityClaim>>? orderBy = null,
+        Func<IQueryable<SecurityClaim>, IIncludableQueryable<SecurityClaim, object>>? include = null,
         int index = 0,
         int size = 10,
         bool withDeleted = false,
@@ -50,7 +50,7 @@ public class OperationClaimManager : IOperationClaimService
         CancellationToken cancellationToken = default
     )
     {
-        IPaginate<Claim> operationClaimList = await _operationClaimRepository.GetListAsync(
+        IPaginate<SecurityClaim> operationClaimList = await _operationClaimRepository.GetListAsync(
             predicate,
             orderBy,
             include,
@@ -63,27 +63,27 @@ public class OperationClaimManager : IOperationClaimService
         return operationClaimList;
     }
 
-    public async Task<Claim> AddAsync(Claim operationClaim)
+    public async Task<SecurityClaim> AddAsync(SecurityClaim operationClaim)
     {
-        await _operationClaimBusinessRules.OperationClaimNameShouldNotExistWhenCreating(operationClaim.Name);
+        await _operationClaimBusinessRules.SecurityClaimNameShouldNotExistWhenCreating(operationClaim.Name);
 
-        Claim addedOperationClaim = await _operationClaimRepository.AddAsync(operationClaim);
+        SecurityClaim addedOperationClaim = await _operationClaimRepository.AddAsync(operationClaim);
 
         return addedOperationClaim;
     }
 
-    public async Task<Claim> UpdateAsync(Claim operationClaim)
+    public async Task<SecurityClaim> UpdateAsync(SecurityClaim operationClaim)
     {
-        await _operationClaimBusinessRules.ClaimNameShouldNotExistWhenUpdating(operationClaim.Id, operationClaim.Name);
+        await _operationClaimBusinessRules.SecurityClaimNameShouldNotExistWhenUpdating(operationClaim.Id, operationClaim.Name);
 
-        Claim updatedOperationClaim = await _operationClaimRepository.UpdateAsync(operationClaim);
+        SecurityClaim updatedOperationClaim = await _operationClaimRepository.UpdateAsync(operationClaim);
 
         return updatedOperationClaim;
     }
 
-    public async Task<Claim> DeleteAsync(Claim operationClaim, bool permanent = false)
+    public async Task<SecurityClaim> DeleteAsync(SecurityClaim operationClaim, bool permanent = false)
     {
-        Claim deletedOperationClaim = await _operationClaimRepository.DeleteAsync(operationClaim);
+        SecurityClaim deletedOperationClaim = await _operationClaimRepository.DeleteAsync(operationClaim);
 
         return deletedOperationClaim;
     }

@@ -21,10 +21,10 @@ public class GetClaimsByGroupIdGroupQuery : IRequest<GetClaimsByGroupIdGroupResp
         private readonly IMapper _mapper;
         private readonly IGroupRepository _groupRepository;
         private readonly IGroupClaimRepository _groupClaimRepository;
-        private readonly IClaimRepository _claimRepository;
+        private readonly ISecurityClaimRepository _claimRepository;
         private readonly GroupBusinessRules _groupBusinessRules;
 
-        public GetClaimsByGroupIdGroupQueryHandler(IMapper mapper, IGroupRepository groupRepository, GroupBusinessRules groupBusinessRules, IGroupClaimRepository groupClaimRepository, IClaimRepository claimRepository)
+        public GetClaimsByGroupIdGroupQueryHandler(IMapper mapper, IGroupRepository groupRepository, GroupBusinessRules groupBusinessRules, IGroupClaimRepository groupClaimRepository, ISecurityClaimRepository claimRepository)
         {
             _mapper = mapper;
             _groupRepository = groupRepository;

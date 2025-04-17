@@ -35,7 +35,7 @@ public class UserClaimConfiguration : IEntityTypeConfiguration<UserClaim>
             {
                 Id = Guid.NewGuid(),
                 UserId = UserConfiguration.AdminId,
-                ClaimId = ClaimConfiguration.AdminId
+                ClaimId = SecurityClaimConfiguration.AdminId
             };
         }
     }

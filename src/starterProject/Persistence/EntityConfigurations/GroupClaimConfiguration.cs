@@ -35,7 +35,7 @@ public class GroupClaimConfiguration : IEntityTypeConfiguration<GroupClaim>
             {
                 Id = GroupClaimId,
                 GroupId = GroupConfiguration.GroupId,
-                ClaimId = ClaimConfiguration.AdminId
+                ClaimId = SecurityClaimConfiguration.AdminId
             };
         }
     }

@@ -17,7 +17,7 @@ public static class PersistenceServiceRegistration
         services.AddDbMigrationApplier(buildServices => buildServices.GetRequiredService<BaseDbContext>());
 
         services.AddScoped<IEmailAuthenticatorRepository, EmailAuthenticatorRepository>();
-        services.AddScoped<IClaimRepository, OperationClaimRepository>();
+        services.AddScoped<ISecurityClaimRepository, SecurityClaimRepository>();
         services.AddScoped<IOtpAuthenticatorRepository, OtpAuthenticatorRepository>();
         services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
