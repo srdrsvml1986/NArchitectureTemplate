@@ -13,7 +13,7 @@ public class BaseDbContext : DbContext
     public DbSet<OtpAuthenticator> OtpAuthenticators { get; set; }
     public DbSet<RefreshToken> RefreshTokens { get; set; }
     public DbSet<User> Users { get; set; }
-    public DbSet<UserClaim> UserOperationClaims { get; set; }
+    public DbSet<UserSecurityClaim> UserSecurityClaims { get; set; }
     public DbSet<Group> Groups { get; set; }
     public DbSet<GroupClaim> GroupClaims { get; set; }
     public DbSet<UserGroup> UserGroups { get; set; }

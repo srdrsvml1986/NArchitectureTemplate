@@ -1,4 +1,4 @@
-using Application.Features.UserClaims.Commands.Update;
+using Application.Features.UserSecurityClaims.Commands.Update;
 using Application.Features.Users.Constants;
 using Application.Features.Users.Rules;
 using Application.Services.Repositories;
@@ -20,14 +20,14 @@ public class UpdateUserClaimsCommand : IRequest<UpdateUserClaimsResponse>, ISecu
     public class UpdateUserClaimsCommandHandler : IRequestHandler<UpdateUserClaimsCommand, UpdateUserClaimsResponse>
     {
         private readonly IUserRepository _userRepository;
-        private readonly IUserClaimRepository _userClaimRepository;
+        private readonly IUserSecurityClaimRepository _userClaimRepository;
         private readonly ISecurityClaimRepository _claimRepository;
         private readonly IMapper _mapper;
         private readonly UserBusinessRules _userBusinessRules;
 
         public UpdateUserClaimsCommandHandler(
             IUserRepository userRepository,
-            IUserClaimRepository userClaimRepository,
+            IUserSecurityClaimRepository userClaimRepository,
             ISecurityClaimRepository claimRepository,
             IMapper mapper,
             UserBusinessRules userBusinessRules)
@@ -53,7 +53,7 @@ public class UpdateUserClaimsCommand : IRequest<UpdateUserClaimsResponse>, ISecu
             // Yeni eklenecek claim'ler
             var claimsToAdd = request.ClaimIds
                 .Except(existingClaimIds)
-                .Select(claimId => new UserClaim { UserId = request.UserId, ClaimId = claimId })
+                .Select(claimId => new UserSecurityClaim { UserId = request.UserId, ClaimId = claimId })
                 .ToList();
 
             // Silinecek claim'ler

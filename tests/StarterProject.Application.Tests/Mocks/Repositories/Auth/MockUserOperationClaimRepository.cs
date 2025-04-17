@@ -4,19 +4,19 @@ using StarterProject.Application.Tests.Mocks.FakeDatas;
 
 namespace StarterProject.Application.Tests.Mocks.Repositories.Auth;
 
-public class MockUserOperationClaimRepository
+public class MockUserSecurityClaimRepository
 {
     private readonly OperationClaimFakeData _operationClaimFakeData;
 
-    public MockUserOperationClaimRepository(OperationClaimFakeData operationClaimFakeData)
+    public MockUserSecurityClaimRepository(OperationClaimFakeData operationClaimFakeData)
     {
         _operationClaimFakeData = operationClaimFakeData;
     }
 
-    public IUserClaimRepository GetMockUserOperationClaimRepository()
+    public IUserSecurityClaimRepository GetMockUserSecurityClaimRepository()
     {
         List<Domain.Entities.SecurityClaim> operationClaims = _operationClaimFakeData.Data;
-        var mockRepo = new Mock<IUserClaimRepository>();
+        var mockRepo = new Mock<IUserSecurityClaimRepository>();
 
         mockRepo
             .Setup(s => s.GetOperationClaimsByUserIdAsync(It.IsAny<Guid>()))

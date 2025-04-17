@@ -21,7 +21,7 @@ public static class PersistenceServiceRegistration
         services.AddScoped<IOtpAuthenticatorRepository, OtpAuthenticatorRepository>();
         services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
-        services.AddScoped<IUserClaimRepository, UserOperationClaimRepository>();
+        services.AddScoped<IUserSecurityClaimRepository, UserSecurityClaimRepository>();
 
         services.AddScoped<IGroupRepository, GroupRepository>();
         services.AddScoped<IGroupClaimRepository, GroupClaimRepository>();
