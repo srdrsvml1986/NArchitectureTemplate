@@ -12,7 +12,7 @@ namespace Application.Features.UserSecurityClaims.Commands.Create;
 public class CreateUserSecurityClaimCommand : IRequest<CreatedUserSecurityClaimResponse>, ISecuredRequest
 {
     public Guid UserId { get; set; }
-    public int ClaimId { get; set; }
+    public int SecurityClaimId { get; set; }
 
     public string[] Roles => new[] { Admin, Write, Constants.UserSecurityClaims.Create };
 
@@ -41,7 +41,7 @@ public class CreateUserSecurityClaimCommand : IRequest<CreatedUserSecurityClaimR
         {
             await _userClaimBusinessRules.UserShouldNotHasClaimAlreadyWhenInsert(
                 request.UserId,
-                request.ClaimId
+                request.SecurityClaimId
             );
             UserSecurityClaim mappedUserClaim = _mapper.Map<UserSecurityClaim>(request);
 

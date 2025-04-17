@@ -6,5 +6,5 @@ public class CreatedUserSecurityClaimResponse : IResponse
 {
     public Guid Id { get; set; }
     public Guid UserId { get; set; }
-    public int ClaimId { get; set; }
+    public int SecurityClaimId { get; set; }
 }

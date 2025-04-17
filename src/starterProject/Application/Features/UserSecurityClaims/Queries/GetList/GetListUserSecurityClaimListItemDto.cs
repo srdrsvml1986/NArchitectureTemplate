@@ -6,5 +6,5 @@ public class GetListUserSecurityClaimListItemDto : IDto
 {
     public Guid Id { get; set; }
     public Guid UserId { get; set; }
-    public int OperationClaimId { get; set; }
+    public int SecurityClaimId { get; set; }
 }

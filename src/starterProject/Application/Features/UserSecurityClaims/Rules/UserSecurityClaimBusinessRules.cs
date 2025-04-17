@@ -49,7 +49,7 @@ public class UserSecurityClaimBusinessRules : BaseBusinessRules
     public async Task UserShouldNotHasClaimAlreadyWhenInsert(Guid userId, int claimId)
     {
         bool doesExist = await _userClaimRepository.AnyAsync(u =>
-            u.UserId == userId && u.ClaimId == claimId
+            u.UserId == userId && u.SecurityClaimId == claimId
         );
         if (doesExist)
             await throwBusinessException(UserSecurityClaimsMessages.UserSecurityClaimAlreadyExists);
@@ -58,7 +58,7 @@ public class UserSecurityClaimBusinessRules : BaseBusinessRules
     public async Task UserShouldNotHasClaimAlreadyWhenUpdated(Guid id, Guid userId, int claimId)
     {
         bool doesExist = await _userClaimRepository.AnyAsync(predicate: uoc =>
-            uoc.Id == id && uoc.UserId == userId && uoc.ClaimId == claimId
+            uoc.Id == id && uoc.UserId == userId && uoc.SecurityClaimId == claimId
         );
         if (doesExist)
             await throwBusinessException(UserSecurityClaimsMessages.UserSecurityClaimAlreadyExists);

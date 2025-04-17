@@ -18,7 +18,7 @@ public class UserSecurityClaimRepository
         List<SecurityClaim> operationClaims = await Query()
             .AsNoTracking()
             .Where(p => p.UserId.Equals(userId))
-            .Select(p => new SecurityClaim { Id = p.ClaimId, Name = p.Claim.Name })
+            .Select(p => new SecurityClaim { Id = p.SecurityClaimId, Name = p.Claim.Name })
             .ToListAsync();
         return operationClaims;
     }

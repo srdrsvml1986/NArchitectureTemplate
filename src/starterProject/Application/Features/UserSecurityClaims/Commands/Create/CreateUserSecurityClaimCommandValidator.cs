@@ -7,6 +7,6 @@ public class CreateUserSecurityClaimCommandValidator : AbstractValidator<CreateU
     public CreateUserSecurityClaimCommandValidator()
     {
         RuleFor(c => c.UserId).NotNull();
-        RuleFor(c => c.ClaimId).GreaterThan(0);
+        RuleFor(c => c.SecurityClaimId).GreaterThan(0);
     }
 }

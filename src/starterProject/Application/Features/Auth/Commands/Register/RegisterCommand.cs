@@ -72,7 +72,7 @@ public class RegisterCommand : IRequest<RegisteredResponse>
                 {
                     Id = new Guid(),
                     UserId = createdUser.Id,
-                    ClaimId = claim.Id,
+                    SecurityClaimId = claim.Id,
                     CreatedDate = DateTime.UtcNow,
                     User = createdUser
                 });

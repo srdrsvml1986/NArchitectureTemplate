@@ -12,7 +12,7 @@ public class UserSecurityClaimConfiguration : IEntityTypeConfiguration<UserSecur
 
         builder.Property(uoc => uoc.Id).HasColumnName("Id").IsRequired();
         builder.Property(uoc => uoc.UserId).HasColumnName("UserId").IsRequired();
-        builder.Property(uoc => uoc.ClaimId).HasColumnName("ClaimId").IsRequired();
+        builder.Property(uoc => uoc.SecurityClaimId).HasColumnName("SecurityClaimId").IsRequired();
         builder.Property(uoc => uoc.CreatedDate).HasColumnName("CreatedDate").IsRequired();
         builder.Property(uoc => uoc.UpdatedDate).HasColumnName("UpdatedDate");
         builder.Property(uoc => uoc.DeletedDate).HasColumnName("DeletedDate");
@@ -35,7 +35,7 @@ public class UserSecurityClaimConfiguration : IEntityTypeConfiguration<UserSecur
             {
                 Id = Guid.NewGuid(),
                 UserId = UserConfiguration.AdminId,
-                ClaimId = SecurityClaimConfiguration.AdminId
+                SecurityClaimId = SecurityClaimConfiguration.AdminId
             };
         }
     }

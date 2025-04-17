@@ -13,18 +13,18 @@ public class UpdateUserSecurityClaimCommand : IRequest<UpdatedUserSecurityClaimR
 {
     public Guid Id { get; set; }
     public Guid UserId { get; set; }
-    public int OperationClaimId { get; set; }
+    public int SecurityClaimId { get; set; }
 
     public string[] Roles => new[] { Admin, Write, Constants.UserSecurityClaims.Update };
 
-    public class UpdateUserClaimCommandHandler
+    public class UpdateUserSecurityClaimCommandHandler
         : IRequestHandler<UpdateUserSecurityClaimCommand, UpdatedUserSecurityClaimResponse>
     {
         private readonly IUserSecurityClaimRepository _userClaimRepository;
         private readonly IMapper _mapper;
         private readonly UserSecurityClaimBusinessRules _userClaimBusinessRules;
 
-        public UpdateUserClaimCommandHandler(
+        public UpdateUserSecurityClaimCommandHandler(
             IUserSecurityClaimRepository userClaimRepository,
             IMapper mapper,
             UserSecurityClaimBusinessRules userClaimBusinessRules
@@ -49,7 +49,7 @@ public class UpdateUserSecurityClaimCommand : IRequest<UpdatedUserSecurityClaimR
             await _userClaimBusinessRules.UserShouldNotHasClaimAlreadyWhenUpdated(
                 request.Id,
                 request.UserId,
-                request.OperationClaimId
+                request.SecurityClaimId
             );
             UserSecurityClaim mappedUseClaim = _mapper.Map(request, destination: userClaim!);
 

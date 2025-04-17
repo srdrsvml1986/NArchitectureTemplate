@@ -47,18 +47,18 @@ public class AddUserClaimsCommand : IRequest<AddUserClaimsResponse>, ISecuredReq
                 cancellationToken: cancellationToken
             );
 
-            var existingClaimIds = existingUserClaims.Items.Select(uc => uc.ClaimId).ToList();
+            var existingClaimIds = existingUserClaims.Items.Select(uc => uc.SecurityClaimId).ToList();
 
             // Sadece yeni olan claim'leri ekle
             var newClaimsToAdd = request.ClaimIds
                 .Except(existingClaimIds)
-                .Select(claimId => new UserSecurityClaim { UserId = request.UserId, ClaimId = claimId })
+                .Select(claimId => new UserSecurityClaim { UserId = request.UserId, SecurityClaimId = claimId })
                 .ToList();
 
             if (newClaimsToAdd.Any())
                 await _userClaimRepository.AddRangeAsync(newClaimsToAdd, cancellationToken);
 
-            var addedClaims = _claimRepository.Query().Where(c => newClaimsToAdd.Select(nc => nc.ClaimId).Contains(c.Id));
+            var addedClaims = _claimRepository.Query().Where(c => newClaimsToAdd.Select(nc => nc.SecurityClaimId).Contains(c.Id));
 
             return new AddUserClaimsResponse { Claims = addedClaims };
         }

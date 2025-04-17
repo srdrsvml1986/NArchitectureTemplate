@@ -48,17 +48,17 @@ public class UpdateUserClaimsCommand : IRequest<UpdateUserClaimsResponse>, ISecu
                 cancellationToken: cancellationToken
             );
 
-            var existingClaimIds = existingUserClaims.Items.Select(uc => uc.ClaimId).ToList();
+            var existingClaimIds = existingUserClaims.Items.Select(uc => uc.SecurityClaimId).ToList();
 
             // Yeni eklenecek claim'ler
             var claimsToAdd = request.ClaimIds
                 .Except(existingClaimIds)
-                .Select(claimId => new UserSecurityClaim { UserId = request.UserId, ClaimId = claimId })
+                .Select(claimId => new UserSecurityClaim { UserId = request.UserId, SecurityClaimId = claimId })
                 .ToList();
 
             // Silinecek claim'ler
             var claimsToRemove = existingUserClaims.Items
-                .Where(uc => !request.ClaimIds.Contains(uc.ClaimId))
+                .Where(uc => !request.ClaimIds.Contains(uc.SecurityClaimId))
                 .ToList();
 
             if (claimsToAdd.Any())

@@ -46,7 +46,7 @@ public class GetClaimsByUserIdQuery : IRequest<GetClaimsByUserIdResponse>, ISecu
                 cancellationToken: cancellationToken
             );
 
-            var claimIds = userClaims.Items.Select(uc => uc.ClaimId).ToList();
+            var claimIds = userClaims.Items.Select(uc => uc.SecurityClaimId).ToList();
 
             var claims = _claimRepository.Query()
                 .Where(c => claimIds.Contains(c.Id));
