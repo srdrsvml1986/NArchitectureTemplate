@@ -9,6 +9,7 @@ using MimeKit;
 using NArchitecture.Core.Application.Pipelines.Authorization;
 using NArchitecture.Core.Mailing;
 using NArchitecture.Core.Security.Enums;
+using Microsoft.Extensions.Configuration;
 
 namespace Application.Features.Auth.Commands.EnableEmailAuthenticator;
 
@@ -37,13 +38,15 @@ public class EnableEmailAuthenticatorCommand : IRequest, ISecuredRequest
         private readonly IEmailAuthenticatorRepository _emailAuthenticatorRepository;
         private readonly IMailService _mailService;
         private readonly IUserService _userService;
+        private readonly string _appName;
 
         public EnableEmailAuthenticatorCommandHandler(
             IUserService userService,
             IEmailAuthenticatorRepository emailAuthenticatorRepository,
             IMailService mailService,
             AuthBusinessRules authBusinessRules,
-            IAuthService authenticatorService
+            IAuthService authenticatorService,
+            IConfiguration configuration
         )
         {
             _userService = userService;
@@ -51,6 +54,8 @@ public class EnableEmailAuthenticatorCommand : IRequest, ISecuredRequest
             _mailService = mailService;
             _authBusinessRules = authBusinessRules;
             _authenticatorService = authenticatorService;
+            _appName = configuration.GetValue<string>("AppName")
+                ?? throw new NullReferenceException("\"AppName\" bölümü konfigürasyonda bulunamadı.");
         }
 
         public async Task Handle(EnableEmailAuthenticatorCommand request, CancellationToken cancellationToken)
@@ -74,9 +79,9 @@ public class EnableEmailAuthenticatorCommand : IRequest, ISecuredRequest
                 new Mail
                 {
                     ToList = toEmailList,
-                    Subject = "Verify Your Email - NArchitecture",
+                    Subject = $"E-postanızı Doğrulayın - {_appName}",
                     TextBody =
-                        $"Click on the link to verify your email: {request.VerifyEmailUrlPrefix}?ActivationKey={HttpUtility.UrlEncode(addedEmailAuthenticator.ActivationKey)}"
+                        $"E-postanızı doğrulamak için bağlantıya tıklayın: {request.VerifyEmailUrlPrefix}?ActivationKey={HttpUtility.UrlEncode(addedEmailAuthenticator.ActivationKey)}"
                 }
             );
         }
