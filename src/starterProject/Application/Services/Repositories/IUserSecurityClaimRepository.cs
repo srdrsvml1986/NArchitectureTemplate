@@ -5,5 +5,5 @@ namespace Application.Services.Repositories;
 
 public interface IUserSecurityClaimRepository : IAsyncRepository<UserSecurityClaim, Guid>, IRepository<UserSecurityClaim, Guid>
 {
-    Task<IList<SecurityClaim>> GetOperationClaimsByUserIdAsync(Guid userId);
+    Task<IList<SecurityClaim>> GetSecurityClaimsByUserIdAsync(Guid userId);
 }

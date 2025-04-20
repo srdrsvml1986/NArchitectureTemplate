@@ -30,14 +30,14 @@ public class AuthService : IAuthService
     private readonly IOtpAuthenticatorRepository _otpAuthenticatorRepository;
     private readonly IUserRepository _userRepository;
     private readonly IUserService _userService;
+    private readonly string _appName;
 
     public AuthService(
         IUserSecurityClaimRepository userOperationClaimRepository,
         IRefreshTokenRepository refreshTokenRepository,
         ITokenHelper<Guid, int, Guid> tokenHelper,
         IConfiguration configuration,
-        IMapper mapper
-,
+        IMapper mapper,
         IMailService mailService,
         IOtpAuthenticatorRepository otpAuthenticatorRepository,
         IOtpAuthenticatorHelper otpAuthenticatorHelper,
@@ -53,7 +53,9 @@ public class AuthService : IAuthService
         const string tokenOptionsConfigurationSection = "TokenOptions";
         _tokenOptions =
             configuration.GetSection(tokenOptionsConfigurationSection).Get<TokenOptions>()
-            ?? throw new NullReferenceException($"\"{tokenOptionsConfigurationSection}\" section cannot found in configuration");
+            ?? throw new NullReferenceException($"\"{tokenOptionsConfigurationSection}\" bölümü konfigürasyonda bulunamadı.");
+        _appName = configuration.GetValue<string>("AppName")
+            ?? throw new NullReferenceException("\"AppName\" bölümü konfigürasyonda bulunamadı.");
         _mapper = mapper;
         _mailService = mailService;
         _otpAuthenticatorRepository = otpAuthenticatorRepository;
@@ -66,7 +68,7 @@ public class AuthService : IAuthService
 
     public async Task<AccessToken> CreateAccessToken(User user)
     {
-        IList<SecurityClaim> operationClaims = await _userOperationClaimRepository.GetOperationClaimsByUserIdAsync(user.Id);
+        IList<SecurityClaim> operationClaims = await _userOperationClaimRepository.GetSecurityClaimsByUserIdAsync(user.Id);
         AccessToken accessToken = _tokenHelper.CreateToken(
             user,
             operationClaims.Select(op => (NArchitecture.Core.Security.Entities.SecurityClaim<int>)op).ToImmutableList()
@@ -116,7 +118,7 @@ public class AuthService : IAuthService
             ipAddress
         );
         RefreshToken newRefreshToken = _mapper.Map<RefreshToken>(newCoreRefreshToken);
-        await RevokeRefreshToken(refreshToken, ipAddress, reason: "Replaced by new token", newRefreshToken.Token);
+        await RevokeRefreshToken(refreshToken, ipAddress, reason: "Yeni token ile değiştirildi", newRefreshToken.Token);
         return newRefreshToken;
     }
 
@@ -141,8 +143,6 @@ public class AuthService : IAuthService
         RefreshToken refreshToken = _mapper.Map<RefreshToken>(coreRefreshToken);
         return Task.FromResult(refreshToken);
     }
-
-
 
     public async Task<EmailAuthenticator> CreateEmailAuthenticator(User user)
     {
@@ -194,9 +194,9 @@ public class AuthService : IAuthService
             e.UserId == user.Id
         );
         if (emailAuthenticator is null)
-            throw new NotFoundException("Email Authenticator not found.");
+            throw new NotFoundException("E-posta Doğrulayıcı bulunamadı.");
         if (!emailAuthenticator.IsVerified)
-            throw new BusinessException("Email Authenticator must be is verified.");
+            throw new BusinessException("E-posta Doğrulayıcı doğrulanmış olmalıdır.");
 
         string authenticatorCode = await _emailAuthenticatorHelper.CreateEmailActivationCode();
         emailAuthenticator.ActivationKey = authenticatorCode;
@@ -208,8 +208,8 @@ public class AuthService : IAuthService
             new Mail
             {
                 ToList = toEmailList,
-                Subject = "Authenticator Code - NArchitecture",
-                TextBody = $"Enter your authenticator code: {authenticatorCode}"
+                Subject = $"Doğrulama Kodu - {_appName}",
+                TextBody = $"Doğrulama kodunuz: {authenticatorCode}"
             }
         );
     }
@@ -220,9 +220,9 @@ public class AuthService : IAuthService
             e.UserId == user.Id
         );
         if (emailAuthenticator is null)
-            throw new NotFoundException("Email Authenticator not found.");
+            throw new NotFoundException("E-posta Doğrulayıcı bulunamadı.");
         if (emailAuthenticator.ActivationKey != authenticatorCode)
-            throw new BusinessException("Authenticator code is invalid.");
+            throw new BusinessException("Doğrulama kodu geçersiz.");
         emailAuthenticator.ActivationKey = null;
         await _emailAuthenticatorRepository.UpdateAsync(emailAuthenticator);
     }
@@ -231,16 +231,15 @@ public class AuthService : IAuthService
     {
         OtpAuthenticator? otpAuthenticator = await _otpAuthenticatorRepository.GetAsync(predicate: e => e.UserId == user.Id);
         if (otpAuthenticator is null)
-            throw new NotFoundException("Otp Authenticator not found.");
+            throw new NotFoundException("OTP Doğrulayıcı bulunamadı.");
         bool result = await _otpAuthenticatorHelper.VerifyCode(otpAuthenticator.SecretKey, authenticatorCode);
         if (!result)
-            throw new BusinessException("Authenticator code is invalid.");
+            throw new BusinessException("Doğrulama kodu geçersiz.");
     }
-
 
     // OAuth ile gelen kullanıcı için token oluşturma
     public async Task<TokenDto> CreateTokenForExternalUser(ExternalAuthUser externalUser)
-    {       
+    {
         // Kullanıcıyı bul veya oluştur
         var user = await _userService.CreateOrUpdateExternalUserAsync(externalUser);
 

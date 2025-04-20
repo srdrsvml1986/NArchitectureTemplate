@@ -19,7 +19,7 @@ public class MockUserSecurityClaimRepository
         var mockRepo = new Mock<IUserSecurityClaimRepository>();
 
         mockRepo
-            .Setup(s => s.GetOperationClaimsByUserIdAsync(It.IsAny<Guid>()))
+            .Setup(s => s.GetSecurityClaimsByUserIdAsync(It.IsAny<Guid>()))
             .ReturnsAsync(
                 (Guid userId) =>
                 {

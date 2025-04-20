@@ -13,7 +13,7 @@ public class UserSecurityClaimRepository
     public UserSecurityClaimRepository(BaseDbContext context)
         : base(context) { }
 
-    public async Task<IList<SecurityClaim>> GetOperationClaimsByUserIdAsync(Guid userId)
+    public async Task<IList<SecurityClaim>> GetSecurityClaimsByUserIdAsync(Guid userId)
     {
         List<SecurityClaim> operationClaims = await Query()
             .AsNoTracking()
