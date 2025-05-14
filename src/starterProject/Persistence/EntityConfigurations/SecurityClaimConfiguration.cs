@@ -38,14 +38,14 @@ public class SecurityClaimConfiguration : IEntityTypeConfiguration<SecurityClaim
         {
             yield return new() { Id = AdminId, Name = GeneralClaims.Admin };
 
-            IEnumerable<SecurityClaim> featureClaims = getFeatureOperationClaims(AdminId);
+            IEnumerable<SecurityClaim> featureClaims = getSecurityOperationClaims(AdminId);
             foreach (SecurityClaim claim in featureClaims)
                 yield return claim;
         }
     }
 
 #pragma warning disable S1854 // Unused assignments should be removed
-    private IEnumerable<SecurityClaim> getFeatureOperationClaims(int initialId)
+    private IEnumerable<SecurityClaim> getSecurityOperationClaims(int initialId)
     {
         int lastId = initialId;
         List<SecurityClaim> featureClaims = new();
