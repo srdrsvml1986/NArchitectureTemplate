@@ -19,7 +19,7 @@ public class GetListGroupClaimQuery : IRequest<GetListResponse<GetListGroupClaim
     public string[] Roles => [Admin, Read];
 
     public bool BypassCache { get; }
-    public string? CacheKey => $"GetListGroupClaims({PageRequest.PageIndex},{PageRequest.PageSize})";
+    public string? CacheKey => $"GetListGroupClaims({PageRequest.Index},{PageRequest.Size})";
     public string? CacheGroupKey => "GetGroupClaims";
     public TimeSpan? SlidingExpiration { get; }
 
@@ -37,8 +37,8 @@ public class GetListGroupClaimQuery : IRequest<GetListResponse<GetListGroupClaim
         public async Task<GetListResponse<GetListGroupClaimListItemDto>> Handle(GetListGroupClaimQuery request, CancellationToken cancellationToken)
         {
             IPaginate<GroupClaim> groupClaims = await _groupClaimRepository.GetListAsync(
-                index: request.PageRequest.PageIndex,
-                size: request.PageRequest.PageSize, 
+                index: request.PageRequest.Index,
+                size: request.PageRequest.Size, 
                 cancellationToken: cancellationToken
             );
 

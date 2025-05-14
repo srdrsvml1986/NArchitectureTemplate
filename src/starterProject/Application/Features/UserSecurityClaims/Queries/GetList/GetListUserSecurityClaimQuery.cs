@@ -18,7 +18,7 @@ public class GetListUserSecurityClaimQuery : IRequest<GetListResponse<GetListUse
 
     public GetListUserSecurityClaimQuery()
     {
-        PageRequest = new PageRequest { PageIndex = 0, PageSize = 10 };
+        PageRequest = new PageRequest { Index = 0, Size = 10 };
     }
 
     public GetListUserSecurityClaimQuery(PageRequest pageRequest)
@@ -44,8 +44,8 @@ public class GetListUserSecurityClaimQuery : IRequest<GetListResponse<GetListUse
         )
         {
             IPaginate<UserSecurityClaim> userClaims = await _userClaimRepository.GetListAsync(
-                index: request.PageRequest.PageIndex,
-                size: request.PageRequest.PageSize,
+                index: request.PageRequest.Index,
+                size: request.PageRequest.Size,
                 enableTracking: false
             );
 

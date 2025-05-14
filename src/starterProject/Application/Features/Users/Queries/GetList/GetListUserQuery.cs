@@ -18,7 +18,7 @@ public class GetListUserQuery : IRequest<GetListResponse<GetListUserListItemDto>
 
     public GetListUserQuery()
     {
-        PageRequest = new PageRequest { PageIndex = 0, PageSize = 10 };
+        PageRequest = new PageRequest { Index = 0, Size = 10 };
     }
 
     public GetListUserQuery(PageRequest pageRequest)
@@ -43,8 +43,8 @@ public class GetListUserQuery : IRequest<GetListResponse<GetListUserListItemDto>
         )
         {
             IPaginate<User> users = await _userRepository.GetListAsync(
-                index: request.PageRequest.PageIndex,
-                size: request.PageRequest.PageSize,
+                index: request.PageRequest.Index,
+                size: request.PageRequest.Size,
                 enableTracking: false,
                 cancellationToken: cancellationToken
             );
