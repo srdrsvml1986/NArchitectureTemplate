@@ -19,7 +19,7 @@ public class GetListUserGroupQuery : IRequest<GetListResponse<GetListUserGroupLi
     public string[] Roles => [Admin, Read];
 
     public bool BypassCache { get; }
-    public string? CacheKey => $"GetListUserGroups({PageRequest.Index},{PageRequest.Size})";
+    public string? CacheKey => $"GetListUserGroups({PageRequest.PageIndex},{PageRequest.PageSize})";
     public string? CacheGroupKey => "GetUserGroups";
     public TimeSpan? SlidingExpiration { get; }
 
@@ -37,8 +37,8 @@ public class GetListUserGroupQuery : IRequest<GetListResponse<GetListUserGroupLi
         public async Task<GetListResponse<GetListUserGroupListItemDto>> Handle(GetListUserGroupQuery request, CancellationToken cancellationToken)
         {
             IPaginate<UserGroup> userGroups = await _userGroupRepository.GetListAsync(
-                index: request.PageRequest.Index,
-                size: request.PageRequest.Size, 
+                index: request.PageRequest.PageIndex,
+                size: request.PageRequest.PageSize, 
                 cancellationToken: cancellationToken
             );
 

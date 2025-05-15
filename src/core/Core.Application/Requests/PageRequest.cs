@@ -2,6 +2,6 @@
 
 public class PageRequest
 {
-    public int Index { get; set; }
-    public int Size { get; set; }
+    public int PageIndex { get; set; }
+    public int PageSize { get; set; }
 }
