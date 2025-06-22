@@ -1,48 +1,48 @@
 ﻿using System.Linq.Expressions;
-using Application.Features.UserSecurityClaims.Rules;
+using Application.Features.UserClaims.Rules;
 using Application.Services.Repositories;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore.Query;
 using NArchitecture.Core.Persistence.Paging;
 
-namespace Application.Services.UserSecurityClaims;
+namespace Application.Services.UserClaims;
 
-public class UserUserSecurityClaimManager : IUserSecurityClaimService
+public class UserUserClaimManager : IUserClaimService
 {
-    private readonly IUserSecurityClaimRepository _userUserSecurityClaimRepository;
-    private readonly UserSecurityClaimBusinessRules _userUserSecurityClaimBusinessRules;
+    private readonly IUserClaimRepository _userUserClaimRepository;
+    private readonly UserClaimBusinessRules _userUserClaimBusinessRules;
 
-    public UserUserSecurityClaimManager(
-        IUserSecurityClaimRepository userUserSecurityClaimRepository,
-        UserSecurityClaimBusinessRules userUserSecurityClaimBusinessRules
+    public UserUserClaimManager(
+        IUserClaimRepository userUserClaimRepository,
+        UserClaimBusinessRules userUserClaimBusinessRules
     )
     {
-        _userUserSecurityClaimRepository = userUserSecurityClaimRepository;
-        _userUserSecurityClaimBusinessRules = userUserSecurityClaimBusinessRules;
+        _userUserClaimRepository = userUserClaimRepository;
+        _userUserClaimBusinessRules = userUserClaimBusinessRules;
     }
 
-    public async Task<UserSecurityClaim?> GetAsync(
-        Expression<Func<UserSecurityClaim, bool>> predicate,
-        Func<IQueryable<UserSecurityClaim>, IIncludableQueryable<UserSecurityClaim, object>>? include = null,
+    public async Task<UserClaim?> GetAsync(
+        Expression<Func<UserClaim, bool>> predicate,
+        Func<IQueryable<UserClaim>, IIncludableQueryable<UserClaim, object>>? include = null,
         bool withDeleted = false,
         bool enableTracking = true,
         CancellationToken cancellationToken = default
     )
     {
-        UserSecurityClaim? userUserSecurityClaim = await _userUserSecurityClaimRepository.GetAsync(
+        UserClaim? userUserClaim = await _userUserClaimRepository.GetAsync(
             predicate,
             include,
             withDeleted,
             enableTracking,
             cancellationToken
         );
-        return userUserSecurityClaim;
+        return userUserClaim;
     }
 
-    public async Task<IPaginate<UserSecurityClaim>?> GetListAsync(
-        Expression<Func<UserSecurityClaim, bool>>? predicate = null,
-        Func<IQueryable<UserSecurityClaim>, IOrderedQueryable<UserSecurityClaim>>? orderBy = null,
-        Func<IQueryable<UserSecurityClaim>, IIncludableQueryable<UserSecurityClaim, object>>? include = null,
+    public async Task<IPaginate<UserClaim>?> GetListAsync(
+        Expression<Func<UserClaim, bool>>? predicate = null,
+        Func<IQueryable<UserClaim>, IOrderedQueryable<UserClaim>>? orderBy = null,
+        Func<IQueryable<UserClaim>, IIncludableQueryable<UserClaim, object>>? include = null,
         int index = 0,
         int size = 10,
         bool withDeleted = false,
@@ -50,7 +50,7 @@ public class UserUserSecurityClaimManager : IUserSecurityClaimService
         CancellationToken cancellationToken = default
     )
     {
-        IPaginate<UserSecurityClaim> userUserSecurityClaimList = await _userUserSecurityClaimRepository.GetListAsync(
+        IPaginate<UserClaim> userUserClaimList = await _userUserClaimRepository.GetListAsync(
             predicate,
             orderBy,
             include,
@@ -60,42 +60,42 @@ public class UserUserSecurityClaimManager : IUserSecurityClaimService
             enableTracking,
             cancellationToken
         );
-        return userUserSecurityClaimList;
+        return userUserClaimList;
     }
 
-    public async Task<UserSecurityClaim> AddAsync(UserSecurityClaim userUserSecurityClaim)
+    public async Task<UserClaim> AddAsync(UserClaim userUserClaim)
     {
-        await _userUserSecurityClaimBusinessRules.UserShouldNotHasClaimAlreadyWhenInsert(
-            userUserSecurityClaim.UserId,
-            userUserSecurityClaim.SecurityClaimId
+        await _userUserClaimBusinessRules.UserShouldNotHasClaimAlreadyWhenInsert(
+            userUserClaim.UserId,
+            userUserClaim.SecurityClaimId
         );
 
-        UserSecurityClaim addedUserSecurityClaim = await _userUserSecurityClaimRepository.AddAsync(userUserSecurityClaim);
+        UserClaim addedUserClaim = await _userUserClaimRepository.AddAsync(userUserClaim);
 
-        return addedUserSecurityClaim;
+        return addedUserClaim;
     }
 
-    public async Task<UserSecurityClaim> UpdateAsync(UserSecurityClaim userUserSecurityClaim)
+    public async Task<UserClaim> UpdateAsync(UserClaim userUserClaim)
     {
-        await _userUserSecurityClaimBusinessRules.UserShouldNotHasClaimAlreadyWhenUpdated(
-            userUserSecurityClaim.Id,
-            userUserSecurityClaim.UserId,
-            userUserSecurityClaim.SecurityClaimId
+        await _userUserClaimBusinessRules.UserShouldNotHasClaimAlreadyWhenUpdated(
+            userUserClaim.Id,
+            userUserClaim.UserId,
+            userUserClaim.SecurityClaimId
         );
 
-        UserSecurityClaim updatedUserSecurityClaim = await _userUserSecurityClaimRepository.UpdateAsync(
-            userUserSecurityClaim
+        UserClaim updatedUserClaim = await _userUserClaimRepository.UpdateAsync(
+            userUserClaim
         );
 
-        return updatedUserSecurityClaim;
+        return updatedUserClaim;
     }
 
-    public async Task<UserSecurityClaim> DeleteAsync(UserSecurityClaim userUserSecurityClaim, bool permanent = false)
+    public async Task<UserClaim> DeleteAsync(UserClaim userUserClaim, bool permanent = false)
     {
-        UserSecurityClaim deletedUserSecurityClaim = await _userUserSecurityClaimRepository.DeleteAsync(
-            userUserSecurityClaim
+        UserClaim deletedUserClaim = await _userUserClaimRepository.DeleteAsync(
+            userUserClaim
         );
 
-        return deletedUserSecurityClaim;
+        return deletedUserClaim;
     }
 }

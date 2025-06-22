@@ -6,11 +6,11 @@ using Persistence.Contexts;
 
 namespace Persistence.Repositories;
 
-public class UserSecurityClaimRepository
-    : EfRepositoryBase<UserSecurityClaim, Guid, BaseDbContext>,
-        IUserSecurityClaimRepository
+public class UserClaimRepository
+    : EfRepositoryBase<UserClaim, Guid, BaseDbContext>,
+        IUserClaimRepository
 {
-    public UserSecurityClaimRepository(BaseDbContext context)
+    public UserClaimRepository(BaseDbContext context)
         : base(context) { }
 
     public async Task<IList<SecurityClaim>> GetSecurityClaimsByUserIdAsync(Guid userId)

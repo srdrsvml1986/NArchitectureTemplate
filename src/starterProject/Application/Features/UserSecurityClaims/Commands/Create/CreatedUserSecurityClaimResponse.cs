@@ -1,8 +1,8 @@
 using NArchitecture.Core.Application.Responses;
 
-namespace Application.Features.UserSecurityClaims.Commands.Create;
+namespace Application.Features.UserClaims.Commands.Create;
 
-public class CreatedUserSecurityClaimResponse : IResponse
+public class CreatedUserClaimResponse : IResponse
 {
     public Guid Id { get; set; }
     public Guid UserId { get; set; }

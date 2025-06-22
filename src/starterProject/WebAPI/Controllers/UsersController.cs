@@ -7,6 +7,7 @@ using Application.Features.Users.Commands.ResetPassword;
 using Application.Features.Users.Commands.Update;
 using Application.Features.Users.Commands.UpdateFromAuth;
 using Application.Features.Users.Commands.UpdatePhotoURL;
+using Application.Features.Users.Commands.UpdateStatus;
 using Application.Features.Users.Commands.UpdateUserClaims;
 using Application.Features.Users.Commands.UpdateUserGroups;
 using Application.Features.Users.Queries.GetById;
@@ -87,13 +88,34 @@ public class UsersController : BaseController
     /// Kullanıcı bilgilerini almak için kullanılan API metodu.
     /// </summary>
     /// <returns></returns>
-    [HttpGet("GetFromAuth")]
-    public async Task<IActionResult> GetFromAuth()
+
+    [HttpGet("me")]
+    public async Task<IActionResult> GetCurrentUser()
     {
-        GetByIdUserQuery getByIdUserQuery = new() { Id = getUserIdFromRequest() };
-        GetByIdUserResponse result = await Mediator.Send(getByIdUserQuery);
+        var userId = getUserIdFromRequest();
+        var query = new GetByIdUserQuery { Id = userId };
+        var result = await Mediator.Send(query);
         return Ok(result);
     }
+
+
+    /// <summary>
+    /// Kullanıcının durumunu güncellemek için kullanılan API metodu.
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <param name="command"></param>
+    /// <returns></returns>
+    [HttpPut("{userId}/status")]
+    public async Task<IActionResult> UpdateUserStatus(
+        [FromRoute] Guid userId,
+        [FromBody] UpdateUserStatusCommand command)
+    {
+        command.Id = userId;
+        var result = await Mediator.Send(command);
+        return Ok(result);
+    }
+
+
     /// <summary>
     /// Kullanıcının kimlik doğrulama bilgileri üzerinden şifre güncellemesi yapmak için kullanılan API metodu.
     /// </summary>

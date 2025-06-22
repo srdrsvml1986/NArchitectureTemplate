@@ -21,7 +21,7 @@ public class AuthService : IAuthService
     private readonly IRefreshTokenRepository _refreshTokenRepository;
     private readonly ITokenHelper<Guid, int, Guid> _tokenHelper;
     private readonly TokenOptions _tokenOptions;
-    private readonly IUserSecurityClaimRepository _userOperationClaimRepository;
+    private readonly IUserClaimRepository _userOperationClaimRepository;
     private readonly IMapper _mapper;
     private readonly IEmailAuthenticatorHelper _emailAuthenticatorHelper;
     private readonly IEmailAuthenticatorRepository _emailAuthenticatorRepository;
@@ -33,7 +33,7 @@ public class AuthService : IAuthService
     private readonly string _appName;
 
     public AuthService(
-        IUserSecurityClaimRepository userOperationClaimRepository,
+        IUserClaimRepository userOperationClaimRepository,
         IRefreshTokenRepository refreshTokenRepository,
         ITokenHelper<Guid, int, Guid> tokenHelper,
         IConfiguration configuration,

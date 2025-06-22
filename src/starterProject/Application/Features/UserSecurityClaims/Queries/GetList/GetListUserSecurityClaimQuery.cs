@@ -1,4 +1,4 @@
-using Application.Features.UserSecurityClaims.Constants;
+using Application.Features.UserClaims.Constants;
 using Application.Services.Repositories;
 using AutoMapper;
 using Domain.Entities;
@@ -8,49 +8,49 @@ using NArchitecture.Core.Application.Requests;
 using NArchitecture.Core.Application.Responses;
 using NArchitecture.Core.Persistence.Paging;
 
-namespace Application.Features.UserSecurityClaims.Queries.GetList;
+namespace Application.Features.UserClaims.Queries.GetList;
 
-public class GetListUserSecurityClaimQuery : IRequest<GetListResponse<GetListUserSecurityClaimListItemDto>>, ISecuredRequest
+public class GetListUserClaimQuery : IRequest<GetListResponse<GetListUserClaimListItemDto>>, ISecuredRequest
 {
     public PageRequest PageRequest { get; set; }
 
-    public string[] Roles => [Constants.UserSecurityClaims.Read];
+    public string[] Roles => [Constants.UserClaims.Read];
 
-    public GetListUserSecurityClaimQuery()
+    public GetListUserClaimQuery()
     {
         PageRequest = new PageRequest { PageIndex = 0, PageSize = 10 };
     }
 
-    public GetListUserSecurityClaimQuery(PageRequest pageRequest)
+    public GetListUserClaimQuery(PageRequest pageRequest)
     {
         PageRequest = pageRequest;
     }
 
     public class GetListUserClaimQueryHandler
-        : IRequestHandler<GetListUserSecurityClaimQuery, GetListResponse<GetListUserSecurityClaimListItemDto>>
+        : IRequestHandler<GetListUserClaimQuery, GetListResponse<GetListUserClaimListItemDto>>
     {
-        private readonly IUserSecurityClaimRepository _userClaimRepository;
+        private readonly IUserClaimRepository _userClaimRepository;
         private readonly IMapper _mapper;
 
-        public GetListUserClaimQueryHandler(IUserSecurityClaimRepository userClaimRepository, IMapper mapper)
+        public GetListUserClaimQueryHandler(IUserClaimRepository userClaimRepository, IMapper mapper)
         {
             _userClaimRepository = userClaimRepository;
             _mapper = mapper;
         }
 
-        public async Task<GetListResponse<GetListUserSecurityClaimListItemDto>> Handle(
-            GetListUserSecurityClaimQuery request,
+        public async Task<GetListResponse<GetListUserClaimListItemDto>> Handle(
+            GetListUserClaimQuery request,
             CancellationToken cancellationToken
         )
         {
-            IPaginate<UserSecurityClaim> userClaims = await _userClaimRepository.GetListAsync(
+            IPaginate<UserClaim> userClaims = await _userClaimRepository.GetListAsync(
                 index: request.PageRequest.PageIndex,
                 size: request.PageRequest.PageSize,
                 enableTracking: false
             );
 
-            GetListResponse<GetListUserSecurityClaimListItemDto> mappedUserClaimListModel = _mapper.Map<
-                GetListResponse<GetListUserSecurityClaimListItemDto>
+            GetListResponse<GetListUserClaimListItemDto> mappedUserClaimListModel = _mapper.Map<
+                GetListResponse<GetListUserClaimListItemDto>
             >(userClaims);
             return mappedUserClaimListModel;
         }

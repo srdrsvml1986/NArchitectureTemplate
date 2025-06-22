@@ -1,9 +1,9 @@
-namespace Application.Features.UserSecurityClaims.Constants;
+namespace Application.Features.UserClaims.Constants;
 
-public static class UserSecurityClaimsMessages
+public static class UserClaimsMessages
 {
-    public const string SectionName = "UserSecurityClaims";
+    public const string SectionName = "UserClaims";
 
-    public const string UserSecurityClaimNotExists = "UserSecurityClaimNotExists";
-    public const string UserSecurityClaimAlreadyExists = "UserSecurityClaimAlreadyExists";
+    public const string UserClaimNotExists = "UserClaimNotExists";
+    public const string UserClaimAlreadyExists = "UserClaimAlreadyExists";
 }

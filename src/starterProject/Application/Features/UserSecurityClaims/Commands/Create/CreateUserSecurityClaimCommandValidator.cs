@@ -1,10 +1,10 @@
 ﻿using FluentValidation;
 
-namespace Application.Features.UserSecurityClaims.Commands.Create;
+namespace Application.Features.UserClaims.Commands.Create;
 
-public class CreateUserSecurityClaimCommandValidator : AbstractValidator<CreateUserSecurityClaimCommand>
+public class CreateUserClaimCommandValidator : AbstractValidator<CreateUserClaimCommand>
 {
-    public CreateUserSecurityClaimCommandValidator()
+    public CreateUserClaimCommandValidator()
     {
         RuleFor(c => c.UserId).NotNull();
         RuleFor(c => c.SecurityClaimId).GreaterThan(0);

@@ -1,8 +1,8 @@
 using NArchitecture.Core.Application.Dtos;
 
-namespace Application.Features.UserSecurityClaims.Queries.GetList;
+namespace Application.Features.UserClaims.Queries.GetList;
 
-public class GetListUserSecurityClaimListItemDto : IDto
+public class GetListUserClaimListItemDto : IDto
 {
     public Guid Id { get; set; }
     public Guid UserId { get; set; }

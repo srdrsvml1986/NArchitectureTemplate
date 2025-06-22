@@ -1,19 +1,19 @@
-using Application.Features.UserSecurityClaims.Constants;
+using Application.Features.UserClaims.Constants;
 using Application.Services.Repositories;
 using Domain.Entities;
 using NArchitecture.Core.Application.Rules;
 using NArchitecture.Core.CrossCuttingConcerns.Exception.Types;
 using NArchitecture.Core.Localization.Abstraction;
 
-namespace Application.Features.UserSecurityClaims.Rules;
+namespace Application.Features.UserClaims.Rules;
 
-public class UserSecurityClaimBusinessRules : BaseBusinessRules
+public class UserClaimBusinessRules : BaseBusinessRules
 {
-    private readonly IUserSecurityClaimRepository _userClaimRepository;
+    private readonly IUserClaimRepository _userClaimRepository;
     private readonly ILocalizationService _localizationService;
 
-    public UserSecurityClaimBusinessRules(
-        IUserSecurityClaimRepository userClaimRepository,
+    public UserClaimBusinessRules(
+        IUserClaimRepository userClaimRepository,
         ILocalizationService localizationService
     )
     {
@@ -23,27 +23,27 @@ public class UserSecurityClaimBusinessRules : BaseBusinessRules
 
     private async Task throwBusinessException(string messageKey)
     {
-        string message = await _localizationService.GetLocalizedAsync(messageKey, UserSecurityClaimsMessages.SectionName);
+        string message = await _localizationService.GetLocalizedAsync(messageKey, UserClaimsMessages.SectionName);
         throw new BusinessException(message);
     }
 
-    public async Task UserSecurityClaimShouldExistWhenSelected(UserSecurityClaim? userClaim)
+    public async Task UserClaimShouldExistWhenSelected(UserClaim? userClaim)
     {
         if (userClaim == null)
-            await throwBusinessException(UserSecurityClaimsMessages.UserSecurityClaimNotExists);
+            await throwBusinessException(UserClaimsMessages.UserClaimNotExists);
     }
 
-    public async Task UserSecurityClaimIdShouldExistWhenSelected(Guid id)
+    public async Task UserClaimIdShouldExistWhenSelected(Guid id)
     {
         bool doesExist = await _userClaimRepository.AnyAsync(predicate: b => b.Id == id);
         if (!doesExist)
-            await throwBusinessException(UserSecurityClaimsMessages.UserSecurityClaimNotExists);
+            await throwBusinessException(UserClaimsMessages.UserClaimNotExists);
     }
 
-    public async Task UserSecurityClaimShouldNotExistWhenSelected(UserSecurityClaim? userClaim)
+    public async Task UserClaimShouldNotExistWhenSelected(UserClaim? userClaim)
     {
         if (userClaim != null)
-            await throwBusinessException(UserSecurityClaimsMessages.UserSecurityClaimAlreadyExists);
+            await throwBusinessException(UserClaimsMessages.UserClaimAlreadyExists);
     }
 
     public async Task UserShouldNotHasClaimAlreadyWhenInsert(Guid userId, int claimId)
@@ -52,7 +52,7 @@ public class UserSecurityClaimBusinessRules : BaseBusinessRules
             u.UserId == userId && u.SecurityClaimId == claimId
         );
         if (doesExist)
-            await throwBusinessException(UserSecurityClaimsMessages.UserSecurityClaimAlreadyExists);
+            await throwBusinessException(UserClaimsMessages.UserClaimAlreadyExists);
     }
 
     public async Task UserShouldNotHasClaimAlreadyWhenUpdated(Guid id, Guid userId, int claimId)
@@ -61,6 +61,6 @@ public class UserSecurityClaimBusinessRules : BaseBusinessRules
             uoc.Id == id && uoc.UserId == userId && uoc.SecurityClaimId == claimId
         );
         if (doesExist)
-            await throwBusinessException(UserSecurityClaimsMessages.UserSecurityClaimAlreadyExists);
+            await throwBusinessException(UserClaimsMessages.UserClaimAlreadyExists);
     }
 }

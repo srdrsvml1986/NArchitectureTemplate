@@ -3,7 +3,7 @@ using NArchitecture.Core.Persistence.Repositories;
 
 namespace Application.Services.Repositories;
 
-public interface IUserSecurityClaimRepository : IAsyncRepository<UserSecurityClaim, Guid>, IRepository<UserSecurityClaim, Guid>
+public interface IUserClaimRepository : IAsyncRepository<UserClaim, Guid>, IRepository<UserClaim, Guid>
 {
     Task<IList<SecurityClaim>> GetSecurityClaimsByUserIdAsync(Guid userId);
 }

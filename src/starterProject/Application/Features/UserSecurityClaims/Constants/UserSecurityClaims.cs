@@ -1,8 +1,8 @@
-﻿namespace Application.Features.UserSecurityClaims.Constants;
+﻿namespace Application.Features.UserClaims.Constants;
 
-public static class UserSecurityClaims
+public static class UserClaims
 {
-    private const string _section = "UserSecurityClaims";
+    private const string _section = "UserClaims";
 
     public const string Admin = $"{_section}.Admin";
 

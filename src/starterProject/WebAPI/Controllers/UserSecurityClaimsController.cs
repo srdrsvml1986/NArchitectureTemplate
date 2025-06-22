@@ -1,8 +1,8 @@
-﻿using Application.Features.UserSecurityClaims.Commands.Create;
-using Application.Features.UserSecurityClaims.Commands.Delete;
-using Application.Features.UserSecurityClaims.Commands.Update;
-using Application.Features.UserSecurityClaims.Queries.GetById;
-using Application.Features.UserSecurityClaims.Queries.GetList;
+﻿using Application.Features.UserClaims.Commands.Create;
+using Application.Features.UserClaims.Commands.Delete;
+using Application.Features.UserClaims.Commands.Update;
+using Application.Features.UserClaims.Queries.GetById;
+using Application.Features.UserClaims.Queries.GetList;
 using Microsoft.AspNetCore.Mvc;
 using NArchitecture.Core.Application.Requests;
 using NArchitecture.Core.Application.Responses;
@@ -15,17 +15,17 @@ namespace WebAPI.Controllers;
 /// </summary>
 [Route("api/[controller]")]
 [ApiController]
-public class UserSecurityClaimsController : BaseController
+public class UserClaimsController : BaseController
 {
     /// <summary>
     /// Kullanıcı yetkilendirme bilgilerini almak için kullanılan uç nokta.
     /// </summary>
-    /// <param name="getByIdUserSecurityClaimQuery"></param>
+    /// <param name="getByIdUserClaimQuery"></param>
     /// <returns></returns>
     [HttpGet("{Id}")]
-    public async Task<IActionResult> GetById([FromRoute] GetByIdUserSecurityClaimQuery getByIdUserSecurityClaimQuery)
+    public async Task<IActionResult> GetById([FromRoute] GetByIdUserClaimQuery getByIdUserClaimQuery)
     {
-        GetByIdUserSecurityClaimResponse result = await Mediator.Send(getByIdUserSecurityClaimQuery);
+        GetByIdUserClaimResponse result = await Mediator.Send(getByIdUserClaimQuery);
         return Ok(result);
     }
     /// <summary>
@@ -36,41 +36,41 @@ public class UserSecurityClaimsController : BaseController
     [HttpGet]
     public async Task<IActionResult> GetList([FromQuery] PageRequest pageRequest)
     {
-        GetListUserSecurityClaimQuery getListUserClaimQuery = new() { PageRequest = pageRequest };
-        GetListResponse<GetListUserSecurityClaimListItemDto> result = await Mediator.Send(getListUserClaimQuery);
+        GetListUserClaimQuery getListUserClaimQuery = new() { PageRequest = pageRequest };
+        GetListResponse<GetListUserClaimListItemDto> result = await Mediator.Send(getListUserClaimQuery);
         return Ok(result);
     }
     /// <summary>
     /// Yeni bir kullanıcı yetkilendirme bilgisi eklemek için kullanılan uç nokta.
     /// </summary>
-    /// <param name="createUserSecurityClaimCommand"></param>
+    /// <param name="createUserClaimCommand"></param>
     /// <returns></returns>
     [HttpPost]
-    public async Task<IActionResult> Add([FromBody] CreateUserSecurityClaimCommand createUserSecurityClaimCommand)
+    public async Task<IActionResult> Add([FromBody] CreateUserClaimCommand createUserClaimCommand)
     {
-        CreatedUserSecurityClaimResponse result = await Mediator.Send(createUserSecurityClaimCommand);
+        CreatedUserClaimResponse result = await Mediator.Send(createUserClaimCommand);
         return Created(uri: "", result);
     }
     /// <summary>
     /// Kullanıcı yetkilendirme bilgilerini güncellemek için kullanılan uç nokta.
     /// </summary>
-    /// <param name="updateUserSecurityClaimCommand"></param>
+    /// <param name="updateUserClaimCommand"></param>
     /// <returns></returns>
     [HttpPut]
-    public async Task<IActionResult> Update([FromBody] UpdateUserSecurityClaimCommand updateUserSecurityClaimCommand)
+    public async Task<IActionResult> Update([FromBody] UpdateUserClaimCommand updateUserClaimCommand)
     {
-        UpdatedUserSecurityClaimResponse result = await Mediator.Send(updateUserSecurityClaimCommand);
+        UpdatedUserClaimResponse result = await Mediator.Send(updateUserClaimCommand);
         return Ok(result);
     }
     /// <summary>
     /// Kullanıcı yetkilendirme bilgilerini silmek için kullanılan uç nokta.
     /// </summary>
-    /// <param name="deleteUserSecurityClaimCommand"></param>
+    /// <param name="deleteUserClaimCommand"></param>
     /// <returns></returns>
     [HttpDelete]
-    public async Task<IActionResult> Delete([FromBody] DeleteUserSecurityClaimCommand deleteUserSecurityClaimCommand)
+    public async Task<IActionResult> Delete([FromBody] DeleteUserClaimCommand deleteUserClaimCommand)
     {
-        DeletedUserSecurityClaimResponse result = await Mediator.Send(deleteUserSecurityClaimCommand);
+        DeletedUserClaimResponse result = await Mediator.Send(deleteUserClaimCommand);
         return Ok(result);
     }
 }

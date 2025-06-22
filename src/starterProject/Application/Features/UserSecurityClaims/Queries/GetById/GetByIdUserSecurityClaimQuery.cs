@@ -1,30 +1,30 @@
-using Application.Features.UserSecurityClaims.Constants;
-using Application.Features.UserSecurityClaims.Rules;
+using Application.Features.UserClaims.Constants;
+using Application.Features.UserClaims.Rules;
 using Application.Services.Repositories;
 using AutoMapper;
 using Domain.Entities;
 using MediatR;
 using NArchitecture.Core.Application.Pipelines.Authorization;
 
-namespace Application.Features.UserSecurityClaims.Queries.GetById;
+namespace Application.Features.UserClaims.Queries.GetById;
 
-public class GetByIdUserSecurityClaimQuery : IRequest<GetByIdUserSecurityClaimResponse>, ISecuredRequest
+public class GetByIdUserClaimQuery : IRequest<GetByIdUserClaimResponse>, ISecuredRequest
 {
     public Guid Id { get; set; }
 
-    public string[] Roles => [Constants.UserSecurityClaims.Read];
+    public string[] Roles => [Constants.UserClaims.Read];
 
     public class GetByIdUserClaimQueryHandler
-        : IRequestHandler<GetByIdUserSecurityClaimQuery, GetByIdUserSecurityClaimResponse>
+        : IRequestHandler<GetByIdUserClaimQuery, GetByIdUserClaimResponse>
     {
-        private readonly IUserSecurityClaimRepository _userClaimRepository;
+        private readonly IUserClaimRepository _userClaimRepository;
         private readonly IMapper _mapper;
-        private readonly UserSecurityClaimBusinessRules _userClaimBusinessRules;
+        private readonly UserClaimBusinessRules _userClaimBusinessRules;
 
         public GetByIdUserClaimQueryHandler(
-            IUserSecurityClaimRepository userClaimRepository,
+            IUserClaimRepository userClaimRepository,
             IMapper mapper,
-            UserSecurityClaimBusinessRules userClaimBusinessRules
+            UserClaimBusinessRules userClaimBusinessRules
         )
         {
             _userClaimRepository = userClaimRepository;
@@ -32,19 +32,19 @@ public class GetByIdUserSecurityClaimQuery : IRequest<GetByIdUserSecurityClaimRe
             _userClaimBusinessRules = userClaimBusinessRules;
         }
 
-        public async Task<GetByIdUserSecurityClaimResponse> Handle(
-            GetByIdUserSecurityClaimQuery request,
+        public async Task<GetByIdUserClaimResponse> Handle(
+            GetByIdUserClaimQuery request,
             CancellationToken cancellationToken
         )
         {
-            UserSecurityClaim? userClaim = await _userClaimRepository.GetAsync(
+            UserClaim? userClaim = await _userClaimRepository.GetAsync(
                 predicate: b => b.Id.Equals(request.Id),
                 enableTracking: false,
                 cancellationToken: cancellationToken
             );
-            await _userClaimBusinessRules.UserSecurityClaimShouldExistWhenSelected(userClaim);
+            await _userClaimBusinessRules.UserClaimShouldExistWhenSelected(userClaim);
 
-            GetByIdUserSecurityClaimResponse userClaimDto = _mapper.Map<GetByIdUserSecurityClaimResponse>(
+            GetByIdUserClaimResponse userClaimDto = _mapper.Map<GetByIdUserClaimResponse>(
                 userClaim
             );
             return userClaimDto;

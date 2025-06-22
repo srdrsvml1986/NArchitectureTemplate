@@ -1,6 +1,6 @@
 using Application.Features.Auth.Constants;
 using Application.Features.SecurityClaims.Constants;
-using Application.Features.UserSecurityClaims.Constants;
+using Application.Features.UserClaims.Constants;
 using Application.Features.Users.Constants;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -74,15 +74,15 @@ public class SecurityClaimConfiguration : IEntityTypeConfiguration<SecurityClaim
         );
         #endregion
 
-        #region UserSecurityClaims
+        #region UserClaims
         featureSecurityClaims.AddRange(
             [
-                new() { Id = ++lastId, Name = UserSecurityClaims.Admin },
-                new() { Id = ++lastId, Name = UserSecurityClaims.Read },
-                new() { Id = ++lastId, Name = UserSecurityClaims.Write },
-                new() { Id = ++lastId, Name = UserSecurityClaims.Create },
-                new() { Id = ++lastId, Name = UserSecurityClaims.Update },
-                new() { Id = ++lastId, Name = UserSecurityClaims.Delete },
+                new() { Id = ++lastId, Name = UserClaims.Admin },
+                new() { Id = ++lastId, Name = UserClaims.Read },
+                new() { Id = ++lastId, Name = UserClaims.Write },
+                new() { Id = ++lastId, Name = UserClaims.Create },
+                new() { Id = ++lastId, Name = UserClaims.Update },
+                new() { Id = ++lastId, Name = UserClaims.Delete },
             ]
         );
         #endregion

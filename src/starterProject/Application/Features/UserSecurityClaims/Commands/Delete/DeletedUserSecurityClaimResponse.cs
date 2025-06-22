@@ -1,8 +1,8 @@
 using NArchitecture.Core.Application.Responses;
 
-namespace Application.Features.UserSecurityClaims.Commands.Delete;
+namespace Application.Features.UserClaims.Commands.Delete;
 
-public class DeletedUserSecurityClaimResponse : IResponse
+public class DeletedUserClaimResponse : IResponse
 {
     public Guid Id { get; set; }
 }

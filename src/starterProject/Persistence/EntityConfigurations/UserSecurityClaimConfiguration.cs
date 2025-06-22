@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Persistence.EntityConfigurations;
 
-public class UserSecurityClaimConfiguration : IEntityTypeConfiguration<UserSecurityClaim>
+public class UserClaimConfiguration : IEntityTypeConfiguration<UserClaim>
 {
-    public void Configure(EntityTypeBuilder<UserSecurityClaim> builder)
+    public void Configure(EntityTypeBuilder<UserClaim> builder)
     {
-        builder.ToTable("UserSecurityClaims").HasKey(uoc => uoc.Id);
+        builder.ToTable("UserClaims").HasKey(uoc => uoc.Id);
 
         builder.Property(uoc => uoc.Id).HasColumnName("Id").IsRequired();
         builder.Property(uoc => uoc.UserId).HasColumnName("UserId").IsRequired();
@@ -27,7 +27,7 @@ public class UserSecurityClaimConfiguration : IEntityTypeConfiguration<UserSecur
         builder.HasBaseType((string)null!);
     }
 
-    private IEnumerable<UserSecurityClaim> _seeds
+    private IEnumerable<UserClaim> _seeds
     {
         get
         {

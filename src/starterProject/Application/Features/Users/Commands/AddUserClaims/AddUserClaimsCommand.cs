@@ -19,14 +19,14 @@ public class AddUserClaimsCommand : IRequest<AddUserClaimsResponse>, ISecuredReq
     public class AddUserClaimsCommandHandler : IRequestHandler<AddUserClaimsCommand, AddUserClaimsResponse>
     {
         private readonly IUserRepository _userRepository;
-        private readonly IUserSecurityClaimRepository _userClaimRepository;
+        private readonly IUserClaimRepository _userClaimRepository;
         private readonly ISecurityClaimRepository _claimRepository;
         private readonly IMapper _mapper;
         private readonly UserBusinessRules _userBusinessRules;
 
         public AddUserClaimsCommandHandler(
             IUserRepository userRepository,
-            IUserSecurityClaimRepository userClaimRepository,
+            IUserClaimRepository userClaimRepository,
             ISecurityClaimRepository claimRepository,
             IMapper mapper,
             UserBusinessRules userBusinessRules)
@@ -52,7 +52,7 @@ public class AddUserClaimsCommand : IRequest<AddUserClaimsResponse>, ISecuredReq
             // Sadece yeni olan claim'leri ekle
             var newClaimsToAdd = request.ClaimIds
                 .Except(existingClaimIds)
-                .Select(claimId => new UserSecurityClaim { UserId = request.UserId, SecurityClaimId = claimId })
+                .Select(claimId => new UserClaim { UserId = request.UserId, SecurityClaimId = claimId })
                 .ToList();
 
             if (newClaimsToAdd.Any())

@@ -1,27 +1,27 @@
-using Application.Features.UserSecurityClaims.Commands.Create;
-using Application.Features.UserSecurityClaims.Commands.Delete;
-using Application.Features.UserSecurityClaims.Commands.Update;
-using Application.Features.UserSecurityClaims.Queries.GetById;
-using Application.Features.UserSecurityClaims.Queries.GetList;
+using Application.Features.UserClaims.Commands.Create;
+using Application.Features.UserClaims.Commands.Delete;
+using Application.Features.UserClaims.Commands.Update;
+using Application.Features.UserClaims.Queries.GetById;
+using Application.Features.UserClaims.Queries.GetList;
 using AutoMapper;
 using Domain.Entities;
 using NArchitecture.Core.Application.Responses;
 using NArchitecture.Core.Persistence.Paging;
 
-namespace Application.Features.UserSecurityClaims.Profiles;
+namespace Application.Features.UserClaims.Profiles;
 
 public class MappingProfiles : Profile
 {
     public MappingProfiles()
     {
-        CreateMap<UserSecurityClaim, CreateUserSecurityClaimCommand>().ReverseMap();
-        CreateMap<UserSecurityClaim, CreatedUserSecurityClaimResponse>().ReverseMap();
-        CreateMap<UserSecurityClaim, UpdateUserSecurityClaimCommand>().ReverseMap();
-        CreateMap<UserSecurityClaim, UpdatedUserSecurityClaimResponse>().ReverseMap();
-        CreateMap<UserSecurityClaim, DeleteUserSecurityClaimCommand>().ReverseMap();
-        CreateMap<UserSecurityClaim, DeletedUserSecurityClaimResponse>().ReverseMap();
-        CreateMap<UserSecurityClaim, GetByIdUserSecurityClaimResponse>().ReverseMap();
-        CreateMap<UserSecurityClaim, GetListUserSecurityClaimListItemDto>().ReverseMap();
-        CreateMap<IPaginate<UserSecurityClaim>, GetListResponse<GetListUserSecurityClaimListItemDto>>().ReverseMap();
+        CreateMap<UserClaim, CreateUserClaimCommand>().ReverseMap();
+        CreateMap<UserClaim, CreatedUserClaimResponse>().ReverseMap();
+        CreateMap<UserClaim, UpdateUserClaimCommand>().ReverseMap();
+        CreateMap<UserClaim, UpdatedUserClaimResponse>().ReverseMap();
+        CreateMap<UserClaim, DeleteUserClaimCommand>().ReverseMap();
+        CreateMap<UserClaim, DeletedUserClaimResponse>().ReverseMap();
+        CreateMap<UserClaim, GetByIdUserClaimResponse>().ReverseMap();
+        CreateMap<UserClaim, GetListUserClaimListItemDto>().ReverseMap();
+        CreateMap<IPaginate<UserClaim>, GetListResponse<GetListUserClaimListItemDto>>().ReverseMap();
     }
 }

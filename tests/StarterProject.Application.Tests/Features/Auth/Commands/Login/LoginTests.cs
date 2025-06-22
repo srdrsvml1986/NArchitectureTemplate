@@ -39,9 +39,9 @@ public class LoginTests
     {
         _configuration = MockConfiguration.GetConfigurationMock();
         #region Mock Repositories
-        IUserSecurityClaimRepository _userOperationClaimRepository = new MockUserSecurityClaimRepository(
+        IUserClaimRepository _userOperationClaimRepository = new MockUserClaimRepository(
             operationClaimFakeData
-        ).GetMockUserSecurityClaimRepository();
+        ).GetMockUserClaimRepository();
         IRefreshTokenRepository _refreshTokenRepository = new MockRefreshTokenRepository(
             refreshTokenFakeData
         ).GetMockRefreshTokenRepository();

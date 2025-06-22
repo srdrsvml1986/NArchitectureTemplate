@@ -1,8 +1,8 @@
 using NArchitecture.Core.Application.Responses;
 
-namespace Application.Features.UserSecurityClaims.Commands.Update;
+namespace Application.Features.UserClaims.Commands.Update;
 
-public class UpdatedUserSecurityClaimResponse : IResponse
+public class UpdatedUserClaimResponse : IResponse
 {
     public Guid Id { get; set; }
     public Guid UserId { get; set; }

@@ -1,32 +1,32 @@
-using Application.Features.UserSecurityClaims.Constants;
-using Application.Features.UserSecurityClaims.Rules;
+using Application.Features.UserClaims.Constants;
+using Application.Features.UserClaims.Rules;
 using Application.Services.Repositories;
 using AutoMapper;
 using Domain.Entities;
 using MediatR;
 using NArchitecture.Core.Application.Pipelines.Authorization;
-using static Application.Features.UserSecurityClaims.Constants.UserSecurityClaims;
+using static Application.Features.UserClaims.Constants.UserClaims;
 
-namespace Application.Features.UserSecurityClaims.Commands.Create;
+namespace Application.Features.UserClaims.Commands.Create;
 
-public class CreateUserSecurityClaimCommand : IRequest<CreatedUserSecurityClaimResponse>, ISecuredRequest
+public class CreateUserClaimCommand : IRequest<CreatedUserClaimResponse>, ISecuredRequest
 {
     public Guid UserId { get; set; }
     public int SecurityClaimId { get; set; }
 
-    public string[] Roles => new[] { Admin, Write, Constants.UserSecurityClaims.Create };
+    public string[] Roles => new[] { Admin, Write, Constants.UserClaims.Create };
 
     public class CreateUserClaimCommandHandler
-        : IRequestHandler<CreateUserSecurityClaimCommand, CreatedUserSecurityClaimResponse>
+        : IRequestHandler<CreateUserClaimCommand, CreatedUserClaimResponse>
     {
-        private readonly IUserSecurityClaimRepository _userClaimRepository;
+        private readonly IUserClaimRepository _userClaimRepository;
         private readonly IMapper _mapper;
-        private readonly UserSecurityClaimBusinessRules _userClaimBusinessRules;
+        private readonly UserClaimBusinessRules _userClaimBusinessRules;
 
         public CreateUserClaimCommandHandler(
-            IUserSecurityClaimRepository userClaimRepository,
+            IUserClaimRepository userClaimRepository,
             IMapper mapper,
-            UserSecurityClaimBusinessRules userClaimBusinessRules
+            UserClaimBusinessRules userClaimBusinessRules
         )
         {
             _userClaimRepository = userClaimRepository;
@@ -34,8 +34,8 @@ public class CreateUserSecurityClaimCommand : IRequest<CreatedUserSecurityClaimR
             _userClaimBusinessRules = userClaimBusinessRules;
         }
 
-        public async Task<CreatedUserSecurityClaimResponse> Handle(
-            CreateUserSecurityClaimCommand request,
+        public async Task<CreatedUserClaimResponse> Handle(
+            CreateUserClaimCommand request,
             CancellationToken cancellationToken
         )
         {
@@ -43,11 +43,11 @@ public class CreateUserSecurityClaimCommand : IRequest<CreatedUserSecurityClaimR
                 request.UserId,
                 request.SecurityClaimId
             );
-            UserSecurityClaim mappedUserClaim = _mapper.Map<UserSecurityClaim>(request);
+            UserClaim mappedUserClaim = _mapper.Map<UserClaim>(request);
 
-            UserSecurityClaim createdUserClaim = await _userClaimRepository.AddAsync(mappedUserClaim);
+            UserClaim createdUserClaim = await _userClaimRepository.AddAsync(mappedUserClaim);
 
-            CreatedUserSecurityClaimResponse createdUserClaimDto = _mapper.Map<CreatedUserSecurityClaimResponse>(
+            CreatedUserClaimResponse createdUserClaimDto = _mapper.Map<CreatedUserClaimResponse>(
                 createdUserClaim
             );
             return createdUserClaimDto;
