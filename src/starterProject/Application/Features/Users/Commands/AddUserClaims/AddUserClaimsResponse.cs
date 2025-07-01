@@ -5,5 +5,5 @@ namespace Application.Features.Users.Commands.AddUserClaims;
 
 public class AddUserClaimsResponse : IResponse
 {
-    public IQueryable<SecurityClaim>? Claims { get; set; }
+    public IQueryable<Claim>? Claims { get; set; }
 }

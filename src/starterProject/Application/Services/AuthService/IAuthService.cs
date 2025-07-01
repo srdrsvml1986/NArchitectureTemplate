@@ -21,4 +21,6 @@ public interface IAuthService
     Task<RefreshToken> RotateRefreshToken(User user, RefreshToken refreshToken, string ipAddress);
     Task SendAuthenticatorCode(User user);
     Task VerifyAuthenticatorCode(User user, string authenticatorCode);
+    Task<int> GetRefreshCountAsync(Guid userId, TimeSpan period);
+    Task<string> GetRefreshTokenBySessionAsync(Guid userId);
 }

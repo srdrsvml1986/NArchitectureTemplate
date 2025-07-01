@@ -5,7 +5,7 @@ using Persistence.Contexts;
 
 namespace Persistence.Repositories;
 
-public class SecurityClaimRepository : EfRepositoryBase<SecurityClaim, int, BaseDbContext>, ISecurityClaimRepository
+public class SecurityClaimRepository : EfRepositoryBase<Claim, int, BaseDbContext>, IClaimRepository
 {
     public SecurityClaimRepository(BaseDbContext context)
         : base(context) { }

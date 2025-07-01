@@ -21,14 +21,14 @@ public class UpdateUserClaimsCommand : IRequest<UpdateUserClaimsResponse>, ISecu
     {
         private readonly IUserRepository _userRepository;
         private readonly IUserClaimRepository _userClaimRepository;
-        private readonly ISecurityClaimRepository _claimRepository;
+        private readonly IClaimRepository _claimRepository;
         private readonly IMapper _mapper;
         private readonly UserBusinessRules _userBusinessRules;
 
         public UpdateUserClaimsCommandHandler(
             IUserRepository userRepository,
             IUserClaimRepository userClaimRepository,
-            ISecurityClaimRepository claimRepository,
+            IClaimRepository claimRepository,
             IMapper mapper,
             UserBusinessRules userBusinessRules)
         {
@@ -48,17 +48,17 @@ public class UpdateUserClaimsCommand : IRequest<UpdateUserClaimsResponse>, ISecu
                 cancellationToken: cancellationToken
             );
 
-            var existingClaimIds = existingUserClaims.Items.Select(uc => uc.SecurityClaimId).ToList();
+            var existingClaimIds = existingUserClaims.Items.Select(uc => uc.ClaimId).ToList();
 
             // Yeni eklenecek claim'ler
             var claimsToAdd = request.ClaimIds
                 .Except(existingClaimIds)
-                .Select(claimId => new UserClaim { UserId = request.UserId, SecurityClaimId = claimId })
+                .Select(claimId => new UserClaim { UserId = request.UserId, ClaimId = claimId })
                 .ToList();
 
             // Silinecek claim'ler
             var claimsToRemove = existingUserClaims.Items
-                .Where(uc => !request.ClaimIds.Contains(uc.SecurityClaimId))
+                .Where(uc => !request.ClaimIds.Contains(uc.ClaimId))
                 .ToList();
 
             if (claimsToAdd.Any())

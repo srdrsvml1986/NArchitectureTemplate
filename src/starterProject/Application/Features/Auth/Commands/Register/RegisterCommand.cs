@@ -30,7 +30,7 @@ public class RegisterCommand : IRequest<RegisteredResponse>
     {
         private readonly IUserRepository _userRepository;
         private readonly IUserClaimRepository _userOperationClaimRepository;
-        private readonly ISecurityClaimRepository _operationClaimRepository;
+        private readonly IClaimRepository _operationClaimRepository;
         private readonly IAuthService _authService;
         private readonly AuthBusinessRules _authBusinessRules;
 
@@ -39,7 +39,7 @@ public class RegisterCommand : IRequest<RegisteredResponse>
             IAuthService authService,
             AuthBusinessRules authBusinessRules
 ,
-            ISecurityClaimRepository operationClaimRepository)
+            IClaimRepository operationClaimRepository)
         {
             _userRepository = userRepository;
             _authService = authService;
@@ -72,7 +72,7 @@ public class RegisterCommand : IRequest<RegisteredResponse>
                 {
                     Id = new Guid(),
                     UserId = createdUser.Id,
-                    SecurityClaimId = claim.Id,
+                    ClaimId = claim.Id,
                     CreatedDate = DateTime.UtcNow,
                     User = createdUser
                 });

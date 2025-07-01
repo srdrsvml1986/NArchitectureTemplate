@@ -5,5 +5,5 @@ namespace Application.Features.Groups.Commands.AddClaimsToGroup;
 
 public class AddClaimsToGroupResponse : IResponse
 {
-    public IQueryable<SecurityClaim>? Claims { get; set; }
+    public IQueryable<Claim>? Claims { get; set; }
 }

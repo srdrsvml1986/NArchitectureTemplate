@@ -90,7 +90,7 @@ public class UserManager : IUserService
                 Email = externalUser.Email,
                 FirstName = externalUser.FirstName,
                 LastName = externalUser.LastName,
-                Status = true,
+                Status = User.UserStatus.Active,
                 ExternalAuthProvider = externalUser.Provider
             };
             await _userRepository.AddAsync(user);

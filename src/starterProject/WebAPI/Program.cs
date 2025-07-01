@@ -30,8 +30,9 @@ builder.Services.AddAntiforgery();
 builder.Services.AddSingleton<RateLimiter>(_ =>
     new FixedWindowRateLimiter(new FixedWindowRateLimiterOptions
     {
-        PermitLimit = 5,
-        Window = TimeSpan.FromMinutes(5),
+        AutoReplenishment = true,
+        PermitLimit = 100,
+        Window = TimeSpan.FromMinutes(1),
         QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
         QueueLimit = 0
     }));
@@ -91,6 +92,7 @@ builder
             ValidateIssuer = true,
             ValidateAudience = true,
             ValidateLifetime = true,
+            ClockSkew = TimeSpan.Zero, // Token süresi bitiminden sonra 0 saniye bekle
             ValidIssuer = tokenOptions.Issuer,
             ValidAudience = tokenOptions.Audience,
             ValidateIssuerSigningKey = true,

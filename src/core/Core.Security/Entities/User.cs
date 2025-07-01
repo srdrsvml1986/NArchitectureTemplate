@@ -1,10 +1,13 @@
 ﻿using NArchitecture.Core.Persistence.Repositories;
 using NArchitecture.Core.Security.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace NArchitecture.Core.Security.Entities;
 
 public class User<TId> : Entity<TId>
 {
+    [EmailAddress]
+    [Required]
     public string Email { get; set; }
     public byte[] PasswordSalt { get; set; }
     public byte[] PasswordHash { get; set; }

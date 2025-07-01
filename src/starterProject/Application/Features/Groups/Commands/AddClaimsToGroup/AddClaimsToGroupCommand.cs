@@ -21,14 +21,14 @@ public class AddClaimsToGroupCommand : IRequest<AddClaimsToGroupResponse>, ISecu
         private readonly IMapper _mapper;
         private readonly IGroupRepository _groupRepository;
         private readonly IGroupClaimRepository _groupClaimRepository;
-        private readonly ISecurityClaimRepository _claimRepository;
+        private readonly IClaimRepository _claimRepository;
         private readonly GroupBusinessRules _groupBusinessRules;
 
         public AddClaimsToGroupCommandHandler(
             IMapper mapper,
             IGroupRepository groupRepository,
             IGroupClaimRepository groupClaimRepository,
-            ISecurityClaimRepository claimRepository,
+            IClaimRepository claimRepository,
             GroupBusinessRules groupBusinessRules)
         {
             _mapper = mapper;

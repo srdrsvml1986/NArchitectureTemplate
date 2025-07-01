@@ -1,8 +1,8 @@
-﻿using Application.Features.SecurityClaims.Commands.Create;
-using Application.Features.SecurityClaims.Commands.Delete;
-using Application.Features.SecurityClaims.Commands.Update;
-using Application.Features.SecurityClaims.Queries.GetById;
-using Application.Features.SecurityClaims.Queries.GetList;
+﻿using Application.Features.Claims.Commands.Create;
+using Application.Features.Claims.Commands.Delete;
+using Application.Features.Claims.Commands.Update;
+using Application.Features.Claims.Queries.GetById;
+using Application.Features.Claims.Queries.GetList;
 using Microsoft.AspNetCore.Mvc;
 using NArchitecture.Core.Application.Requests;
 using NArchitecture.Core.Application.Responses;
@@ -22,9 +22,9 @@ public class SecurityClaimsController : BaseController
     /// <param name="getByIdSecurityClaimQuery">yetki bilgilerini getirmek için kullanılan sorgu.</param>
     /// <returns>yetki bilgilerini içeren yanıt nesnesi.</returns>
     [HttpGet("{Id}")]
-    public async Task<IActionResult> GetById([FromRoute] GetByIdSecurityClaimQuery getByIdSecurityClaimQuery)
+    public async Task<IActionResult> GetById([FromRoute] GetByIdClaimQuery getByIdSecurityClaimQuery)
     {
-        GetByIdSecurityClaimResponse result = await Mediator.Send(getByIdSecurityClaimQuery);
+        GetByIdClaimResponse result = await Mediator.Send(getByIdSecurityClaimQuery);
         return Ok(result);
     }
 
@@ -36,8 +36,8 @@ public class SecurityClaimsController : BaseController
     [HttpGet]
     public async Task<IActionResult> GetList([FromQuery] PageRequest pageRequest)
     {
-        GetListSecurityClaimQuery getListClaimQuery = new() { PageRequest = pageRequest };
-        GetListResponse<GetListSecurityClaimListItemDto> result = await Mediator.Send(getListClaimQuery);
+        GetListClaimQuery getListClaimQuery = new() { PageRequest = pageRequest };
+        GetListResponse<GetListClaimListItemDto> result = await Mediator.Send(getListClaimQuery);
         return Ok(result);
     }
 
@@ -47,9 +47,9 @@ public class SecurityClaimsController : BaseController
     /// <param name="createSecurityClaimCommand"></param>
     /// <returns></returns>
     [HttpPost]
-    public async Task<IActionResult> Add([FromBody] CreateSecurityClaimCommand createSecurityClaimCommand)
+    public async Task<IActionResult> Add([FromBody] CreateClaimCommand createSecurityClaimCommand)
     {
-        CreatedSecurityClaimResponse result = await Mediator.Send(createSecurityClaimCommand);
+        CreatedClaimResponse result = await Mediator.Send(createSecurityClaimCommand);
         return Created(uri: "", result);
     }
 
@@ -59,9 +59,9 @@ public class SecurityClaimsController : BaseController
     /// <param name="updateSecurityClaimCommand"></param>
     /// <returns></returns>
     [HttpPut]
-    public async Task<IActionResult> Update([FromBody] UpdateSecurityClaimCommand updateSecurityClaimCommand)
+    public async Task<IActionResult> Update([FromBody] UpdateClaimCommand updateSecurityClaimCommand)
     {
-        UpdateSecurityClaimResponse result = await Mediator.Send(updateSecurityClaimCommand);
+        UpdateClaimResponse result = await Mediator.Send(updateSecurityClaimCommand);
         return Ok(result);
     }
 
@@ -71,9 +71,9 @@ public class SecurityClaimsController : BaseController
     /// <param name="deleteSecurityClaimCommand"></param>
     /// <returns></returns>
     [HttpDelete]
-    public async Task<IActionResult> Delete([FromBody] DeleteSecurityClaimCommand deleteSecurityClaimCommand)
+    public async Task<IActionResult> Delete([FromBody] DeleteClaimCommand deleteSecurityClaimCommand)
     {
-        DeleteSecurityClaimResponse result = await Mediator.Send(deleteSecurityClaimCommand);
+        DeleteClaimResponse result = await Mediator.Send(deleteSecurityClaimCommand);
         return Ok(result);
     }
 }

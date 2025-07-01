@@ -40,7 +40,10 @@ public interface IRepository<TEntity, TEntityId> : IQuery<TEntity>
         Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>? include = null,
         bool withDeleted = false
     );
-
+    int Count(
+      Expression<Func<TEntity, bool>>? predicate = null,
+      bool withDeleted = false
+    );
     TEntity Add(TEntity entity);
 
     ICollection<TEntity> AddRange(ICollection<TEntity> entities);

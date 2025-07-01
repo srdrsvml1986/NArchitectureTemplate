@@ -12,7 +12,16 @@ public class User : NArchitecture.Core.Security.Entities.User<Guid>
     // Navigation Properties
     public virtual ICollection<UserRole> UserRoles { get; set; }
     public virtual ICollection<UserSession> UserSessions { get; set; }
-    public bool Status { get; set; } = true;
+    // Önerilen
+    public UserStatus Status { get; set; } = UserStatus.Active;
+
+    public enum UserStatus
+    {
+        Active,
+        Inactive,
+        Suspended,
+        Deleted
+    }
     public string? FirstName { get; set; }
     public string? LastName { get; set; }
     [Display(Name = "Full Name")]

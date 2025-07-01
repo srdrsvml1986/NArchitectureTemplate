@@ -23,6 +23,12 @@ using Application.Services.Groups;
 using Application.Services.GroupClaims;
 using Application.Services.UserGroups;
 using Application.Services.PasswordResetTokens;
+using Application.Services.Repositories;
+using Application.Services.UserSessions;
+using Application.Services.UserRoles;
+using Application.Services.Roles;
+using Application.Services.RoleClaims;
+using Application.Services.GroupRoles;
 
 namespace Application;
 
@@ -70,6 +76,11 @@ public static class ApplicationServiceRegistration
         services.AddScoped<IGroupClaimService, GroupClaimManager>();
         services.AddScoped<IUserGroupService, UserGroupManager>();
         services.AddScoped<IPasswordResetTokenService, PasswordResetTokenManager>();
+        services.AddScoped<IUserSessionService, UserSessionService>();
+        services.AddScoped<IUserRoleService, UserRoleManager>();
+        services.AddScoped<IRoleService, RoleManager>();
+        services.AddScoped<IRoleClaimService, RoleClaimManager>();
+        services.AddScoped<IGroupRoleService, GroupRoleManager>();
         return services;
     }
 

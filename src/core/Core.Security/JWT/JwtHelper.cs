@@ -19,7 +19,7 @@ public class JwtHelper<TUserId, TOperationClaimId, TRefreshTokenId> : ITokenHelp
         _tokenOptions = tokenOptions;
     }
 
-    public virtual AccessToken CreateToken(User<TUserId> user, IList<SecurityClaim<TOperationClaimId>> operationClaims)
+    public virtual AccessToken CreateToken(User<TUserId> user, IList<Claim<TOperationClaimId>> operationClaims)
     {
         DateTime accessTokenExpiration = DateTime.Now.AddMinutes(_tokenOptions.AccessTokenExpiration);
         SecurityKey securityKey = SecurityKeyHelper.CreateSecurityKey(_tokenOptions.SecurityKey);
@@ -52,7 +52,7 @@ public class JwtHelper<TUserId, TOperationClaimId, TRefreshTokenId> : ITokenHelp
         TokenOptions tokenOptions,
         User<TUserId> user,
         SigningCredentials signingCredentials,
-        IList<SecurityClaim<TOperationClaimId>> operationClaims,
+        IList<Claim<TOperationClaimId>> operationClaims,
         DateTime accessTokenExpiration
     )
     {
@@ -66,7 +66,7 @@ public class JwtHelper<TUserId, TOperationClaimId, TRefreshTokenId> : ITokenHelp
         );
     }
 
-    protected virtual IEnumerable<Claim> SetClaims(User<TUserId> user, IList<SecurityClaim<TOperationClaimId>> operationClaims)
+    protected virtual IEnumerable<Claim> SetClaims(User<TUserId> user, IList<Claim<TOperationClaimId>> operationClaims)
     {
         List<Claim> claims = [];
         claims.AddNameIdentifier(user!.Id!.ToString()!);

@@ -67,7 +67,7 @@ public class UserUserClaimManager : IUserClaimService
     {
         await _userUserClaimBusinessRules.UserShouldNotHasClaimAlreadyWhenInsert(
             userUserClaim.UserId,
-            userUserClaim.SecurityClaimId
+            userUserClaim.ClaimId
         );
 
         UserClaim addedUserClaim = await _userUserClaimRepository.AddAsync(userUserClaim);
@@ -80,7 +80,7 @@ public class UserUserClaimManager : IUserClaimService
         await _userUserClaimBusinessRules.UserShouldNotHasClaimAlreadyWhenUpdated(
             userUserClaim.Id,
             userUserClaim.UserId,
-            userUserClaim.SecurityClaimId
+            userUserClaim.ClaimId
         );
 
         UserClaim updatedUserClaim = await _userUserClaimRepository.UpdateAsync(

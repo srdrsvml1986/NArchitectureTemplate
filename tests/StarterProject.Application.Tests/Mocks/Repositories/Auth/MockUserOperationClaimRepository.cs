@@ -15,7 +15,7 @@ public class MockUserClaimRepository
 
     public IUserClaimRepository GetMockUserClaimRepository()
     {
-        List<Domain.Entities.SecurityClaim> operationClaims = _operationClaimFakeData.Data;
+        List<Domain.Entities.Claim> operationClaims = _operationClaimFakeData.Data;
         var mockRepo = new Mock<IUserClaimRepository>();
 
         mockRepo

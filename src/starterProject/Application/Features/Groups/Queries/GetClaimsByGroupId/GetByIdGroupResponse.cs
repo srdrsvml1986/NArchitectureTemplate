@@ -5,5 +5,5 @@ namespace Application.Features.Groups.Queries.GetClaimsByGroupId;
 
 public class GetClaimsByGroupIdGroupResponse : IResponse
 {
-    public IQueryable<SecurityClaim>? Claims { get; set; }
+    public IQueryable<Claim>? Claims { get; set; }
 }

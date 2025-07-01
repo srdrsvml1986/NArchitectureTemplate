@@ -9,7 +9,7 @@ public class BaseDbContext : DbContext
 {
     protected IConfiguration Configuration { get; set; }
     public DbSet<EmailAuthenticator> EmailAuthenticators { get; set; }
-    public DbSet<SecurityClaim> OperationClaims { get; set; }
+    public DbSet<Claim> OperationClaims { get; set; }
     public DbSet<OtpAuthenticator> OtpAuthenticators { get; set; }
     public DbSet<RefreshToken> RefreshTokens { get; set; }
     public DbSet<User> Users { get; set; }
@@ -18,6 +18,11 @@ public class BaseDbContext : DbContext
     public DbSet<GroupClaim> GroupClaims { get; set; }
     public DbSet<UserGroup> UserGroups { get; set; }
     public DbSet<ResetPasswordToken> ResetPasswordTokens { get; set; }
+    public DbSet<UserSession> UserSessions { get; set; }
+    public DbSet<UserRole> UserRoles { get; set; }
+    public DbSet<Role> Roles { get; set; }
+    public DbSet<RoleClaim> RoleClaims { get; set; }
+    public DbSet<GroupRole> GroupRoles { get; set; }
 
     public BaseDbContext(DbContextOptions dbContextOptions, IConfiguration configuration)
         : base(dbContextOptions)

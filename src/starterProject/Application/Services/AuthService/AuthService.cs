@@ -68,10 +68,10 @@ public class AuthService : IAuthService
 
     public async Task<AccessToken> CreateAccessToken(User user)
     {
-        IList<SecurityClaim> operationClaims = await _userOperationClaimRepository.GetSecurityClaimsByUserIdAsync(user.Id);
+        IList<Claim> operationClaims = await _userOperationClaimRepository.GetSecurityClaimsByUserIdAsync(user.Id);
         AccessToken accessToken = _tokenHelper.CreateToken(
             user,
-            operationClaims.Select(op => (NArchitecture.Core.Security.Entities.SecurityClaim<int>)op).ToImmutableList()
+            operationClaims.Select(op => (NArchitecture.Core.Security.Entities.Claim<int>)op).ToImmutableList()
         );
         return accessToken;
     }
@@ -255,5 +255,16 @@ public class AuthService : IAuthService
             AccessToken = accessToken,
             RefreshToken = refreshToken
         };
+    }
+    public async Task<int> GetRefreshCountAsync(Guid userId, TimeSpan period)
+    {
+        var since = DateTime.UtcNow - period;
+        return await _refreshTokenRepository.CountAsync(rt => rt.UserId == userId && rt.CreatedDate >= since);
+    }
+
+    public async Task<string> GetRefreshTokenBySessionAsync(Guid userId)
+    {
+        var token = await _refreshTokenRepository.GetAsync(rt => rt.UserId == userId && !rt.IsRevoked);
+        return token?.Token ?? string.Empty;
     }
 }

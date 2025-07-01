@@ -44,7 +44,11 @@ public interface IAsyncRepository<TEntity, TEntityId> : IQuery<TEntity>
         bool withDeleted = false,
         CancellationToken cancellationToken = default
     );
-
+    Task<int> CountAsync(
+    Expression<Func<TEntity, bool>>? predicate = null,
+    bool withDeleted = false,
+    CancellationToken cancellationToken = default
+    );
     Task<TEntity> AddAsync(TEntity entity, CancellationToken cancellationToken = default);
 
     Task<ICollection<TEntity>> AddRangeAsync(ICollection<TEntity> entities, CancellationToken cancellationToken = default);

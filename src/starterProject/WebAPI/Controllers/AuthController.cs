@@ -7,6 +7,7 @@ using Application.Features.Auth.Commands.RevokeToken;
 using Application.Features.Auth.Commands.VerifyEmailAuthenticator;
 using Application.Features.Auth.Commands.VerifyOtpAuthenticator;
 using Application.Services.AuthService;
+using Application.Services.UserSessions;
 using Domain.Entities;
 using Elasticsearch.Net;
 using Microsoft.AspNetCore.Authentication;
@@ -15,7 +16,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using NArchitecture.Core.Application.Dtos;
 using NArchitecture.Core.Security.OAuth.Services;
+using System.IdentityModel.Tokens.Jwt;
 using System.Net;
+using System.Security.Claims;
 
 namespace WebAPI.Controllers;
 
@@ -36,8 +39,9 @@ public class AuthController : BaseController
     private readonly IGoogleAuthService _googleAuthService;
     private readonly IFacebookAuthService _facebookAuthService;
     private readonly IAuthService _authService;
+    private readonly IUserSessionService _sessionService;
 
-    public AuthController(IConfiguration configuration, IGoogleAuthService googleAuthService, IFacebookAuthService facebookAuthService, IAuthService authService)
+    public AuthController(IConfiguration configuration, IGoogleAuthService googleAuthService, IFacebookAuthService facebookAuthService, IAuthService authService, IUserSessionService sessionService)
     {
         const string configurationSection = "WebAPIConfiguration";
         _configuration =
@@ -46,6 +50,7 @@ public class AuthController : BaseController
         _googleAuthService = googleAuthService;
         _facebookAuthService = facebookAuthService;
         _authService = authService;
+        _sessionService = sessionService;
     }
 
     /// <summary>
@@ -68,6 +73,19 @@ public class AuthController : BaseController
 
         if (result.RefreshToken is not null)
             setRefreshTokenToCookie(result.RefreshToken);
+
+        // AccessToken’dan kullanıcı ID’sini çıkart
+        var handler = new JwtSecurityTokenHandler();
+        var jwtToken = handler.ReadJwtToken(result.AccessToken.Token);
+        var userIdClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+        if (!Guid.TryParse(userIdClaim, out Guid userId))
+            return Unauthorized();
+
+        // Oturum kaydı ve şüpheli kontrolü
+        var ip = HttpContext.Connection.RemoteIpAddress?.ToString() ?? string.Empty;
+        var ua = Request.Headers["User-Agent"].ToString();
+        await _sessionService.CreateSessionAsync(userId, ip, ua);
+        await _sessionService.FlagAndHandleSuspiciousSessionsAsync(userId);
 
         return Ok(result.ToHttpResponse());
     }

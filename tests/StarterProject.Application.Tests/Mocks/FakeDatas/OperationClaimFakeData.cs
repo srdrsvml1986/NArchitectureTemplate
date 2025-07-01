@@ -3,9 +3,9 @@ using NArchitecture.Core.Test.Application.FakeData;
 
 namespace StarterProject.Application.Tests.Mocks.FakeDatas;
 
-public class OperationClaimFakeData : BaseFakeData<SecurityClaim, int>
+public class OperationClaimFakeData : BaseFakeData<Claim, int>
 {
-    public override List<SecurityClaim> CreateFakeData()
+    public override List<Claim> CreateFakeData()
     {
         return
         [

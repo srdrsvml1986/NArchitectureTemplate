@@ -17,7 +17,7 @@ public static class PersistenceServiceRegistration
         services.AddDbMigrationApplier(buildServices => buildServices.GetRequiredService<BaseDbContext>());
 
         services.AddScoped<IEmailAuthenticatorRepository, EmailAuthenticatorRepository>();
-        services.AddScoped<ISecurityClaimRepository, SecurityClaimRepository>();
+        services.AddScoped<IClaimRepository, SecurityClaimRepository>();
         services.AddScoped<IOtpAuthenticatorRepository, OtpAuthenticatorRepository>();
         services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
@@ -30,6 +30,11 @@ public static class PersistenceServiceRegistration
         services.AddScoped<IGroupClaimRepository, GroupClaimRepository>();
         services.AddScoped<IUserGroupRepository, UserGroupRepository>();
         services.AddScoped<IPasswordResetTokenRepository, PasswordResetTokenRepository>();
+        services.AddScoped<IUserSessionRepository, UserSessionRepository>();
+        services.AddScoped<IUserRoleRepository, UserRoleRepository>();
+        services.AddScoped<IRoleRepository, RoleRepository>();
+        services.AddScoped<IRoleClaimRepository, RoleClaimRepository>();
+        services.AddScoped<IGroupRoleRepository, GroupRoleRepository>();
         return services;
     }
 }

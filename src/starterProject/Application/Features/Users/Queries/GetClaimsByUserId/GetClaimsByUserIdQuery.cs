@@ -19,14 +19,14 @@ public class GetClaimsByUserIdQuery : IRequest<GetClaimsByUserIdResponse>, ISecu
     {
         private readonly IUserRepository _userRepository;
         private readonly IUserClaimRepository _userClaimRepository;
-        private readonly ISecurityClaimRepository _claimRepository;
+        private readonly IClaimRepository _claimRepository;
         private readonly IMapper _mapper;
         private readonly UserBusinessRules _userBusinessRules;
 
         public GetClaimsByUserIdQueryHandler(
             IUserRepository userRepository,
             IUserClaimRepository userClaimRepository,
-            ISecurityClaimRepository claimRepository,
+            IClaimRepository claimRepository,
             IMapper mapper,
             UserBusinessRules userBusinessRules)
         {
@@ -46,7 +46,7 @@ public class GetClaimsByUserIdQuery : IRequest<GetClaimsByUserIdResponse>, ISecu
                 cancellationToken: cancellationToken
             );
 
-            var claimIds = userClaims.Items.Select(uc => uc.SecurityClaimId).ToList();
+            var claimIds = userClaims.Items.Select(uc => uc.ClaimId).ToList();
 
             var claims = _claimRepository.Query()
                 .Where(c => claimIds.Contains(c.Id));

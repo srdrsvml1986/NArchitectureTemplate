@@ -20,14 +20,14 @@ public class AddUserClaimsCommand : IRequest<AddUserClaimsResponse>, ISecuredReq
     {
         private readonly IUserRepository _userRepository;
         private readonly IUserClaimRepository _userClaimRepository;
-        private readonly ISecurityClaimRepository _claimRepository;
+        private readonly IClaimRepository _claimRepository;
         private readonly IMapper _mapper;
         private readonly UserBusinessRules _userBusinessRules;
 
         public AddUserClaimsCommandHandler(
             IUserRepository userRepository,
             IUserClaimRepository userClaimRepository,
-            ISecurityClaimRepository claimRepository,
+            IClaimRepository claimRepository,
             IMapper mapper,
             UserBusinessRules userBusinessRules)
         {
@@ -47,18 +47,18 @@ public class AddUserClaimsCommand : IRequest<AddUserClaimsResponse>, ISecuredReq
                 cancellationToken: cancellationToken
             );
 
-            var existingClaimIds = existingUserClaims.Items.Select(uc => uc.SecurityClaimId).ToList();
+            var existingClaimIds = existingUserClaims.Items.Select(uc => uc.ClaimId).ToList();
 
             // Sadece yeni olan claim'leri ekle
             var newClaimsToAdd = request.ClaimIds
                 .Except(existingClaimIds)
-                .Select(claimId => new UserClaim { UserId = request.UserId, SecurityClaimId = claimId })
+                .Select(claimId => new UserClaim { UserId = request.UserId, ClaimId = claimId })
                 .ToList();
 
             if (newClaimsToAdd.Any())
                 await _userClaimRepository.AddRangeAsync(newClaimsToAdd, cancellationToken);
 
-            var addedClaims = _claimRepository.Query().Where(c => newClaimsToAdd.Select(nc => nc.SecurityClaimId).Contains(c.Id));
+            var addedClaims = _claimRepository.Query().Where(c => newClaimsToAdd.Select(nc => nc.ClaimId).Contains(c.Id));
 
             return new AddUserClaimsResponse { Claims = addedClaims };
         }

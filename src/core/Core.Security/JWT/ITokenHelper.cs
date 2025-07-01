@@ -4,7 +4,7 @@ namespace NArchitecture.Core.Security.JWT;
 
 public interface ITokenHelper<TUserId, TOperationClaimId, TRefreshTokenId>
 {
-    public AccessToken CreateToken(User<TUserId> user, IList<SecurityClaim<TOperationClaimId>> operationClaims);
+    public AccessToken CreateToken(User<TUserId> user, IList<Claim<TOperationClaimId>> operationClaims);
 
     public RefreshToken<TRefreshTokenId, TUserId> CreateRefreshToken(User<TUserId> user, string ipAddress);
 }
