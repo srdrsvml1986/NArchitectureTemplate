@@ -1,4 +1,5 @@
 using NArchitecture.Core.Application.Dtos;
+using static Domain.Entities.User;
 
 namespace Application.Features.Users.Queries.GetList;
 
@@ -8,7 +9,7 @@ public class GetListUserListItemDto : IDto
     public string FirstName { get; set; }
     public string LastName { get; set; }
     public string Email { get; set; }
-    public bool Status { get; set; }
+    public UserStatus Status { get; set; }
     public string? PhotoURL { get; set; }
     public string? Gender { get; set; }
     public string? PhoneNumber { get; set; }
@@ -25,7 +26,7 @@ public class GetListUserListItemDto : IDto
         Email = string.Empty;
     }
 
-    public GetListUserListItemDto(Guid id, string firstName, string lastName, string email, bool status)
+    public GetListUserListItemDto(Guid id, string firstName, string lastName, string email, UserStatus status)
     {
         Id = id;
         FirstName = firstName;
@@ -34,7 +35,7 @@ public class GetListUserListItemDto : IDto
         Status = status;
     }
 
-    public GetListUserListItemDto(Guid ýd, string firstName, string lastName, string email, bool status, string? photoURL, string? gender, DateTime? birthDate, DateTime createdDate, DateTime? updatedDate, DateTime? deletedDate) : this(ýd, firstName, lastName, email, status)
+    public GetListUserListItemDto(Guid ýd, string firstName, string lastName, string email, UserStatus status, string? photoURL, string? gender, DateTime? birthDate, DateTime createdDate, DateTime? updatedDate, DateTime? deletedDate) : this(ýd, firstName, lastName, email, status)
     {
         PhotoURL = photoURL;
         Gender = gender;

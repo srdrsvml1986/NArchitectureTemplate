@@ -13,10 +13,10 @@ public class MockUserClaimRepository
         _operationClaimFakeData = operationClaimFakeData;
     }
 
-    public IUserClaimRepository GetMockUserClaimRepository()
+    public IUserOperationClaimRepository GetMockUserClaimRepository()
     {
-        List<Domain.Entities.Claim> operationClaims = _operationClaimFakeData.Data;
-        var mockRepo = new Mock<IUserClaimRepository>();
+        List<Domain.Entities.OperationClaim> operationClaims = _operationClaimFakeData.Data;
+        var mockRepo = new Mock<IUserOperationClaimRepository>();
 
         mockRepo
             .Setup(s => s.GetSecurityClaimsByUserIdAsync(It.IsAny<Guid>()))

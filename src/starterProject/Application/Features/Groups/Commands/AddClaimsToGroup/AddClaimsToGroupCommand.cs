@@ -20,15 +20,15 @@ public class AddClaimsToGroupCommand : IRequest<AddClaimsToGroupResponse>, ISecu
     {
         private readonly IMapper _mapper;
         private readonly IGroupRepository _groupRepository;
-        private readonly IGroupClaimRepository _groupClaimRepository;
-        private readonly IClaimRepository _claimRepository;
+        private readonly IGroupOperationClaimRepository _groupClaimRepository;
+        private readonly IOperationClaimRepository _claimRepository;
         private readonly GroupBusinessRules _groupBusinessRules;
 
         public AddClaimsToGroupCommandHandler(
             IMapper mapper,
             IGroupRepository groupRepository,
-            IGroupClaimRepository groupClaimRepository,
-            IClaimRepository claimRepository,
+            IGroupOperationClaimRepository groupClaimRepository,
+            IOperationClaimRepository claimRepository,
             GroupBusinessRules groupBusinessRules)
         {
             _mapper = mapper;
@@ -42,8 +42,8 @@ public class AddClaimsToGroupCommand : IRequest<AddClaimsToGroupResponse>, ISecu
         {
             await _groupBusinessRules.GroupIdShouldExistWhenSelected(request.GroupId, cancellationToken);
 
-            List<GroupClaim> groupClaimsToAdd = request.ClaimIds
-                .Select(claimId => new GroupClaim { GroupId = request.GroupId, ClaimId = claimId })
+            List<GroupOperationClaim> groupClaimsToAdd = request.ClaimIds
+                .Select(claimId => new GroupOperationClaim { GroupId = request.GroupId, OperationClaimId = claimId })
                 .ToList();
 
             await _groupClaimRepository.AddRangeAsync(groupClaimsToAdd, cancellationToken);

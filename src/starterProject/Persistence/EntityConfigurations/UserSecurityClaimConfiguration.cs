@@ -4,15 +4,15 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Persistence.EntityConfigurations;
 
-public class UserClaimConfiguration : IEntityTypeConfiguration<UserClaim>
+public class UserClaimConfiguration : IEntityTypeConfiguration<UserOperationClaim>
 {
-    public void Configure(EntityTypeBuilder<UserClaim> builder)
+    public void Configure(EntityTypeBuilder<UserOperationClaim> builder)
     {
-        builder.ToTable("UserClaims").HasKey(uoc => uoc.Id);
+        builder.ToTable("UserOperationClaims").HasKey(uoc => uoc.Id);
 
         builder.Property(uoc => uoc.Id).HasColumnName("Id").IsRequired();
         builder.Property(uoc => uoc.UserId).HasColumnName("UserId").IsRequired();
-        builder.Property(uoc => uoc.ClaimId).HasColumnName("SecurityClaimId").IsRequired();
+        builder.Property(uoc => uoc.OperationClaimId).HasColumnName("OperationClaimId").IsRequired();
         builder.Property(uoc => uoc.CreatedDate).HasColumnName("CreatedDate").IsRequired();
         builder.Property(uoc => uoc.UpdatedDate).HasColumnName("UpdatedDate");
         builder.Property(uoc => uoc.DeletedDate).HasColumnName("DeletedDate");
@@ -20,14 +20,14 @@ public class UserClaimConfiguration : IEntityTypeConfiguration<UserClaim>
         builder.HasQueryFilter(uoc => !uoc.DeletedDate.HasValue);
 
         builder.HasOne(uoc => uoc.User);
-        builder.HasOne(uoc => uoc.Claim);
+        builder.HasOne(uoc => uoc.OperationClaim);
 
         builder.HasData(_seeds);
 
         builder.HasBaseType((string)null!);
     }
 
-    private IEnumerable<UserClaim> _seeds
+    private IEnumerable<UserOperationClaim> _seeds
     {
         get
         {
@@ -35,7 +35,7 @@ public class UserClaimConfiguration : IEntityTypeConfiguration<UserClaim>
             {
                 Id = Guid.NewGuid(),
                 UserId = UserConfiguration.AdminId,
-                ClaimId = ClaimConfiguration.AdminId
+                OperationClaimId = OperationClaimConfiguration.AdminId
             };
         }
     }

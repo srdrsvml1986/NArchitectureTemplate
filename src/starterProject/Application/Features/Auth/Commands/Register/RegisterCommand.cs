@@ -29,8 +29,8 @@ public class RegisterCommand : IRequest<RegisteredResponse>
     public class RegisterCommandHandler : IRequestHandler<RegisterCommand, RegisteredResponse>
     {
         private readonly IUserRepository _userRepository;
-        private readonly IUserClaimRepository _userOperationClaimRepository;
-        private readonly IClaimRepository _operationClaimRepository;
+        private readonly IUserOperationClaimRepository _userOperationClaimRepository;
+        private readonly IOperationClaimRepository _operationClaimRepository;
         private readonly IAuthService _authService;
         private readonly AuthBusinessRules _authBusinessRules;
 
@@ -39,7 +39,7 @@ public class RegisterCommand : IRequest<RegisteredResponse>
             IAuthService authService,
             AuthBusinessRules authBusinessRules
 ,
-            IClaimRepository operationClaimRepository)
+            IOperationClaimRepository operationClaimRepository)
         {
             _userRepository = userRepository;
             _authService = authService;
@@ -68,11 +68,11 @@ public class RegisterCommand : IRequest<RegisteredResponse>
 
             foreach (var claim in allClaims)
             {
-                await _userOperationClaimRepository.AddAsync(new UserClaim
+                await _userOperationClaimRepository.AddAsync(new UserOperationClaim
                 {
                     Id = new Guid(),
                     UserId = createdUser.Id,
-                    ClaimId = claim.Id,
+                    OperationClaimId = claim.Id,
                     CreatedDate = DateTime.UtcNow,
                     User = createdUser
                 });

@@ -20,11 +20,11 @@ public class GetClaimsByGroupIdGroupQuery : IRequest<GetClaimsByGroupIdGroupResp
     {
         private readonly IMapper _mapper;
         private readonly IGroupRepository _groupRepository;
-        private readonly IGroupClaimRepository _groupClaimRepository;
-        private readonly IClaimRepository _claimRepository;
+        private readonly IGroupOperationClaimRepository _groupClaimRepository;
+        private readonly IOperationClaimRepository _claimRepository;
         private readonly GroupBusinessRules _groupBusinessRules;
 
-        public GetClaimsByGroupIdGroupQueryHandler(IMapper mapper, IGroupRepository groupRepository, GroupBusinessRules groupBusinessRules, IGroupClaimRepository groupClaimRepository, IClaimRepository claimRepository)
+        public GetClaimsByGroupIdGroupQueryHandler(IMapper mapper, IGroupRepository groupRepository, GroupBusinessRules groupBusinessRules, IGroupOperationClaimRepository groupClaimRepository, IOperationClaimRepository claimRepository)
         {
             _mapper = mapper;
             _groupRepository = groupRepository;
@@ -43,7 +43,7 @@ public class GetClaimsByGroupIdGroupQuery : IRequest<GetClaimsByGroupIdGroupResp
      cancellationToken: cancellationToken
  );
 
-            var claimIds = groupClaims.Items.Select(x => x.ClaimId).ToList();
+            var claimIds = groupClaims.Items.Select(x => x.OperationClaimId).ToList();
 
             var claims = _claimRepository.Query().Where(x => claimIds.Contains(x.Id));
 

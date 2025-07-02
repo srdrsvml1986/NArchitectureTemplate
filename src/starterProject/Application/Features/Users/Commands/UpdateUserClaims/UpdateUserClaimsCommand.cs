@@ -1,4 +1,4 @@
-using Application.Features.UserClaims.Commands.Update;
+using Application.Features.UserOperationClaims.Commands.Update;
 using Application.Features.Users.Constants;
 using Application.Features.Users.Rules;
 using Application.Services.Repositories;
@@ -20,15 +20,15 @@ public class UpdateUserClaimsCommand : IRequest<UpdateUserClaimsResponse>, ISecu
     public class UpdateUserClaimsCommandHandler : IRequestHandler<UpdateUserClaimsCommand, UpdateUserClaimsResponse>
     {
         private readonly IUserRepository _userRepository;
-        private readonly IUserClaimRepository _userClaimRepository;
-        private readonly IClaimRepository _claimRepository;
+        private readonly IUserOperationClaimRepository _userClaimRepository;
+        private readonly IOperationClaimRepository _claimRepository;
         private readonly IMapper _mapper;
         private readonly UserBusinessRules _userBusinessRules;
 
         public UpdateUserClaimsCommandHandler(
             IUserRepository userRepository,
-            IUserClaimRepository userClaimRepository,
-            IClaimRepository claimRepository,
+            IUserOperationClaimRepository userClaimRepository,
+            IOperationClaimRepository claimRepository,
             IMapper mapper,
             UserBusinessRules userBusinessRules)
         {
@@ -48,17 +48,17 @@ public class UpdateUserClaimsCommand : IRequest<UpdateUserClaimsResponse>, ISecu
                 cancellationToken: cancellationToken
             );
 
-            var existingClaimIds = existingUserClaims.Items.Select(uc => uc.ClaimId).ToList();
+            var existingClaimIds = existingUserClaims.Items.Select(uc => uc.OperationClaimId).ToList();
 
             // Yeni eklenecek claim'ler
             var claimsToAdd = request.ClaimIds
                 .Except(existingClaimIds)
-                .Select(claimId => new UserClaim { UserId = request.UserId, ClaimId = claimId })
+                .Select(claimId => new UserOperationClaim { UserId = request.UserId, OperationClaimId = claimId })
                 .ToList();
 
             // Silinecek claim'ler
             var claimsToRemove = existingUserClaims.Items
-                .Where(uc => !request.ClaimIds.Contains(uc.ClaimId))
+                .Where(uc => !request.ClaimIds.Contains(uc.OperationClaimId))
                 .ToList();
 
             if (claimsToAdd.Any())

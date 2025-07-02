@@ -28,13 +28,21 @@ public class GroupConfiguration : IEntityTypeConfiguration<Group>
     {
         get
         {
-            Group[] groups= new[]{ 
+            Group[] groups = new[]{
                 new Group {
                 Id = GroupId,
-                Name = "Admin Group"},  
+                Name = "IT",
+                Description = "Bilgi Ýþlem Departmaný",},
                 new Group {
                 Id = 2,
-                Name = "User Group"}         
+                Name = "HR",
+                Description = "Ýnsan Kaynaklarý Departmaný"},
+                new Group
+                {
+                    Id = 3,
+                    Name = "Sales",
+                    Description = "Satýþ Departmaný",
+                }
             };
 
             foreach (var group in groups)

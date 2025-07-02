@@ -17,27 +17,6 @@ public class GroupRoleConfiguration : IEntityTypeConfiguration<GroupRole>
         builder.Property(gr => gr.UpdatedDate).HasColumnName("UpdatedDate");
         builder.Property(gr => gr.DeletedDate).HasColumnName("DeletedDate");
 
-        builder.HasData(
-            new Group
-            {
-                Id = 1,
-                Name = "IT",
-                Description = "Bilgi Ýþlem Departmaný",
-            },
-            new Group
-            {
-                Id = 2,
-                Name = "HR",
-                Description = "Ýnsan Kaynaklarý Departmaný",
-            },
-            new Group
-            {
-                Id = 3,
-                Name = "Sales",
-                Description = "Satýþ Departmaný",
-            }
-        );
-
         builder.HasQueryFilter(gr => !gr.DeletedDate.HasValue);
     }
 }

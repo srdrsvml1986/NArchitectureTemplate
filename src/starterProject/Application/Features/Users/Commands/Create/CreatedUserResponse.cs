@@ -1,4 +1,5 @@
 using NArchitecture.Core.Application.Responses;
+using static Domain.Entities.User;
 
 namespace Application.Features.Users.Commands.Create;
 
@@ -8,7 +9,7 @@ public class CreatedUserResponse : IResponse
     public string FirstName { get; set; }
     public string LastName { get; set; }
     public string Email { get; set; }
-    public bool Status { get; set; }
+    public UserStatus Status { get; set; }
 
     public CreatedUserResponse()
     {
@@ -17,7 +18,7 @@ public class CreatedUserResponse : IResponse
         Email = string.Empty;
     }
 
-    public CreatedUserResponse(Guid id, string firstName, string lastName, string email, bool status)
+    public CreatedUserResponse(Guid id, string firstName, string lastName, string email, UserStatus status)
     {
         Id = id;
         FirstName = firstName;

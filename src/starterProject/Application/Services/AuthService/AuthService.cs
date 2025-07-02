@@ -21,7 +21,7 @@ public class AuthService : IAuthService
     private readonly IRefreshTokenRepository _refreshTokenRepository;
     private readonly ITokenHelper<Guid, int, Guid> _tokenHelper;
     private readonly TokenOptions _tokenOptions;
-    private readonly IUserClaimRepository _userOperationClaimRepository;
+    private readonly IUserOperationClaimRepository _userOperationClaimRepository;
     private readonly IMapper _mapper;
     private readonly IEmailAuthenticatorHelper _emailAuthenticatorHelper;
     private readonly IEmailAuthenticatorRepository _emailAuthenticatorRepository;
@@ -33,7 +33,7 @@ public class AuthService : IAuthService
     private readonly string _appName;
 
     public AuthService(
-        IUserClaimRepository userOperationClaimRepository,
+        IUserOperationClaimRepository userOperationClaimRepository,
         IRefreshTokenRepository refreshTokenRepository,
         ITokenHelper<Guid, int, Guid> tokenHelper,
         IConfiguration configuration,
@@ -68,10 +68,10 @@ public class AuthService : IAuthService
 
     public async Task<AccessToken> CreateAccessToken(User user)
     {
-        IList<Claim> operationClaims = await _userOperationClaimRepository.GetSecurityClaimsByUserIdAsync(user.Id);
+        IList<OperationClaim> operationClaims = await _userOperationClaimRepository.GetSecurityClaimsByUserIdAsync(user.Id);
         AccessToken accessToken = _tokenHelper.CreateToken(
             user,
-            operationClaims.Select(op => (NArchitecture.Core.Security.Entities.Claim<int>)op).ToImmutableList()
+            operationClaims.Select(op => (NArchitecture.Core.Security.Entities.OperationClaim<int>)op).ToImmutableList()
         );
         return accessToken;
     }

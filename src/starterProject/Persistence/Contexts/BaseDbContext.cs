@@ -1,6 +1,7 @@
 using System.Reflection;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Microsoft.Extensions.Configuration;
 
 namespace Persistence.Contexts;
@@ -9,19 +10,19 @@ public class BaseDbContext : DbContext
 {
     protected IConfiguration Configuration { get; set; }
     public DbSet<EmailAuthenticator> EmailAuthenticators { get; set; }
-    public DbSet<Claim> OperationClaims { get; set; }
+    public DbSet<OperationClaim> OperationClaims { get; set; }
     public DbSet<OtpAuthenticator> OtpAuthenticators { get; set; }
     public DbSet<RefreshToken> RefreshTokens { get; set; }
     public DbSet<User> Users { get; set; }
-    public DbSet<UserClaim> UserClaims { get; set; }
+    public DbSet<UserOperationClaim> UserClaims { get; set; }
     public DbSet<Group> Groups { get; set; }
-    public DbSet<GroupClaim> GroupClaims { get; set; }
+    public DbSet<GroupOperationClaim> GroupClaims { get; set; }
     public DbSet<UserGroup> UserGroups { get; set; }
     public DbSet<ResetPasswordToken> ResetPasswordTokens { get; set; }
     public DbSet<UserSession> UserSessions { get; set; }
     public DbSet<UserRole> UserRoles { get; set; }
     public DbSet<Role> Roles { get; set; }
-    public DbSet<RoleClaim> RoleClaims { get; set; }
+    public DbSet<RoleOperationClaim> RoleClaims { get; set; }
     public DbSet<GroupRole> GroupRoles { get; set; }
 
     public BaseDbContext(DbContextOptions dbContextOptions, IConfiguration configuration)
@@ -59,5 +60,24 @@ public class BaseDbContext : DbContext
 
     //}
 
+    // DbContext'inizde
 
+    /// <summary>
+    /// postgreSQL için UTC zaman dilimi kullanmak üzere yapılandırma.
+    /// </summary>
+    /// <param name="builder"></param>
+    protected override void ConfigureConventions(ModelConfigurationBuilder builder)
+    {
+        builder.Properties<DateTime>()
+               .HaveConversion<UtcValueConverter>();
+    }
+
+    public class UtcValueConverter : ValueConverter<DateTime, DateTime>
+    {
+        public UtcValueConverter() : base(
+            v => v.Kind == DateTimeKind.Utc ? v : v.ToUniversalTime(),
+            v => DateTime.SpecifyKind(v, DateTimeKind.Utc))
+        {
+        }
+    }
 }

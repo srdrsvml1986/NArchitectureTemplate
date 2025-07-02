@@ -17,23 +17,23 @@ public static class PersistenceServiceRegistration
         services.AddDbMigrationApplier(buildServices => buildServices.GetRequiredService<BaseDbContext>());
 
         services.AddScoped<IEmailAuthenticatorRepository, EmailAuthenticatorRepository>();
-        services.AddScoped<IClaimRepository, SecurityClaimRepository>();
+        services.AddScoped<IOperationClaimRepository, OperationClaimRepository>();
         services.AddScoped<IOtpAuthenticatorRepository, OtpAuthenticatorRepository>();
         services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
-        services.AddScoped<IUserClaimRepository, UserClaimRepository>();
+        services.AddScoped<IUserOperationClaimRepository, UserOperationClaimRepository>();
 
         services.AddScoped<IGroupRepository, GroupRepository>();
-        services.AddScoped<IGroupClaimRepository, GroupClaimRepository>();
+        services.AddScoped<IGroupOperationClaimRepository, GroupOperationClaimRepository>();
         services.AddScoped<IUserGroupRepository, UserGroupRepository>();
         services.AddScoped<IGroupRepository, GroupRepository>();
-        services.AddScoped<IGroupClaimRepository, GroupClaimRepository>();
+        services.AddScoped<IGroupOperationClaimRepository, GroupOperationClaimRepository>();
         services.AddScoped<IUserGroupRepository, UserGroupRepository>();
         services.AddScoped<IPasswordResetTokenRepository, PasswordResetTokenRepository>();
         services.AddScoped<IUserSessionRepository, UserSessionRepository>();
         services.AddScoped<IUserRoleRepository, UserRoleRepository>();
         services.AddScoped<IRoleRepository, RoleRepository>();
-        services.AddScoped<IRoleClaimRepository, RoleClaimRepository>();
+        services.AddScoped<IRoleOperationClaimRepository, RoleOperationClaimRepository>();
         services.AddScoped<IGroupRoleRepository, GroupRoleRepository>();
         return services;
     }

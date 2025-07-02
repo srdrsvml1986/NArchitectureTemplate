@@ -20,15 +20,15 @@ public class UpdateClaimsInGroupCommand : IRequest<UpdateClaimsInGroupResponse>,
     {
         private readonly IMapper _mapper;
         private readonly IGroupRepository _groupRepository;
-        private readonly IGroupClaimRepository _groupClaimRepository;
-        private readonly IClaimRepository _claimRepository;
+        private readonly IGroupOperationClaimRepository _groupClaimRepository;
+        private readonly IOperationClaimRepository _claimRepository;
         private readonly GroupBusinessRules _groupBusinessRules;
 
         public UpdateClaimsInGroupCommandHandler(
             IMapper mapper,
             IGroupRepository groupRepository,
-            IGroupClaimRepository groupClaimRepository,
-            IClaimRepository claimRepository,
+            IGroupOperationClaimRepository groupClaimRepository,
+            IOperationClaimRepository claimRepository,
             GroupBusinessRules groupBusinessRules)
         {
             _mapper = mapper;
@@ -47,14 +47,14 @@ public class UpdateClaimsInGroupCommand : IRequest<UpdateClaimsInGroupResponse>,
                 cancellationToken: cancellationToken
             );
 
-            var existingClaimIds = existingGroupClaims.Items.Select(x => x.ClaimId).ToList();
+            var existingClaimIds = existingGroupClaims.Items.Select(x => x.OperationClaimId).ToList();
 
             var claimsToAdd = request.ClaimIds.Except(existingClaimIds)
-                .Select(claimId => new GroupClaim { GroupId = request.GroupId, ClaimId = claimId })
+                .Select(claimId => new GroupOperationClaim { GroupId = request.GroupId, OperationClaimId = claimId })
                 .ToList();
 
             var claimsToRemove = existingGroupClaims.Items
-                .Where(x => !request.ClaimIds.Contains(x.ClaimId))
+                .Where(x => !request.ClaimIds.Contains(x.OperationClaimId))
                 .ToList();
 
             await _groupClaimRepository.AddRangeAsync(claimsToAdd, cancellationToken);

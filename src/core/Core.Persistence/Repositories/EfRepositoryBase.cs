@@ -349,13 +349,17 @@ public class EfRepositoryBase<TEntity, TEntityId, TContext>
         return queryable.Any();
     }
     public async Task<int> CountAsync(
-    Expression<Func<TEntity, bool>>? predicate = null,
-    bool withDeleted = false,
-    CancellationToken cancellationToken = default)
+        Expression<Func<TEntity, bool>>? predicate = null,
+        bool withDeleted = false,
+        CancellationToken cancellationToken = default)
     {
         var query = Query();
-        if (!withDeleted) query = query.Where(e => !EF.Property<bool>(e, "IsDeleted"));
-        if (predicate != null) query = query.Where(predicate);
+        if (!withDeleted)
+            query = query.Where(e => !((IEntityTimestamps)e).DeletedDate.HasValue); // DeletedDate kontrolü
+
+        if (predicate != null)
+            query = query.Where(predicate);
+
         return await query.CountAsync(cancellationToken);
     }
 
@@ -364,8 +368,12 @@ public class EfRepositoryBase<TEntity, TEntityId, TContext>
         bool withDeleted = false)
     {
         var query = Query();
-        if (!withDeleted) query = query.Where(e => !EF.Property<bool>(e, "IsDeleted"));
-        if (predicate != null) query = query.Where(predicate);
+        if (!withDeleted)
+            query = query.Where(e => !((IEntityTimestamps)e).DeletedDate.HasValue); // DeletedDate kontrolü
+
+        if (predicate != null)
+            query = query.Where(predicate);
+
         return query.Count();
     }
 

@@ -20,15 +20,16 @@ using NArchitecture.Core.Mailing.MailKit;
 using NArchitecture.Core.Security.DependencyInjection;
 using NArchitecture.Core.Security.JWT;
 using Application.Services.Groups;
-using Application.Services.GroupClaims;
+using Application.Services.GroupOperationClaims;
 using Application.Services.UserGroups;
 using Application.Services.PasswordResetTokens;
 using Application.Services.Repositories;
 using Application.Services.UserSessions;
 using Application.Services.UserRoles;
 using Application.Services.Roles;
-using Application.Services.RoleClaims;
+using Application.Services.RoleOperationClaims;
 using Application.Services.GroupRoles;
+using Microsoft.AspNetCore.Identity.UI.Services;
 
 namespace Application;
 
@@ -70,17 +71,19 @@ public static class ApplicationServiceRegistration
         services.AddSecurityServices<Guid, int, Guid>(tokenOptions);
 
         services.AddScoped<IGroupService, GroupManager>();
-        services.AddScoped<IGroupClaimService, GroupClaimManager>();
+        services.AddScoped<IGroupOperationClaimService, GroupOperationClaimManager>();
         services.AddScoped<IUserGroupService, UserGroupManager>();
         services.AddScoped<IGroupService, GroupManager>();
-        services.AddScoped<IGroupClaimService, GroupClaimManager>();
+        services.AddScoped<IGroupOperationClaimService, GroupOperationClaimManager>();
         services.AddScoped<IUserGroupService, UserGroupManager>();
         services.AddScoped<IPasswordResetTokenService, PasswordResetTokenManager>();
         services.AddScoped<IUserSessionService, UserSessionService>();
         services.AddScoped<IUserRoleService, UserRoleManager>();
         services.AddScoped<IRoleService, RoleManager>();
-        services.AddScoped<IRoleClaimService, RoleClaimManager>();
+        services.AddScoped<IRoleOperationClaimService, RoleOperationClaimManager>();
         services.AddScoped<IGroupRoleService, GroupRoleManager>();
+        services.AddScoped<INotificationService, NotificationService>();
+        services.AddScoped<IEmailSender, NoOpEmailSender>();
         return services;
     }
 

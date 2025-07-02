@@ -19,15 +19,15 @@ public class AddUserClaimsCommand : IRequest<AddUserClaimsResponse>, ISecuredReq
     public class AddUserClaimsCommandHandler : IRequestHandler<AddUserClaimsCommand, AddUserClaimsResponse>
     {
         private readonly IUserRepository _userRepository;
-        private readonly IUserClaimRepository _userClaimRepository;
-        private readonly IClaimRepository _claimRepository;
+        private readonly IUserOperationClaimRepository _userClaimRepository;
+        private readonly IOperationClaimRepository _claimRepository;
         private readonly IMapper _mapper;
         private readonly UserBusinessRules _userBusinessRules;
 
         public AddUserClaimsCommandHandler(
             IUserRepository userRepository,
-            IUserClaimRepository userClaimRepository,
-            IClaimRepository claimRepository,
+            IUserOperationClaimRepository userClaimRepository,
+            IOperationClaimRepository claimRepository,
             IMapper mapper,
             UserBusinessRules userBusinessRules)
         {
@@ -47,18 +47,18 @@ public class AddUserClaimsCommand : IRequest<AddUserClaimsResponse>, ISecuredReq
                 cancellationToken: cancellationToken
             );
 
-            var existingClaimIds = existingUserClaims.Items.Select(uc => uc.ClaimId).ToList();
+            var existingClaimIds = existingUserClaims.Items.Select(uc => uc.OperationClaimId).ToList();
 
             // Sadece yeni olan claim'leri ekle
             var newClaimsToAdd = request.ClaimIds
                 .Except(existingClaimIds)
-                .Select(claimId => new UserClaim { UserId = request.UserId, ClaimId = claimId })
+                .Select(claimId => new UserOperationClaim { UserId = request.UserId, OperationClaimId = claimId })
                 .ToList();
 
             if (newClaimsToAdd.Any())
                 await _userClaimRepository.AddRangeAsync(newClaimsToAdd, cancellationToken);
 
-            var addedClaims = _claimRepository.Query().Where(c => newClaimsToAdd.Select(nc => nc.ClaimId).Contains(c.Id));
+            var addedClaims = _claimRepository.Query().Where(c => newClaimsToAdd.Select(nc => nc.OperationClaimId).Contains(c.Id));
 
             return new AddUserClaimsResponse { Claims = addedClaims };
         }
