@@ -32,21 +32,21 @@ public class GetActiveSessionsQuery : IRequest<GetListResponse<GetListUserSessio
 
         public async Task<GetListResponse<GetListUserSessionListItemDto>> Handle(GetActiveSessionsQuery request, CancellationToken cancellationToken)
         {
-            IPaginate<UserSession> userSessions = await _userSessionService.GetListAsync(
+            IPaginate<UserSession>? userSessions = await _userSessionService.GetListAsync(
               predicate: us => us.UserId == request.UserId,
               index: request.PageRequest.PageIndex,
               size: request.PageRequest.PageSize,
               cancellationToken: cancellationToken
           );
-            if (userSessions.Items == null || !userSessions.Items.Any())
+            if (userSessions == null || userSessions.Items == null || !userSessions.Items.Any())
             {
                 return new GetListResponse<GetListUserSessionListItemDto>
                 {
                     Items = new List<GetListUserSessionListItemDto>(),
-                    Index = userSessions.Index,
-                    Size = userSessions.Size,
-                    Count = userSessions.Count,
-                    Pages = userSessions.Pages
+                    Index = 0,
+                    Size = 0,
+                    Count = 0,
+                    Pages = 0
                 };
             }
             GetListResponse<GetListUserSessionListItemDto> response = _mapper.Map<GetListResponse<GetListUserSessionListItemDto>>(userSessions);

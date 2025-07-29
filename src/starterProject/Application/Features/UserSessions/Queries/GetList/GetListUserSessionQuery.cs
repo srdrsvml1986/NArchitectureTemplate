@@ -14,7 +14,7 @@ namespace Application.Features.UserSessions.Queries.GetList;
 
 public class GetListUserSessionQuery : IRequest<GetListResponse<GetListUserSessionListItemDto>>, ISecuredRequest, ICachableRequest
 {
-    public PageRequest PageRequest { get; set; }
+    public required PageRequest PageRequest { get; set; }
 
     public string[] Roles => [Admin, Read];
 
@@ -36,22 +36,22 @@ public class GetListUserSessionQuery : IRequest<GetListResponse<GetListUserSessi
 
         public async Task<GetListResponse<GetListUserSessionListItemDto>> Handle(GetListUserSessionQuery request, CancellationToken cancellationToken)
         {
-            IPaginate<UserSession> userSessions = await _userSessionService.GetListAsync(
+            IPaginate<UserSession>? userSessions = await _userSessionService.GetListAsync(
                 index: request.PageRequest.PageIndex,
                 size: request.PageRequest.PageSize, 
                 cancellationToken: cancellationToken
             );
 
                         GetListResponse<GetListUserSessionListItemDto> response;
-            if (userSessions.Items == null || !userSessions.Items.Any())
+            if (userSessions == null || userSessions.Items == null || !userSessions.Items.Any())
             {
                 response = new GetListResponse<GetListUserSessionListItemDto>
                 {
                     Items = new List<GetListUserSessionListItemDto>(),
-                    Index = userSessions.Index,
-                    Size = userSessions.Size,
-                    Count = userSessions.Count,
-                    Pages = userSessions.Pages
+                    Index = 0,
+                    Size = 0,
+                    Count = 0,
+                    Pages = 0
                 };
             }
             else
