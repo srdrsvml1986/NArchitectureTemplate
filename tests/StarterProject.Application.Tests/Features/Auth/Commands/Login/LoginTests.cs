@@ -8,6 +8,7 @@ using Application.Services.UsersService;
 using AutoMapper;
 using FluentValidation.TestHelper;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging.Abstractions;
 using NArchitecture.Core.CrossCuttingConcerns.Exception.Types;
 using NArchitecture.Core.Localization.Abstraction;
 using NArchitecture.Core.Localization.Resource.Yaml;
@@ -61,9 +62,15 @@ public class LoginTests
         IOtpAuthenticatorHelper otpAuthenticatorHelper = new OtpNetOtpAuthenticatorHelper();
         ILocalizationService localizationService = new ResourceLocalizationService(resources: [])
         {
-            AcceptLocales = new[] { "en" }
+            AcceptLocales = new[] { "tr" }
         };
-        IMapper mapper = new Mapper(new MapperConfiguration(cfg => cfg.AddProfile<MappingProfiles>()));
+
+        var config = new MapperConfiguration(cfg => {
+            cfg.AddProfile<MappingProfiles>();
+        }, NullLoggerFactory.Instance); // ILoggerFactory parametresi eklendi.
+
+        IMapper mapper = config.CreateMapper();
+
         #endregion
         AuthBusinessRules authBusinessRules = new(_userRepository, localizationService);
         UserBusinessRules _userBusinessRules = new(_userRepository, localizationService);
