@@ -9,6 +9,7 @@ using NArchitecture.Core.Security.Constants;
 using Application.Features.Groups.Constants;
 using Application.Features.GroupOperationClaims.Constants;
 using Application.Features.UserGroups.Constants;
+using Application.Features.UserSessions.Constants;
 
 namespace Persistence.EntityConfigurations;
 
@@ -38,20 +39,20 @@ public class OperationClaimConfiguration : IEntityTypeConfiguration<OperationCla
         {
             yield return new() { Id = AdminId, Name = GeneralClaims.Admin };
 
-            IEnumerable<OperationClaim> featureClaims = getSecurityOperationClaims(AdminId);
+            IEnumerable<OperationClaim> featureClaims = getFeatureOperationClaims(AdminId);
             foreach (OperationClaim claim in featureClaims)
                 yield return claim;
         }
     }
 
 #pragma warning disable S1854 // Unused assignments should be removed
-    private IEnumerable<OperationClaim> getSecurityOperationClaims(int initialId)
+    private IEnumerable<OperationClaim> getFeatureOperationClaims(int initialId)
     {
         int lastId = initialId;
-        List<OperationClaim> featureSecurityClaims = new();
+        List<OperationClaim> featureOperationClaims = new();
 
         #region Auth
-        featureSecurityClaims.AddRange(
+        featureOperationClaims.AddRange(
             [
                 new() { Id = ++lastId, Name = AuthOperationClaims.Admin },
                 new() { Id = ++lastId, Name = AuthOperationClaims.Read },
@@ -62,7 +63,7 @@ public class OperationClaimConfiguration : IEntityTypeConfiguration<OperationCla
         #endregion
 
         #region OperationClaims
-        featureSecurityClaims.AddRange(
+        featureOperationClaims.AddRange(
             [
                 new() { Id = ++lastId, Name = OperationClaims.Admin },
                 new() { Id = ++lastId, Name = OperationClaims.Read },
@@ -75,7 +76,7 @@ public class OperationClaimConfiguration : IEntityTypeConfiguration<OperationCla
         #endregion
 
         #region UserClaims
-        featureSecurityClaims.AddRange(
+        featureOperationClaims.AddRange(
             [
                 new() { Id = ++lastId, Name = UserOperationClaims.Admin },
                 new() { Id = ++lastId, Name = UserOperationClaims.Read },
@@ -88,7 +89,7 @@ public class OperationClaimConfiguration : IEntityTypeConfiguration<OperationCla
         #endregion
 
         #region Users
-        featureSecurityClaims.AddRange(
+        featureOperationClaims.AddRange(
             [
                 new() { Id = ++lastId, Name = UsersOperationClaims.Admin },
                 new() { Id = ++lastId, Name = UsersOperationClaims.Read },
@@ -102,7 +103,7 @@ public class OperationClaimConfiguration : IEntityTypeConfiguration<OperationCla
 
         
         #region Groups CRUD
-        featureSecurityClaims.AddRange(
+        featureOperationClaims.AddRange(
             [
                 new() { Id = ++lastId, Name = GroupsOperationClaims.Admin },
                 new() { Id = ++lastId, Name = GroupsOperationClaims.Read },
@@ -116,7 +117,7 @@ public class OperationClaimConfiguration : IEntityTypeConfiguration<OperationCla
         
         
         #region GroupClaims CRUD
-        featureSecurityClaims.AddRange(
+        featureOperationClaims.AddRange(
             [
                 new() { Id = ++lastId, Name = GroupOperationClaims.Admin },
                 new() { Id = ++lastId, Name = GroupOperationClaims.Read },
@@ -130,7 +131,7 @@ public class OperationClaimConfiguration : IEntityTypeConfiguration<OperationCla
         
         
         #region UserGroups CRUD
-        featureSecurityClaims.AddRange(
+        featureOperationClaims.AddRange(
             [
                 new() { Id = ++lastId, Name = UserGroupsClaims.Admin },
                 new() { Id = ++lastId, Name = UserGroupsClaims.Read },
@@ -142,7 +143,21 @@ public class OperationClaimConfiguration : IEntityTypeConfiguration<OperationCla
         );
         #endregion
         
-        return featureSecurityClaims;
+        
+        #region UserSessions CRUD
+        featureOperationClaims.AddRange(
+            [
+                new() { Id = ++lastId, Name = UserSessionsOperationClaims.Admin },
+                new() { Id = ++lastId, Name = UserSessionsOperationClaims.Read },
+                new() { Id = ++lastId, Name = UserSessionsOperationClaims.Write },
+                new() { Id = ++lastId, Name = UserSessionsOperationClaims.Create },
+                new() { Id = ++lastId, Name = UserSessionsOperationClaims.Update },
+                new() { Id = ++lastId, Name = UserSessionsOperationClaims.Delete },
+            ]
+        );
+        #endregion
+        
+        return featureOperationClaims;
     }
 #pragma warning restore S1854 // Unused assignments should be removed
 }

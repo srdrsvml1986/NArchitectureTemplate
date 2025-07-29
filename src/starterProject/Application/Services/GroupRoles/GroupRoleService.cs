@@ -7,12 +7,12 @@ using System.Linq.Expressions;
 
 namespace Application.Services.GroupRoles;
 
-public class GroupRoleManager : IGroupRoleService
+public class GroupRoleService : IGroupRoleService
 {
     private readonly IGroupRoleRepository _groupRoleRepository;
     private readonly GroupRoleBusinessRules _groupRoleBusinessRules;
 
-    public GroupRoleManager(IGroupRoleRepository groupRoleRepository, GroupRoleBusinessRules groupRoleBusinessRules)
+    public GroupRoleService(IGroupRoleRepository groupRoleRepository, GroupRoleBusinessRules groupRoleBusinessRules)
     {
         _groupRoleRepository = groupRoleRepository;
         _groupRoleBusinessRules = groupRoleBusinessRules;

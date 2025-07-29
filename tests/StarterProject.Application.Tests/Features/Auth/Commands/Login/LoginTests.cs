@@ -59,7 +59,7 @@ public class LoginTests
             _configuration.GetSection("MailSettings").Get<MailSettings>() ?? throw new Exception("Mail settings not found.");
         IMailService mailService = new MailKitMailService(mailSettings);
         IOtpAuthenticatorHelper otpAuthenticatorHelper = new OtpNetOtpAuthenticatorHelper();
-        ILocalizationService localizationService = new ResourceLocalizationManager(resources: [])
+        ILocalizationService localizationService = new ResourceLocalizationService(resources: [])
         {
             AcceptLocales = new[] { "en" }
         };
@@ -67,7 +67,7 @@ public class LoginTests
         #endregion
         AuthBusinessRules authBusinessRules = new(_userRepository, localizationService);
         UserBusinessRules _userBusinessRules = new(_userRepository, localizationService);
-        IUserService _userService = new UserManager(_userRepository, _userBusinessRules);
+        IUserService _userService = new UserService(_userRepository, _userBusinessRules);
         IAuthService _authService = new AuthService(
                    _userOperationClaimRepository,
                    _refreshTokenRepository,

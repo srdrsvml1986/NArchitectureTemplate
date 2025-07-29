@@ -23,13 +23,13 @@ using Application.Services.Groups;
 using Application.Services.GroupOperationClaims;
 using Application.Services.UserGroups;
 using Application.Services.PasswordResetTokens;
-using Application.Services.Repositories;
-using Application.Services.UserSessions;
 using Application.Services.UserRoles;
 using Application.Services.Roles;
 using Application.Services.RoleOperationClaims;
 using Application.Services.GroupRoles;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Application.Services.UserSessions;
+using Application.Services;
 
 namespace Application;
 
@@ -61,29 +61,29 @@ public static class ApplicationServiceRegistration
 
         services.AddSingleton<IMailService, MailKitMailService>(_ => new MailKitMailService(mailSettings));
         services.AddSingleton<ILogger, SerilogFileLogger>(_ => new SerilogFileLogger(fileLogConfiguration));
-        services.AddSingleton<IElasticSearch, ElasticSearchManager>(_ => new ElasticSearchManager(elasticSearchConfig));
+        services.AddSingleton<IElasticSearch, ElasticSearchService>(_ => new ElasticSearchService(elasticSearchConfig));
 
         services.AddScoped<IAuthService, AuthService>();
-        services.AddScoped<IUserService, UserManager>();
+        services.AddScoped<IUserService, UserService>();
 
         services.AddYamlResourceLocalization();
 
         services.AddSecurityServices<Guid, int, Guid>(tokenOptions);
 
-        services.AddScoped<IGroupService, GroupManager>();
-        services.AddScoped<IGroupOperationClaimService, GroupOperationClaimManager>();
-        services.AddScoped<IUserGroupService, UserGroupManager>();
-        services.AddScoped<IGroupService, GroupManager>();
-        services.AddScoped<IGroupOperationClaimService, GroupOperationClaimManager>();
-        services.AddScoped<IUserGroupService, UserGroupManager>();
-        services.AddScoped<IPasswordResetTokenService, PasswordResetTokenManager>();
-        services.AddScoped<IUserSessionService, UserSessionService>();
-        services.AddScoped<IUserRoleService, UserRoleManager>();
-        services.AddScoped<IRoleService, RoleManager>();
-        services.AddScoped<IRoleOperationClaimService, RoleOperationClaimManager>();
-        services.AddScoped<IGroupRoleService, GroupRoleManager>();
+        services.AddScoped<IGroupService, GroupService>();
+        services.AddScoped<IGroupOperationClaimService, GroupOperationClaimService>();
+        services.AddScoped<IUserGroupService, UserGroupService>();
+        services.AddScoped<IGroupService, GroupService>();
+        services.AddScoped<IGroupOperationClaimService, GroupOperationClaimService>();
+        services.AddScoped<IUserGroupService, UserGroupService>();
+        services.AddScoped<IPasswordResetTokenService, PasswordResetTokenService>();
+        services.AddScoped<IUserRoleService, UserRoleService>();
+        services.AddScoped<IRoleService, RoleService>();
+        services.AddScoped<IRoleOperationClaimService, RoleOperationClaimService>();
+        services.AddScoped<IGroupRoleService, GroupRoleService>();
         services.AddScoped<INotificationService, NotificationService>();
         services.AddScoped<IEmailSender, NoOpEmailSender>();
+        services.AddScoped<IUserSessionService, UserSessionService>();
         return services;
     }
 

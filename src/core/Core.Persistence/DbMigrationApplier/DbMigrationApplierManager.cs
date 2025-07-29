@@ -2,12 +2,12 @@
 
 namespace NArchitecture.Core.Persistence.DbMigrationApplier;
 
-public class DbMigrationApplierManager<TDbContext> : IDbMigrationApplierService<TDbContext>
+public class DbMigrationApplierService<TDbContext> : IDbMigrationApplierService<TDbContext>
     where TDbContext : DbContext
 {
     private readonly TDbContext _context;
 
-    public DbMigrationApplierManager(TDbContext context)
+    public DbMigrationApplierService(TDbContext context)
     {
         _context = context;
     }

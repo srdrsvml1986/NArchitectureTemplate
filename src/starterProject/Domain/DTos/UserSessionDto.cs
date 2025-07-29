@@ -1,8 +1,11 @@
-using NArchitecture.Core.Application.Responses;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace Application.Features.UserSessions.Queries.GetById;
-
-public class GetByIdUserSessionResponse : IResponse
+namespace Domain.DTos;
+public class UserSessionDto
 {
     public Guid Id { get; set; }
     public Guid UserId { get; set; }

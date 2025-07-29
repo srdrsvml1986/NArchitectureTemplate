@@ -8,12 +8,12 @@ using NArchitecture.Core.Security.OAuth.Models;
 
 namespace Application.Services.UsersService;
 
-public class UserManager : IUserService
+public class UserService : IUserService
 {
     private readonly IUserRepository _userRepository;
     private readonly UserBusinessRules _userBusinessRules;
 
-    public UserManager(IUserRepository userRepository, UserBusinessRules userBusinessRules)
+    public UserService(IUserRepository userRepository, UserBusinessRules userBusinessRules)
     {
         _userRepository = userRepository;
         _userBusinessRules = userBusinessRules;

@@ -7,11 +7,11 @@ using Newtonsoft.Json;
 
 namespace NArchitecture.Core.ElasticSearch;
 
-public class ElasticSearchManager : IElasticSearch
+public class ElasticSearchService : IElasticSearch
 {
     private readonly ConnectionSettings _connectionSettings;
 
-    public ElasticSearchManager(ElasticSearchConfig configuration)
+    public ElasticSearchService(ElasticSearchConfig configuration)
     {
         SingleNodeConnectionPool pool = new(new Uri(configuration.ConnectionString));
         _connectionSettings = new ConnectionSettings(

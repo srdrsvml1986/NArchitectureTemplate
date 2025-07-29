@@ -7,12 +7,12 @@ using NArchitecture.Core.Persistence.Paging;
 
 namespace Application.Services.OperationClaims;
 
-public class OperationClaimManager : IOperationClaimService
+public class OperationClaimService : IOperationClaimService
 {
     private readonly IOperationClaimRepository _operationClaimRepository;
     private readonly OperationClaimBusinessRules _operationClaimBusinessRules;
 
-    public OperationClaimManager(
+    public OperationClaimService(
         IOperationClaimRepository operationClaimRepository,
         OperationClaimBusinessRules operationClaimBusinessRules
     )

@@ -7,12 +7,12 @@ using System.Linq.Expressions;
 
 namespace Application.Services.GroupOperationClaims;
 
-public class GroupOperationClaimManager : IGroupOperationClaimService
+public class GroupOperationClaimService : IGroupOperationClaimService
 {
     private readonly IGroupOperationClaimRepository _groupClaimRepository;
     private readonly GroupOperationClaimBusinessRules _groupClaimBusinessRules;
 
-    public GroupOperationClaimManager(IGroupOperationClaimRepository groupClaimRepository, GroupOperationClaimBusinessRules groupClaimBusinessRules)
+    public GroupOperationClaimService(IGroupOperationClaimRepository groupClaimRepository, GroupOperationClaimBusinessRules groupClaimBusinessRules)
     {
         _groupClaimRepository = groupClaimRepository;
         _groupClaimBusinessRules = groupClaimBusinessRules;

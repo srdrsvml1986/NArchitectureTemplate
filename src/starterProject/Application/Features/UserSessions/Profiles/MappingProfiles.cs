@@ -1,3 +1,6 @@
+using Application.Features.UserSessions.Commands.Create;
+using Application.Features.UserSessions.Commands.Delete;
+using Application.Features.UserSessions.Commands.Update;
 using Application.Features.UserSessions.Queries.GetById;
 using Application.Features.UserSessions.Queries.GetList;
 using AutoMapper;
@@ -11,6 +14,15 @@ public class MappingProfiles : Profile
 {
     public MappingProfiles()
     {
+        CreateMap<CreateUserSessionCommand, UserSession>();
+        CreateMap<UserSession, CreatedUserSessionResponse>();
+
+        CreateMap<UpdateUserSessionCommand, UserSession>();
+        CreateMap<UserSession, UpdatedUserSessionResponse>();
+
+        CreateMap<DeleteUserSessionCommand, UserSession>();
+        CreateMap<UserSession, DeletedUserSessionResponse>();
+
         CreateMap<UserSession, GetByIdUserSessionResponse>();
 
         CreateMap<UserSession, GetListUserSessionListItemDto>();

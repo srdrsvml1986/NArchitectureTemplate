@@ -5,7 +5,7 @@ using YamlDotNet.RepresentationModel;
 
 namespace NArchitecture.Core.Localization.Resource.Yaml;
 
-public class ResourceLocalizationManager : ILocalizationService
+public class ResourceLocalizationService : ILocalizationService
 {
     private const string _defaultLocale = "en";
     private const string _defaultKeySection = "index";
@@ -14,7 +14,7 @@ public class ResourceLocalizationManager : ILocalizationService
     // <locale, <section, <path, content>>>
     private readonly Dictionary<string, Dictionary<string, (string path, YamlMappingNode? content)>> _resourceData = [];
 
-    public ResourceLocalizationManager(Dictionary<string, Dictionary<string, string>> resources)
+    public ResourceLocalizationService(Dictionary<string, Dictionary<string, string>> resources)
     {
         foreach ((string locale, Dictionary<string, string> sectionResources) in resources)
         {

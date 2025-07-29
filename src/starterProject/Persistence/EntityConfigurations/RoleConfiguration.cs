@@ -26,7 +26,7 @@ public class RoleConfiguration : IEntityTypeConfiguration<Role>
             new Role
             {
                 Id = 2,
-                Name = "Manager",
+                Name = "Service",
                 Description = "Yönetici yetkilerine sahiptir"
             },
             new Role

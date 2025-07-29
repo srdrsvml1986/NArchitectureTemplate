@@ -7,12 +7,12 @@ using System.Linq.Expressions;
 
 namespace Application.Services.UserGroups;
 
-public class UserGroupManager : IUserGroupService
+public class UserGroupService : IUserGroupService
 {
     private readonly IUserGroupRepository _userGroupRepository;
     private readonly UserGroupBusinessRules _userGroupBusinessRules;
 
-    public UserGroupManager(IUserGroupRepository userGroupRepository, UserGroupBusinessRules userGroupBusinessRules)
+    public UserGroupService(IUserGroupRepository userGroupRepository, UserGroupBusinessRules userGroupBusinessRules)
     {
         _userGroupRepository = userGroupRepository;
         _userGroupBusinessRules = userGroupBusinessRules;

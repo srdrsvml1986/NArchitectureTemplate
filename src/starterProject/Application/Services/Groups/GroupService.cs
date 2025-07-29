@@ -7,12 +7,12 @@ using System.Linq.Expressions;
 
 namespace Application.Services.Groups;
 
-public class GroupManager : IGroupService
+public class GroupService : IGroupService
 {
     private readonly IGroupRepository _groupRepository;
     private readonly GroupBusinessRules _groupBusinessRules;
 
-    public GroupManager(IGroupRepository groupRepository, GroupBusinessRules groupBusinessRules)
+    public GroupService(IGroupRepository groupRepository, GroupBusinessRules groupBusinessRules)
     {
         _groupRepository = groupRepository;
         _groupBusinessRules = groupBusinessRules;

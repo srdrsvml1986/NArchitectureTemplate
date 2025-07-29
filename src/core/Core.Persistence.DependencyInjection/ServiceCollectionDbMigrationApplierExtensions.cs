@@ -14,11 +14,11 @@ public static class ServiceCollectionDbMigrationApplierExtensions
     {
         ServiceProvider buildServiceProvider = services.BuildServiceProvider();
 
-        _ = services.AddTransient<IDbMigrationApplierService, DbMigrationApplierManager<TDbContext>>(
-            _ => new DbMigrationApplierManager<TDbContext>(contextFactory(buildServiceProvider))
+        _ = services.AddTransient<IDbMigrationApplierService, DbMigrationApplierService<TDbContext>>(
+            _ => new DbMigrationApplierService<TDbContext>(contextFactory(buildServiceProvider))
         );
-        _ = services.AddTransient<IDbMigrationApplierService<TDbContext>, DbMigrationApplierManager<TDbContext>>(
-            _ => new DbMigrationApplierManager<TDbContext>(contextFactory(buildServiceProvider))
+        _ = services.AddTransient<IDbMigrationApplierService<TDbContext>, DbMigrationApplierService<TDbContext>>(
+            _ => new DbMigrationApplierService<TDbContext>(contextFactory(buildServiceProvider))
         );
 
         return services;

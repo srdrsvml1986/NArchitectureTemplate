@@ -11,8 +11,8 @@ public static class ServiceCollectionAmazonTranslateLocalizationExtension
         AmazonTranslateConfiguration configuration
     )
     {
-        services.AddTransient<ITranslationService, AmazonTranslateLocalizationManager>(
-            _ => new AmazonTranslateLocalizationManager(configuration)
+        services.AddTransient<ITranslationService, AmazonTranslateLocalizationService>(
+            _ => new AmazonTranslateLocalizationService(configuration)
         );
         return services;
     }

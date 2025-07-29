@@ -7,6 +7,6 @@ public class Role : Entity<int>
     public string Description { get; set; }
 
     public ICollection<UserRole> UserRoles { get; set; }
-    public ICollection<RoleOperationClaim> RoleClaims { get; set; }
+    public ICollection<RoleOperationClaim> RoleOperationClaims { get; set; }
     public ICollection<GroupRole> GroupRoles { get; set; }
 }

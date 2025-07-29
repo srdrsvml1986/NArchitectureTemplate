@@ -4,10 +4,10 @@ using NArchitecture.Core.Localization.Abstraction;
 
 namespace NArchitecture.Core.Localization.Resource.Yaml.DependencyInjection;
 
-public static class ServiceCollectionResourceLocalizationManagerExtension
+public static class ServiceCollectionResourceLocalizationServiceExtension
 {
     /// <summary>
-    /// Adds <see cref="ResourceLocalizationManager"/> as <see cref="ILocalizationService"/> to <see cref="IServiceCollection"/>.
+    /// Adds <see cref="ResourceLocalizationService"/> as <see cref="ILocalizationService"/> to <see cref="IServiceCollection"/>.
     /// <list type="bullet">
     ///    <item>
     ///        <description>Reads all yaml files in the "<see cref="Assembly.GetExecutingAssembly()"/>/Features/{featureName}/Resources/Locales/". Yaml file names must be like {uniqueKeySectionName}.{culture}.yaml.</description>
@@ -19,7 +19,7 @@ public static class ServiceCollectionResourceLocalizationManagerExtension
     /// </summary>
     public static IServiceCollection AddYamlResourceLocalization(this IServiceCollection services)
     {
-        services.AddScoped<ILocalizationService, ResourceLocalizationManager>(_ =>
+        services.AddScoped<ILocalizationService, ResourceLocalizationService>(_ =>
         {
             // <locale, <featureName, resourceDir>>
             Dictionary<string, Dictionary<string, string>> resources = [];
@@ -53,7 +53,7 @@ public static class ServiceCollectionResourceLocalizationManagerExtension
                 }
             }
 
-            return new ResourceLocalizationManager(resources);
+            return new ResourceLocalizationService(resources);
         });
 
         return services;

@@ -7,12 +7,12 @@ using System.Linq.Expressions;
 
 namespace Application.Services.RoleOperationClaims;
 
-public class RoleOperationClaimManager : IRoleOperationClaimService
+public class RoleOperationClaimService : IRoleOperationClaimService
 {
     private readonly IRoleOperationClaimRepository _roleClaimRepository;
     private readonly RoleOperationClaimBusinessRules _roleClaimBusinessRules;
 
-    public RoleOperationClaimManager(IRoleOperationClaimRepository roleClaimRepository, RoleOperationClaimBusinessRules roleClaimBusinessRules)
+    public RoleOperationClaimService(IRoleOperationClaimRepository roleClaimRepository, RoleOperationClaimBusinessRules roleClaimBusinessRules)
     {
         _roleClaimRepository = roleClaimRepository;
         _roleClaimBusinessRules = roleClaimBusinessRules;

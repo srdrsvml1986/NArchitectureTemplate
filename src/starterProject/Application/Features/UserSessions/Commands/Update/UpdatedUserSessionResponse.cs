@@ -1,8 +1,9 @@
 using NArchitecture.Core.Application.Responses;
+using Domain.Entities;
 
-namespace Application.Features.UserSessions.Queries.GetById;
+namespace Application.Features.UserSessions.Commands.Update;
 
-public class GetByIdUserSessionResponse : IResponse
+public class UpdatedUserSessionResponse : IResponse
 {
     public Guid Id { get; set; }
     public Guid UserId { get; set; }

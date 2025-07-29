@@ -4,11 +4,11 @@ using NArchitecture.Core.Translation.Abstraction;
 
 namespace NArchitecture.Core.Translation.AmazonTranslate;
 
-public class AmazonTranslateLocalizationManager : ITranslationService
+public class AmazonTranslateLocalizationService : ITranslationService
 {
     private readonly AmazonTranslateClient _client;
 
-    public AmazonTranslateLocalizationManager(AmazonTranslateConfiguration configuration)
+    public AmazonTranslateLocalizationService(AmazonTranslateConfiguration configuration)
     {
         _client = new AmazonTranslateClient(configuration.AccessKey, configuration.SecretKey, configuration.RegionEndpoint);
     }

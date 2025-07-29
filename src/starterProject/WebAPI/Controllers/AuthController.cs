@@ -76,7 +76,7 @@ public class AuthController : BaseController
 
         // AccessToken’dan kullanıcı ID’sini çıkart
         var handler = new JwtSecurityTokenHandler();
-        var jwtToken = handler.ReadJwtToken(result.AccessToken.Token);
+        var jwtToken = handler.ReadJwtToken(result.AccessToken?.Token);
         var userIdClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
         if (!Guid.TryParse(userIdClaim, out Guid userId))
             return Unauthorized();
@@ -84,7 +84,14 @@ public class AuthController : BaseController
         // Oturum kaydı ve şüpheli kontrolü
         var ip = HttpContext.Connection.RemoteIpAddress?.ToString() ?? string.Empty;
         var ua = Request.Headers["User-Agent"].ToString();
-        await _sessionService.CreateSessionAsync(userId, ip, ua);
+
+        // Oturum kaydı ekle ve şüpheli oturumları kontrol et        
+        await _sessionService.AddAsync(new UserSession
+        {
+            UserId = userId,
+            IpAddress = ip,
+            UserAgent = ua,
+        });
         await _sessionService.FlagAndHandleSuspiciousSessionsAsync(userId);
 
         return Ok(result.ToHttpResponse());
@@ -136,6 +143,21 @@ public class AuthController : BaseController
             new() { Token = refreshToken ?? getRefreshTokenFromCookies(), IpAddress = getIpAddress() };
         RevokedTokenResponse result = await Mediator.Send(revokeTokenCommand);
         return Ok(result);
+    }
+
+    /// <summary>
+    /// Kullanıcıyı çıkış yapar ve ana sayfaya yönlendirir.
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet("logout")]
+    public async Task<IActionResult> Logout()
+    {
+        // Refresh token'ı iptal et
+        await RevokeToken(null);
+
+        // Kullanıcıyı çıkış yapar ve ana sayfaya yönlendirir
+        await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        return Redirect("/");
     }
 
     /// <summary>
@@ -262,17 +284,7 @@ public class AuthController : BaseController
         return Ok(tokenResult);
     }
 
-    /// <summary>
-    /// Kullanıcıyı çıkış yapar ve ana sayfaya yönlendirir.
-    /// </summary>
-    /// <returns></returns>
-    [HttpGet("logout")]
-    public async Task<IActionResult> Logout()
-    {
-        // Kullanıcıyı çıkış yapar ve ana sayfaya yönlendirir
-        await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-        return Redirect("/");
-    }
+
 
     /// <summary>
     /// İstemciden gelen HTTP isteğindeki "refreshToken" çerezini alır.

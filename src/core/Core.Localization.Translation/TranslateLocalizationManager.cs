@@ -4,14 +4,14 @@ using NArchitecture.Core.Translation.Abstraction;
 
 namespace NArchitecture.Core.Localization.Translation;
 
-public class TranslateLocalizationManager : ILocalizationService
+public class TranslateLocalizationService : ILocalizationService
 {
     private const string _defaultLocale = "en";
     public ICollection<string>? AcceptLocales { get; set; }
 
     private readonly ITranslationService _translationService;
 
-    public TranslateLocalizationManager(ITranslationService translationService)
+    public TranslateLocalizationService(ITranslationService translationService)
     {
         _translationService = translationService;
     }

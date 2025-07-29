@@ -7,12 +7,12 @@ using System.Linq.Expressions;
 
 namespace Application.Services.UserRoles;
 
-public class UserRoleManager : IUserRoleService
+public class UserRoleService : IUserRoleService
 {
     private readonly IUserRoleRepository _userRoleRepository;
     private readonly UserRoleBusinessRules _userRoleBusinessRules;
 
-    public UserRoleManager(IUserRoleRepository userRoleRepository, UserRoleBusinessRules userRoleBusinessRules)
+    public UserRoleService(IUserRoleRepository userRoleRepository, UserRoleBusinessRules userRoleBusinessRules)
     {
         _userRoleRepository = userRoleRepository;
         _userRoleBusinessRules = userRoleBusinessRules;

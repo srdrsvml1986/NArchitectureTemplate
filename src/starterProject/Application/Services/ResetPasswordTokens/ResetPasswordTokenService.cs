@@ -6,11 +6,11 @@ using System.Linq.Expressions;
 
 namespace Application.Services.PasswordResetTokens;
 
-public class PasswordResetTokenManager : IPasswordResetTokenService
+public class PasswordResetTokenService : IPasswordResetTokenService
 {
     private readonly IPasswordResetTokenRepository _passwordResetTokenRepository;
 
-    public PasswordResetTokenManager(IPasswordResetTokenRepository passwordResetTokenRepository)
+    public PasswordResetTokenService(IPasswordResetTokenRepository passwordResetTokenRepository)
     {
         _passwordResetTokenRepository = passwordResetTokenRepository;
     }
