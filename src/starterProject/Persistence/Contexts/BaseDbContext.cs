@@ -36,12 +36,11 @@ public class BaseDbContext : DbContext
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
     }
     ///// <summary> 
-    ///// Bu metot, veritabanı bağlantısını yapılandırmak için kullanılır.
-    ///// sadece MsSqlConfiguration için kullanılmaktadır.
+    ///// Bu metod, veritabanı bağlantısını yapılandırmak için kullanılır.
+    ///// sadece MsSqlConfiguration ve PostgreConfiguration için kullanılmaktadır.
     ///// </summary>
     //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     //{
-    //    // TODO 
     //    // burası önemli
     //    //base.OnConfiguring(optionsBuilder);
     //    var cn = Configuration.GetSection("SeriLogConfigurations")
@@ -60,7 +59,6 @@ public class BaseDbContext : DbContext
 
     //}
 
-    // DbContext'inizde
 
     /// <summary>
     /// postgreSQL için UTC zaman dilimi kullanmak üzere yapılandırma.
