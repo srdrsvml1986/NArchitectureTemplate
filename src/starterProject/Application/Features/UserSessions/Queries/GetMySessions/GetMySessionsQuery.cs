@@ -40,7 +40,17 @@ public class GetMySessionsQuery : IRequest<GetListResponse<GetListUserSessionLis
                 size: request.PageRequest.PageSize,
                 cancellationToken: cancellationToken
             );
-
+            if (userSessions.Items == null || !userSessions.Items.Any())
+            {
+                return new GetListResponse<GetListUserSessionListItemDto>
+                {
+                    Items = new List<GetListUserSessionListItemDto>(),
+                    Index = userSessions.Index,
+                    Size = userSessions.Size,
+                    Count = userSessions.Count,
+                    Pages = userSessions.Pages
+                };
+            }
             GetListResponse<GetListUserSessionListItemDto> response = _mapper.Map<GetListResponse<GetListUserSessionListItemDto>>(userSessions);
             return response;
         }

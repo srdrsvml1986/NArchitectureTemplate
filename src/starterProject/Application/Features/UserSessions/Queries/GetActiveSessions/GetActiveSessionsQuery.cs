@@ -1,20 +1,25 @@
-﻿using Application.Services.UserSessions;
+﻿using Application.Features.UserSessions.Queries.GetList;
+using Application.Services.UserSessions;
 using AutoMapper;
 using Domain.DTos;
 using MediatR;
 using NArchitecture.Core.Application.Pipelines.Authorization;
+using NArchitecture.Core.Application.Requests;
+using NArchitecture.Core.Application.Responses;
+using NArchitecture.Core.Persistence.Paging;
 using static Application.Features.UserSessions.Constants.UserSessionsOperationClaims;
 
 
 namespace Application.Features.UserSessions.Queries.GetActiveSessions;
 
-public class GetActiveSessionsQuery : IRequest<GetActiveSessionsResponse>, ISecuredRequest
+public class GetActiveSessionsQuery : IRequest<GetListResponse<GetListUserSessionListItemDto>>, ISecuredRequest
 {
     public Guid UserId { get; set; }
+    public PageRequest PageRequest { get; set; }
 
     public string[] Roles => [Admin, Read];
 
-    public class GetActiveSessionsQueryHandler : IRequestHandler<GetActiveSessionsQuery, GetActiveSessionsResponse>
+    public class GetActiveSessionsQueryHandler : IRequestHandler<GetActiveSessionsQuery, GetListResponse<GetListUserSessionListItemDto>>
     {
         private readonly IUserSessionService _userSessionService;
         private readonly IMapper _mapper;
@@ -25,15 +30,27 @@ public class GetActiveSessionsQuery : IRequest<GetActiveSessionsResponse>, ISecu
             _mapper = mapper;
         }
 
-        public async Task<GetActiveSessionsResponse> Handle(GetActiveSessionsQuery request, CancellationToken cancellationToken)
+        public async Task<GetListResponse<GetListUserSessionListItemDto>> Handle(GetActiveSessionsQuery request, CancellationToken cancellationToken)
         {
-            var sessions = await _userSessionService.GetActiveSessionsAsync(request.UserId);
-
-            return new GetActiveSessionsResponse
+            IPaginate<UserSession> userSessions = await _userSessionService.GetListAsync(
+              predicate: us => us.UserId == request.UserId,
+              index: request.PageRequest.PageIndex,
+              size: request.PageRequest.PageSize,
+              cancellationToken: cancellationToken
+          );
+            if (userSessions.Items == null || !userSessions.Items.Any())
             {
-                UserId = request.UserId,
-                Sessions = _mapper.Map<List<UserSessionDto>>(sessions)
-            };
+                return new GetListResponse<GetListUserSessionListItemDto>
+                {
+                    Items = new List<GetListUserSessionListItemDto>(),
+                    Index = userSessions.Index,
+                    Size = userSessions.Size,
+                    Count = userSessions.Count,
+                    Pages = userSessions.Pages
+                };
+            }
+            GetListResponse<GetListUserSessionListItemDto> response = _mapper.Map<GetListResponse<GetListUserSessionListItemDto>>(userSessions);
+            return response;
         }
     }
 }

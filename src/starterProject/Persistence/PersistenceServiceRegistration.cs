@@ -35,7 +35,6 @@ public static class PersistenceServiceRegistration
         services.AddScoped<IRoleRepository, RoleRepository>();
         services.AddScoped<IRoleOperationClaimRepository, RoleOperationClaimRepository>();
         services.AddScoped<IGroupRoleRepository, GroupRoleRepository>();
-        services.AddScoped<IUserSessionRepository, UserSessionRepository>();
         return services;
     }
 }

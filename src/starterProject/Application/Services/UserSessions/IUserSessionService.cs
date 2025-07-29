@@ -29,4 +29,13 @@ public interface IUserSessionService
     Task<UserSession> DeleteAsync(UserSession userSession, bool permanent = false);
     Task FlagAndHandleSuspiciousSessionsAsync(Guid userId);
     Task<IEnumerable<UserSession>> GetActiveSessionsAsync(Guid userId);
+    // Yeni eklenecek metotlar
+    Task RevokeAllOtherSessionsAsync(Guid userId, Guid currentSessionId);
+    Task RevokeMySessionAsync(Guid sessionId, string ipAddress);
+    Task RevokeUserSessionAsync(Guid sessionId);
+    Task<int> GetActiveSessionCountAsync();
+    Task<int> GetMyActiveSessionCountAsync(Guid userId);
+    Task<IEnumerable<UserSession>> GetMySessionsAsync(Guid userId);
+    Task<IEnumerable<UserSession>> GetUserSessionsAsync(Guid userId);
+
 }

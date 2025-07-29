@@ -125,4 +125,101 @@ public class UserSessionService : IUserSessionService
             await _userSessionRepository.UpdateAsync(session);
         }
     }
+    #region Yeni Eklenen Metotlar
+
+    /// <summary>
+    /// Mevcut oturum dýþýndaki tüm oturumlarý sonlandýrýr
+    /// </summary>
+    public async Task RevokeAllOtherSessionsAsync(Guid userId, Guid currentSessionId)
+    {
+        var sessions = (await GetActiveSessionsAsync(userId))
+            .Where(s => s.Id != currentSessionId);
+
+        foreach (var session in sessions)
+        {
+            var token = await _authService.GetRefreshTokenBySessionAsync(session.Id);
+            await _mediator.Send(new RevokeTokenCommand(token, session.IpAddress));
+
+            session.IsRevoked = true;
+            await _userSessionRepository.UpdateAsync(session);
+        }
+    }
+
+    /// <summary>
+    /// Kullanýcýnýn kendi oturumunu sonlandýrýr
+    /// </summary>
+    public async Task RevokeMySessionAsync(Guid sessionId, string ipAddress)
+    {
+        var session = await _userSessionRepository.GetAsync(s => s.Id == sessionId);
+        await _userSessionBusinessRules.UserSessionShouldExistWhenSelected(session);
+
+        var token = await _authService.GetRefreshTokenBySessionAsync(sessionId);
+        await _mediator.Send(new RevokeTokenCommand(token, ipAddress));
+
+        session!.IsRevoked = true;
+        await _userSessionRepository.UpdateAsync(session);
+    }
+
+    /// <summary>
+    /// Belirtilen kullanýcý oturumunu sonlandýrýr
+    /// </summary>
+    public async Task RevokeUserSessionAsync(Guid sessionId)
+    {
+        var session = await _userSessionRepository.GetAsync(s => s.Id == sessionId);
+        await _userSessionBusinessRules.UserSessionShouldExistWhenSelected(session);
+
+        var token = await _authService.GetRefreshTokenBySessionAsync(sessionId);
+        await _mediator.Send(new RevokeTokenCommand(token, session!.IpAddress));
+
+        session.IsRevoked = true;
+        await _userSessionRepository.UpdateAsync(session);
+    }
+
+    /// <summary>
+    /// Sistemdeki toplam aktif oturum sayýsýný getirir
+    /// </summary>
+    public async Task<int> GetActiveSessionCountAsync()
+    {
+        var result = await _userSessionRepository.GetListAsync(
+            predicate: s => !s.IsRevoked
+        );
+        return result.Count;
+    }
+
+    /// <summary>
+    /// Kullanýcýnýn aktif oturum sayýsýný getirir
+    /// </summary>
+    public async Task<int> GetMyActiveSessionCountAsync(Guid userId)
+    {
+        var result = await _userSessionRepository.GetListAsync(
+            predicate: s => s.UserId == userId && !s.IsRevoked
+        );
+        return result.Count;
+    }
+
+    /// <summary>
+    /// Kullanýcýnýn kendi oturumlarýný listeler
+    /// </summary>
+    public async Task<IEnumerable<UserSession>> GetMySessionsAsync(Guid userId)
+    {
+        var result = await _userSessionRepository.GetListAsync(
+            predicate: s => s.UserId == userId,
+            orderBy: q => q.OrderByDescending(s => s.LoginTime)
+        );
+        return result.Items;
+    }
+
+    /// <summary>
+    /// Belirtilen kullanýcýnýn oturumlarýný listeler
+    /// </summary>
+    public async Task<IEnumerable<UserSession>> GetUserSessionsAsync(Guid userId)
+    {
+        var result = await _userSessionRepository.GetListAsync(
+            predicate: s => s.UserId == userId,
+            orderBy: q => q.OrderByDescending(s => s.LoginTime)
+        );
+        return result.Items;
+    }
+
+    #endregion
 }

@@ -139,9 +139,9 @@ public class UserSessionsController : BaseController
     /// Aktif oturumlarý listeler
     /// </summary>
     [HttpGet("active")]
-    public async Task<ActionResult<GetActiveSessionsResponse>> GetActiveSessions([FromQuery] GetActiveSessionsQuery query)
+    public async Task<ActionResult<GetListResponse<GetListUserSessionListItemDto>>> GetActiveSessions([FromQuery] GetActiveSessionsQuery query)
     {
-        GetActiveSessionsResponse response = await Mediator.Send(query);
+        GetListResponse<GetListUserSessionListItemDto> response = await Mediator.Send(query);
         return Ok(response);
     }
 
