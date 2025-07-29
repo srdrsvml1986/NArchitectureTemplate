@@ -52,9 +52,8 @@ public class BaseDbContext : DbContext
     //    if (!optionsBuilder.IsConfigured)
     //    {
     //        optionsBuilder.UseSqlServer(cn.Value);
+    //          //optionsBuilder.UseNpgsql(cn.Value);
     //    }
-
-    //    optionsBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
 
     //    // PendingModelChangesWarning uyarısını bastırmak için
     //    optionsBuilder.ConfigureWarnings(warnings => warnings.Ignore(RelationalEventId.PendingModelChangesWarning));
