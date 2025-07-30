@@ -22,6 +22,7 @@ using WebAPI;
 using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
+using System.Text;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -145,6 +146,7 @@ builder.Services.AddSwaggerGen(opt =>
 
 
 builder.Services.AddOAuthSecurity();
+Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
 WebApplication app = builder.Build();
 
