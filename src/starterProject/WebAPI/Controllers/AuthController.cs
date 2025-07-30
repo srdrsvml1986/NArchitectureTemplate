@@ -1,4 +1,6 @@
-﻿using Application.Features.Auth.Commands.EnableEmailAuthenticator;
+﻿using Application.Features.Auth.Commands.DisableEmailAuthenticator;
+using Application.Features.Auth.Commands.DisableOtpAuthenticator;
+using Application.Features.Auth.Commands.EnableEmailAuthenticator;
 using Application.Features.Auth.Commands.EnableOtpAuthenticator;
 using Application.Features.Auth.Commands.Login;
 using Application.Features.Auth.Commands.RefreshToken;
@@ -191,6 +193,30 @@ public class AuthController : BaseController
         return Ok(result);
     }
 
+
+    /// <summary>
+    /// DisableEmailAuthenticator işlemi, kullanıcının email tabanlı 2FA doğrulamasını devre dışı bırakır.
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet("DisableEmailAuthenticator")]
+    public async Task<IActionResult> DisableEmailAuthenticator()
+    {
+        DisableEmailAuthenticatorCommand disableCommand = new() { UserId = getUserIdFromRequest() };
+        await Mediator.Send(disableCommand);
+        return Ok();
+    }
+    /// <summary>
+    /// DisableOtpAuthenticator işlemi, kullanıcının Otp tabanlı 2FA doğrulamasını devre dışı bırakır.
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet("DisableOtpAuthenticator")]
+    public async Task<IActionResult> DisableOtpAuthenticator()
+    {
+        DisableOtpAuthenticatorCommand disableCommand = new() { UserId = getUserIdFromRequest() };
+        await Mediator.Send(disableCommand);
+        return Ok();
+    }
+
     /// <summary>
     /// Email tabanlı doğrulama işlemini gerçekleştirir.
     /// </summary>
@@ -213,10 +239,10 @@ public class AuthController : BaseController
     [HttpPost("VerifyOtpAuthenticator")]
     public async Task<IActionResult> VerifyOtpAuthenticator([FromBody] string authenticatorCode)
     {
-        VerifyOtpAuthenticatorCommand verifyEmailAuthenticatorCommand =
+        VerifyOtpAuthenticatorCommand verifyOtpAuthenticatorCommand =
             new() { UserId = getUserIdFromRequest(), ActivationCode = authenticatorCode };
 
-        await Mediator.Send(verifyEmailAuthenticatorCommand);
+        await Mediator.Send(verifyOtpAuthenticatorCommand);
         return Ok();
     }
 

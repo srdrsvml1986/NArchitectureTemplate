@@ -7,7 +7,7 @@ namespace NArchitecture.Core.Localization.Resource.Yaml;
 
 public class ResourceLocalizationService : ILocalizationService
 {
-    private const string _defaultLocale = "en";
+    private const string _defaultLocale = "tr";
     private const string _defaultKeySection = "index";
     public ICollection<string>? AcceptLocales { get; set; }
 

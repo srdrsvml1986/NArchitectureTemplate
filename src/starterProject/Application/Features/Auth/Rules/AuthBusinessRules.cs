@@ -59,7 +59,7 @@ public class AuthBusinessRules : BaseBusinessRules
     public async Task UserShouldNotBeHaveAuthenticator(User user)
     {
         if (user.AuthenticatorType != AuthenticatorType.None)
-            await throwBusinessException(AuthMessages.UserHaveAlreadyAAuthenticator);
+            await throwBusinessException(AuthMessages.UserHaveAlreadyAuthenticator);
     }
 
     public async Task RefreshTokenShouldBeExists(RefreshToken? refreshToken)
