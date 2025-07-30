@@ -16,11 +16,11 @@
     <RepositoryUrl>https://github.com/srdrsvml1986/NArchitectureTemplate</RepositoryUrl>
    </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="FluentValidation" Version="11.11.0" />
-    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.11.0" />
-    <PackageReference Include="MediatR" Version="12.4.1" />
+    <PackageReference Include="FluentValidation" Version="12.0.0" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.0.0" />
+    <PackageReference Include="MediatR" Version="13.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.3.0" />
-    <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="9.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="9.0.7" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Core.CrossCuttingConcerns.Exception.WebAPI\Core.CrossCuttingConcerns.Exception.WebApi.csproj" />
