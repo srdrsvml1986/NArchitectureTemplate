@@ -6,6 +6,8 @@ using Domain.Entities;
 using NArchitecture.Core.Application.Pipelines.Authorization;
 using MediatR;
 using static Application.Features.Groups.Constants.GroupsOperationClaims;
+using Domain.DTos;
+using NArchitecture.Core.Persistence.Paging;
 
 namespace Application.Features.Groups.Commands.UpdateClaimsInGroup;
 
@@ -42,27 +44,49 @@ public class UpdateClaimsInGroupCommand : IRequest<UpdateClaimsInGroupResponse>,
         {
             await _groupBusinessRules.GroupIdShouldExistWhenSelected(request.GroupId, cancellationToken);
 
-            var existingGroupClaims = await _groupClaimRepository.GetListAsync(
+            // Validate group exists
+            await _groupBusinessRules.GroupIdShouldExistWhenSelected(request.GroupId, cancellationToken);
+
+            // Validate all claim IDs exist
+            await _groupBusinessRules.ClaimsShouldExistWhenSelected(request.ClaimIds, cancellationToken);
+
+            // Get existing group claims
+            IPaginate<GroupOperationClaim> existingGroupClaims = await _groupClaimRepository.GetListAsync(
                 predicate: x => x.GroupId == request.GroupId,
                 cancellationToken: cancellationToken
             );
 
+            // Calculate changes
             var existingClaimIds = existingGroupClaims.Items.Select(x => x.OperationClaimId).ToList();
-
             var claimsToAdd = request.ClaimIds.Except(existingClaimIds)
-                .Select(claimId => new GroupOperationClaim { GroupId = request.GroupId, OperationClaimId = claimId })
+                .Select(claimId => new GroupOperationClaim
+                {
+                    GroupId = request.GroupId,
+                    OperationClaimId = claimId
+                })
                 .ToList();
 
             var claimsToRemove = existingGroupClaims.Items
                 .Where(x => !request.ClaimIds.Contains(x.OperationClaimId))
                 .ToList();
 
-            await _groupClaimRepository.AddRangeAsync(claimsToAdd, cancellationToken);
-            await _groupClaimRepository.DeleteRangeAsync(claimsToRemove);
+            // Apply changes
+            if (claimsToAdd.Any())
+                await _groupClaimRepository.AddRangeAsync(claimsToAdd, cancellationToken);
 
-            var updatedClaims = _claimRepository.Query().Where(x => request.ClaimIds.Contains(x.Id));
+            if (claimsToRemove.Any())
+                await _groupClaimRepository.DeleteRangeAsync(claimsToRemove);
 
-            return new UpdateClaimsInGroupResponse { Claims = updatedClaims };
+            // Get updated claims
+            IPaginate<OperationClaim> updatedClaims = await _claimRepository.GetListAsync(
+                predicate: x => request.ClaimIds.Contains(x.Id),
+                cancellationToken: cancellationToken
+            );
+
+            // Map to DTOs
+            var claimDtos = _mapper.Map<IList<OperationClaimDto>>(updatedClaims.Items);
+
+            return new UpdateClaimsInGroupResponse { Claims = claimDtos };
         }
     }
 }

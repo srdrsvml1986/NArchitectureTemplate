@@ -7,6 +7,7 @@ using NArchitecture.Core.Application.Pipelines.Authorization;
 using MediatR;
 using static Application.Features.Groups.Constants.GroupsOperationClaims;
 using NArchitecture.Core.Persistence.Paging;
+using Domain.DTos;
 
 namespace Application.Features.Groups.Queries.GetClaimsByGroupId;
 
@@ -35,21 +36,33 @@ public class GetClaimsByGroupIdGroupQuery : IRequest<GetClaimsByGroupIdGroupResp
 
         public async Task<GetClaimsByGroupIdGroupResponse> Handle(GetClaimsByGroupIdGroupQuery request, CancellationToken cancellationToken)
         {
-            Group? group = await _groupRepository.GetAsync(predicate: g => g.Id == request.Id, cancellationToken: cancellationToken);
+            Group? group = await _groupRepository.GetAsync(
+        predicate: g => g.Id == request.Id,
+        cancellationToken: cancellationToken
+    );
             await _groupBusinessRules.GroupShouldExistWhenSelected(group);
 
-            var groupClaims = await _groupClaimRepository.GetListAsync(
-     predicate: x => x.GroupId == request.Id,
-     cancellationToken: cancellationToken
- );
+            // Grup claim'lerini al
+            IPaginate<GroupOperationClaim> groupClaims = await _groupClaimRepository.GetListAsync(
+                predicate: x => x.GroupId == request.Id,
+                cancellationToken: cancellationToken
+            );
 
-            var claimIds = groupClaims.Items.Select(x => x.OperationClaimId).ToList();
+            // Claim ID'leri çýkar
+            List<int> claimIds = groupClaims.Items
+                .Select(x => x.OperationClaimId)
+                .ToList();
 
-            var claims = _claimRepository.Query().Where(x => claimIds.Contains(x.Id));
+            // Claim nesnelerini al
+            IList<OperationClaim> claims = (await _claimRepository.GetListAsync(
+                predicate: x => claimIds.Contains(x.Id),
+                cancellationToken: cancellationToken
+            )).Items.ToList(); // Materialize the list
 
-            GetClaimsByGroupIdGroupResponse response = _mapper.Map<GetClaimsByGroupIdGroupResponse>(
-                new GetClaimsByGroupIdGroupResponse {Claims=claims });
-            return response;
+            // DTO'ya map et (döngüyü kýr)
+            IList<OperationClaimDto> claimDtos = _mapper.Map<IList<OperationClaimDto>>(claims);
+
+            return new GetClaimsByGroupIdGroupResponse { Claims = claimDtos };
         }
     }
 }

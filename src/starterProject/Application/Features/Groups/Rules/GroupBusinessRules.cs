@@ -4,6 +4,7 @@ using NArchitecture.Core.Application.Rules;
 using NArchitecture.Core.CrossCuttingConcerns.Exception.Types;
 using NArchitecture.Core.Localization.Abstraction;
 using Domain.Entities;
+using NArchitecture.Core.Persistence.Paging;
 
 namespace Application.Features.Groups.Rules;
 
@@ -11,11 +12,12 @@ public class GroupBusinessRules : BaseBusinessRules
 {
     private readonly IGroupRepository _groupRepository;
     private readonly ILocalizationService _localizationService;
-
-    public GroupBusinessRules(IGroupRepository groupRepository, ILocalizationService localizationService)
+    private readonly IOperationClaimRepository _operationClaimRepository;
+    public GroupBusinessRules(IGroupRepository groupRepository, ILocalizationService localizationService, IOperationClaimRepository operationClaimRepository)
     {
         _groupRepository = groupRepository;
         _localizationService = localizationService;
+        _operationClaimRepository = operationClaimRepository;
     }
 
     private async Task throwBusinessException(string messageKey)
@@ -38,5 +40,25 @@ public class GroupBusinessRules : BaseBusinessRules
             cancellationToken: cancellationToken
         );
         await GroupShouldExistWhenSelected(group);
+    }
+    public async Task ClaimsShouldExistWhenSelected(IList<int> claimIds, CancellationToken cancellationToken)
+    {
+        // Get all claims that match the provided IDs
+        IPaginate<OperationClaim> claims = await _operationClaimRepository.GetListAsync(
+            predicate: x => claimIds.Contains(x.Id),
+            cancellationToken: cancellationToken
+        );
+
+        // Check if all claim IDs were found
+        if (claims.Items.Count != claimIds.Count)
+        {
+            // Find missing claim IDs
+            var foundClaimIds = claims.Items.Select(c => c.Id).ToList();
+            var missingIds = claimIds.Except(foundClaimIds).ToList();
+
+            throw new NotFoundException(
+                $"The following claim IDs were not found: {string.Join(", ", missingIds)}"
+            );
+        }
     }
 }

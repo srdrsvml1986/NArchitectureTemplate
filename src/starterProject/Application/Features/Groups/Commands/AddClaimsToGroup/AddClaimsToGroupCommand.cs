@@ -6,6 +6,8 @@ using Domain.Entities;
 using NArchitecture.Core.Application.Pipelines.Authorization;
 using MediatR;
 using static Application.Features.Groups.Constants.GroupsOperationClaims;
+using Domain.DTos;
+using NArchitecture.Core.Persistence.Paging;
 
 namespace Application.Features.Groups.Commands.AddClaimsToGroup;
 
@@ -40,17 +42,50 @@ public class AddClaimsToGroupCommand : IRequest<AddClaimsToGroupResponse>, ISecu
 
         public async Task<AddClaimsToGroupResponse> Handle(AddClaimsToGroupCommand request, CancellationToken cancellationToken)
         {
+            // Validate group exists
             await _groupBusinessRules.GroupIdShouldExistWhenSelected(request.GroupId, cancellationToken);
 
-            List<GroupOperationClaim> groupClaimsToAdd = request.ClaimIds
-                .Select(claimId => new GroupOperationClaim { GroupId = request.GroupId, OperationClaimId = claimId })
+            // Validate all claim IDs exist
+            await _groupBusinessRules.ClaimsShouldExistWhenSelected(request.ClaimIds, cancellationToken);
+
+            // Check for duplicate claims
+            IPaginate<GroupOperationClaim> existingClaims = await _groupClaimRepository.GetListAsync(
+                predicate: x =>
+                    x.GroupId == request.GroupId &&
+                    request.ClaimIds.Contains(x.OperationClaimId),
+                cancellationToken: cancellationToken
+            );
+
+            // Filter out existing claims
+            var newClaimIds = request.ClaimIds
+                .Except(existingClaims.Items.Select(x => x.OperationClaimId))
                 .ToList();
 
-            await _groupClaimRepository.AddRangeAsync(groupClaimsToAdd, cancellationToken);
+            // Create new group-claim relationships
+            List<GroupOperationClaim> groupClaimsToAdd = newClaimIds
+                .Select(claimId => new GroupOperationClaim
+                {
+                    GroupId = request.GroupId,
+                    OperationClaimId = claimId
+                })
+                .ToList();
 
-            var claims = _claimRepository.Query().Where(x => request.ClaimIds.Contains(x.Id));
+            // Add new claims
+            if (groupClaimsToAdd.Any())
+            {
+                await _groupClaimRepository.AddRangeAsync(groupClaimsToAdd, cancellationToken);
+            }
 
-            return new AddClaimsToGroupResponse { Claims = claims };
+            // Get added claims
+            IPaginate<OperationClaim> claims = await _claimRepository.GetListAsync(
+                predicate: x => newClaimIds.Contains(x.Id),
+                cancellationToken: cancellationToken
+            );
+
+            // Map to DTOs
+            var claimDtos = _mapper.Map<IList<OperationClaimDto>>(claims.Items);
+
+            return new AddClaimsToGroupResponse { Claims = claimDtos };
         }
     }
 }

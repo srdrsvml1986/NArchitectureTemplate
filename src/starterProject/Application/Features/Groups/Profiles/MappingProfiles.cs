@@ -7,6 +7,7 @@ using AutoMapper;
 using NArchitecture.Core.Application.Responses;
 using Domain.Entities;
 using NArchitecture.Core.Persistence.Paging;
+using Domain.DTos;
 
 namespace Application.Features.Groups.Profiles;
 
@@ -24,6 +25,7 @@ public class MappingProfiles : Profile
         CreateMap<Group, DeletedGroupResponse>();
 
         CreateMap<Group, GetByIdGroupResponse>();
+        CreateMap<OperationClaim, OperationClaimDto>();
 
         CreateMap<Group, GetListGroupListItemDto>();
         CreateMap<IPaginate<Group>, GetListResponse<GetListGroupListItemDto>>().ConvertUsing(new PaginateToGetListResponseConverter<Group, GetListGroupListItemDto>());

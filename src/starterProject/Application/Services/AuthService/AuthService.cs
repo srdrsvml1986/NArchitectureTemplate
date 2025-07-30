@@ -264,7 +264,12 @@ public class AuthService : IAuthService
 
     public async Task<string> GetRefreshTokenBySessionAsync(Guid userId)
     {
-        var token = await _refreshTokenRepository.GetAsync(rt => rt.UserId == userId && !rt.IsRevoked);
+        // ÖNCE: !rt.IsRevoked kullanılıyor (hata)
+        // SONRA: RevokedDate null kontrolü ile değiştir
+        var token = await _refreshTokenRepository.GetAsync(rt =>
+            rt.UserId == userId &&
+            rt.RevokedDate == null // İptal edilmemiş tokenlar
+        );
         return token?.Token ?? string.Empty;
     }
 }

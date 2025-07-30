@@ -1,3 +1,4 @@
+using Domain.DTos;
 using Domain.Entities;
 using NArchitecture.Core.Application.Responses;
 
@@ -5,5 +6,5 @@ namespace Application.Features.Groups.Commands.UpdateClaimsInGroup;
 
 public class UpdateClaimsInGroupResponse : IResponse
 {
-    public IQueryable<OperationClaim>? Claims { get; set; }
+    public IList<OperationClaimDto> Claims { get; set; }
 }
