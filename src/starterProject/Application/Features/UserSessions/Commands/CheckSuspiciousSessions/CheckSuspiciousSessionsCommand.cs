@@ -1,4 +1,4 @@
-﻿using Application.Services.UserSessions;
+﻿using Application.Services.AuthService;
 using MediatR;
 using NArchitecture.Core.Application.Pipelines.Authorization;
 using static Application.Features.UserSessions.Constants.UserSessionsOperationClaims;
@@ -13,16 +13,16 @@ public class CheckSuspiciousSessionsCommand : IRequest<CheckSuspiciousSessionsRe
 
     public class CheckSuspiciousSessionsCommandHandler : IRequestHandler<CheckSuspiciousSessionsCommand, CheckSuspiciousSessionsResponse>
     {
-        private readonly IUserSessionService _userSessionService;
+        private readonly IAuthService _authService;
 
-        public CheckSuspiciousSessionsCommandHandler(IUserSessionService userSessionService)
+        public CheckSuspiciousSessionsCommandHandler(IAuthService authService)
         {
-            _userSessionService = userSessionService;
+            _authService = authService;
         }
 
         public async Task<CheckSuspiciousSessionsResponse> Handle(CheckSuspiciousSessionsCommand request, CancellationToken cancellationToken)
         {
-            await _userSessionService.FlagAndHandleSuspiciousSessionsAsync(request.UserId);
+            await _authService.FlagAndHandleSuspiciousSessionsAsync(request.UserId);
 
             return new CheckSuspiciousSessionsResponse
             {

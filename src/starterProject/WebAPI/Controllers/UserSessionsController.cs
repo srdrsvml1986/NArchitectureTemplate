@@ -5,7 +5,6 @@ using Application.Features.UserSessions.Queries.GetById;
 using Application.Features.UserSessions.Queries.GetList;
 using Application.Features.UserSessions.Commands.CheckSuspiciousSessions;
 using Application.Features.UserSessions.Commands.RevokeAllOtherSessions;
-using Application.Features.UserSessions.Commands.RevokeMySession;
 using Application.Features.UserSessions.Commands.RevokeUserSession;
 using Application.Features.UserSessions.Queries.GetActiveSessionCount;
 using Application.Features.UserSessions.Queries.GetActiveSessions;
@@ -98,16 +97,6 @@ public class UserSessionsController : BaseController
     public async Task<ActionResult<RevokeAllOtherSessionsResponse>> RevokeAllOtherSessions([FromBody] RevokeAllOtherSessionsCommand command)
     {
         RevokeAllOtherSessionsResponse response = await Mediator.Send(command);
-        return Ok(response);
-    }
-
-    /// <summary>
-    /// Kullanýcýnýn kendi oturumunu sonlandýrýr
-    /// </summary>
-    [HttpPost("revoke-my-session")]
-    public async Task<ActionResult<RevokeMySessionResponse>> RevokeMySession([FromBody] RevokeMySessionCommand command)
-    {
-        RevokeMySessionResponse response = await Mediator.Send(command);
         return Ok(response);
     }
 

@@ -1,13 +1,8 @@
-﻿using Application.Services.UserSessions;
+﻿using Application.Services.AuthService;
+using Application.Services.UserSessions;
 using AutoMapper;
 using MediatR;
 using NArchitecture.Core.Application.Pipelines.Authorization;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static Application.Features.UserSessions.Constants.UserSessionsOperationClaims;
 
 namespace Application.Features.UserSessions.Commands.RevokeAllOtherSessions;
@@ -21,19 +16,22 @@ public class RevokeAllOtherSessionsCommand : IRequest<RevokeAllOtherSessionsResp
     public class RevokeAllOtherSessionsCommandHandler : IRequestHandler<RevokeAllOtherSessionsCommand, RevokeAllOtherSessionsResponse>
     {
         private readonly IUserSessionService _userSessionService;
+        private readonly IAuthService _authService;
         private readonly IMapper _mapper;
 
         public RevokeAllOtherSessionsCommandHandler(
             IUserSessionService userSessionService,
-            IMapper mapper)
+            IMapper mapper,
+            IAuthService authService)
         {
             _userSessionService = userSessionService;
             _mapper = mapper;
+            _authService = authService;
         }
 
         public async Task<RevokeAllOtherSessionsResponse> Handle(RevokeAllOtherSessionsCommand request, CancellationToken cancellationToken)
         {
-            var activeSessions = await _userSessionService.GetActiveSessionsAsync(request.UserId);
+            var activeSessions = await _authService.GetActiveSessionsAsync(request.UserId);
             var otherSessions = activeSessions.Where(s => s.Id != request.CurrentSessionId).ToList();
 
             foreach (var session in otherSessions)

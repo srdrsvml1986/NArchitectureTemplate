@@ -1,5 +1,5 @@
 ﻿using Application.Features.UserSessions.Queries.GetActiveSessionCount;
-using Application.Services.UserSessions;
+using Application.Services.AuthService;
 using MediatR;
 using NArchitecture.Core.Application.Pipelines.Authorization;
 using static Application.Features.UserSessions.Constants.UserSessionsOperationClaims;
@@ -13,16 +13,16 @@ public class GetMyActiveSessionCountQuery : IRequest<GetMyActiveSessionCountResp
 
     public class GetMyActiveSessionCountQueryHandler : IRequestHandler<GetMyActiveSessionCountQuery, GetMyActiveSessionCountResponse>
     {
-        private readonly IUserSessionService _userSessionService;
+        private readonly IAuthService _authService;
 
-        public GetMyActiveSessionCountQueryHandler(IUserSessionService userSessionService)
+        public GetMyActiveSessionCountQueryHandler(IAuthService authService)
         {
-            _userSessionService = userSessionService;
+            _authService = authService;
         }
 
         public async Task<GetMyActiveSessionCountResponse> Handle(GetMyActiveSessionCountQuery request, CancellationToken cancellationToken)
         {
-            var activeSessions = await _userSessionService.GetActiveSessionsAsync(request.UserId);
+            var activeSessions = await _authService.GetActiveSessionsAsync(request.UserId);
             var count = activeSessions.Count();
 
             return new GetMyActiveSessionCountResponse

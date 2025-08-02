@@ -11,16 +11,13 @@ using Application.Features.Auth.Commands.VerifyOtpAuthenticator;
 using Application.Services.AuthService;
 using Application.Services.UserSessions;
 using Domain.Entities;
-using Elasticsearch.Net;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using NArchitecture.Core.Application.Dtos;
-using NArchitecture.Core.Security.Entities;
 using NArchitecture.Core.Security.OAuth.Services;
 using System.IdentityModel.Tokens.Jwt;
-using System.Net;
 using System.Security.Claims;
 
 namespace WebAPI.Controllers;
@@ -96,7 +93,7 @@ public class AuthController : BaseController
             IpAddress = ip,
             UserAgent = ua,
         });
-        await _sessionService.FlagAndHandleSuspiciousSessionsAsync(userId);
+        await _authService.FlagAndHandleSuspiciousSessionsAsync(userId);
 
         return Ok(result.ToHttpResponse());
     }

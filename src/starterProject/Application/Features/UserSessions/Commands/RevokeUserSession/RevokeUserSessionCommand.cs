@@ -15,7 +15,7 @@ namespace Application.Features.UserSessions.Commands.RevokeUserSession;
 public class RevokeUserSessionCommand : IRequest<RevokeMySessionResponse>, ISecuredRequest
 {
     public Guid SessionId { get; set; }
-    public string IpAddress { get; set; }
+    public string? IpAddress { get; set; }
 
     public string[] Roles => [Admin, Write];
 
