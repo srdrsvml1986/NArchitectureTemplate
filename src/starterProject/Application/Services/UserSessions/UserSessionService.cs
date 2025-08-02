@@ -7,6 +7,7 @@ using System.Linq.Expressions;
 using Application.Features.Auth.Commands.RevokeToken;
 using Application.Services.AuthService;
 using MediatR;
+using Application.Features.Users.Rules;
 
 namespace Application.Services.UserSessions;
 
@@ -17,6 +18,8 @@ public class UserSessionService : IUserSessionService
     private readonly INotificationService _notificationService;
     private readonly IAuthService _authService;
     private readonly IMediator _mediator;
+    private IUserRepository _userRepository;
+    private UserBusinessRules _userBusinessRules;
 
     public UserSessionService(IUserSessionRepository userSessionRepository, UserSessionBusinessRules userSessionBusinessRules, INotificationService notificationService, IAuthService authService, IMediator mediator)
     {
@@ -25,6 +28,12 @@ public class UserSessionService : IUserSessionService
         _notificationService = notificationService;
         _authService = authService;
         _mediator = mediator;
+    }
+
+    public UserSessionService(IUserRepository userRepository, UserBusinessRules userBusinessRules)
+    {
+        _userRepository = userRepository;
+        _userBusinessRules = userBusinessRules;
     }
 
     public async Task<UserSession?> GetAsync(
@@ -86,7 +95,7 @@ public class UserSessionService : IUserSessionService
     public async Task<IEnumerable<UserSession>> GetActiveSessionsAsync(Guid userId)
     {
         return (await _userSessionRepository.GetListAsync(
-            predicate: s => s.UserId == userId && !s.IsRevoked
+            predicate: s => s.UserId == userId && !s.IsRevoked, enableTracking: false, orderBy: q => q.OrderByDescending(s => s.LoginTime), cancellationToken: default
         )).Items;
     }
 

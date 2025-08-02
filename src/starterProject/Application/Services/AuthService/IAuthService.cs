@@ -12,8 +12,8 @@ public interface IAuthService
     Task<AccessToken> CreateAccessToken(User user);
     Task<EmailAuthenticator> CreateEmailAuthenticator(User user);
     Task<OtpAuthenticator> CreateOtpAuthenticator(User user);
-    Task<RefreshToken> CreateRefreshToken(User user, string ipAddress);
-    Task<TokenDto> CreateTokenForExternalUser(ExternalAuthUser externalUser);
+    Task<RefreshToken> CreateRefreshToken(User user, string ipAddress, string userAgent);
+    Task<TokenDto> CreateTokenForExternalUser(ExternalAuthUser externalUser, string ipAddress, string userAgent);
     Task DeleteOldRefreshTokens(Guid userId);
     Task<RefreshToken?> GetRefreshTokenByToken(string token);
     Task RevokeDescendantRefreshTokens(RefreshToken refreshToken, string ipAddress, string reason);

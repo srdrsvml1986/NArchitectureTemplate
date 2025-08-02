@@ -1,5 +1,6 @@
 ﻿using System.Collections.Immutable;
 using Application.Services.Repositories;
+using Application.Services.UserSessions;
 using Application.Services.UsersService;
 using AutoMapper;
 using Domain.DTos;
@@ -9,10 +10,12 @@ using MimeKit;
 using NArchitecture.Core.CrossCuttingConcerns.Exception.Types;
 using NArchitecture.Core.Mailing;
 using NArchitecture.Core.Security.EmailAuthenticator;
+using NArchitecture.Core.Security.Entities;
 using NArchitecture.Core.Security.Enums;
 using NArchitecture.Core.Security.JWT;
 using NArchitecture.Core.Security.OAuth.Models;
 using NArchitecture.Core.Security.OtpAuthenticator;
+using Org.BouncyCastle.Asn1.Ocsp;
 
 namespace Application.Services.AuthService;
 
@@ -30,6 +33,7 @@ public class AuthService : IAuthService
     private readonly IOtpAuthenticatorRepository _otpAuthenticatorRepository;
     private readonly IUserRepository _userRepository;
     private readonly IUserService _userService;
+    private readonly IUserSessionService _sessionService;
     private readonly string _appName;
 
     public AuthService(
@@ -44,7 +48,8 @@ public class AuthService : IAuthService
         IEmailAuthenticatorRepository emailAuthenticatorRepository,
         IEmailAuthenticatorHelper emailAuthenticatorHelper,
         IUserRepository userRepository,
-        IUserService userService)
+        IUserService userService,
+        IUserSessionService sessionService)
     {
         _userOperationClaimRepository = userOperationClaimRepository;
         _refreshTokenRepository = refreshTokenRepository;
@@ -64,6 +69,7 @@ public class AuthService : IAuthService
         _emailAuthenticatorHelper = emailAuthenticatorHelper;
         _userRepository = userRepository;
         _userService = userService;
+        _sessionService = sessionService;
     }
 
     public async Task<AccessToken> CreateAccessToken(User user)
@@ -134,14 +140,24 @@ public class AuthService : IAuthService
             await RevokeDescendantRefreshTokens(refreshToken: childToken!, ipAddress, reason);
     }
 
-    public Task<RefreshToken> CreateRefreshToken(User user, string ipAddress)
+    public async Task<RefreshToken> CreateRefreshToken(User user,  string ipAddress, string userAgent)
     {
         NArchitecture.Core.Security.Entities.RefreshToken<Guid, Guid> coreRefreshToken = _tokenHelper.CreateRefreshToken(
             user,
             ipAddress
         );
+
+        // Oturum kaydı ekle  
+        UserSession userSession = await _sessionService.AddAsync(new UserSession
+        {
+            UserId = user.Id,
+            IpAddress = ipAddress,
+            UserAgent = userAgent,
+        });
+
         RefreshToken refreshToken = _mapper.Map<RefreshToken>(coreRefreshToken);
-        return Task.FromResult(refreshToken);
+        refreshToken.SessionId = userSession.Id;
+        return refreshToken;
     }
 
     public async Task<EmailAuthenticator> CreateEmailAuthenticator(User user)
@@ -173,7 +189,11 @@ public class AuthService : IAuthService
         string result = await _otpAuthenticatorHelper.ConvertSecretKeyToString(secretKey);
         return result;
     }
-
+    /// <summary>
+    /// EnableEmailAuthenticator aktif olan Kullanıcının doğrulayıcı kodunu göndermek için kullanılır. 
+    /// </summary>
+    /// <param name="user"></param>
+    /// <returns></returns>
     public async Task SendAuthenticatorCode(User user)
     {
         if (user.AuthenticatorType is AuthenticatorType.Email)
@@ -191,8 +211,8 @@ public class AuthService : IAuthService
     private async Task SendAuthenticatorCodeWithEmail(User user)
     {
         EmailAuthenticator? emailAuthenticator = await _emailAuthenticatorRepository.GetAsync(predicate: e =>
-            e.UserId == user.Id
-        );
+             e.UserId == user.Id
+         );
         if (emailAuthenticator is null)
             throw new NotFoundException("E-posta Doğrulayıcı bulunamadı.");
         if (!emailAuthenticator.IsVerified)
@@ -238,7 +258,7 @@ public class AuthService : IAuthService
     }
 
     // OAuth ile gelen kullanıcı için token oluşturma
-    public async Task<TokenDto> CreateTokenForExternalUser(ExternalAuthUser externalUser)
+    public async Task<TokenDto> CreateTokenForExternalUser(ExternalAuthUser externalUser, string ipAddress, string userAgent)
     {
         // Kullanıcıyı bul veya oluştur
         var user = await _userService.CreateOrUpdateExternalUserAsync(externalUser);
@@ -247,7 +267,7 @@ public class AuthService : IAuthService
         var accessToken = await CreateAccessToken(user);
 
         // Refresh token oluştur
-        var refreshToken = await CreateRefreshToken(user, externalUser.IpAddress);
+        var refreshToken = await CreateRefreshToken(user, externalUser.IpAddress,userAgent);
         await _refreshTokenRepository.AddAsync(refreshToken);
 
         return new TokenDto

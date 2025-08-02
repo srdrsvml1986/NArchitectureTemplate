@@ -36,7 +36,7 @@ public class VerifyEmailAuthenticatorCommand : IRequest
         public async Task Handle(VerifyEmailAuthenticatorCommand request, CancellationToken cancellationToken)
         {
             EmailAuthenticator? emailAuthenticator = await _emailAuthenticatorRepository.GetAsync(
-                predicate: e => e.ActivationKey == request.ActivationKey,
+                predicate: e => e.ActivationKey == ConvertFromUrlSafeBase64(request.ActivationKey),
                 cancellationToken: cancellationToken
             );
             await _authBusinessRules.EmailAuthenticatorShouldBeExists(emailAuthenticator);
@@ -45,6 +45,19 @@ public class VerifyEmailAuthenticatorCommand : IRequest
             emailAuthenticator!.ActivationKey = null;
             emailAuthenticator.IsVerified = true;
             await _emailAuthenticatorRepository.UpdateAsync(emailAuthenticator);
+        }
+        private string ConvertFromUrlSafeBase64(string urlSafeBase64)
+        {
+            string base64 = urlSafeBase64
+                .Replace('-', '+')
+                .Replace('_', '/');
+
+            // Padding ekle (Base64 uzunluğu 4'ün katı olmalı)
+            int padding = base64.Length % 4;
+            if (padding > 0)
+                base64 += new string('=', 4 - padding);
+
+            return base64;
         }
     }
 }

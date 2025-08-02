@@ -4,11 +4,13 @@ using Application.Features.Auth.Rules;
 using Application.Features.Users.Rules;
 using Application.Services.AuthService;
 using Application.Services.Repositories;
+using Application.Services.UserSessions;
 using Application.Services.UsersService;
 using AutoMapper;
 using FluentValidation.TestHelper;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging.Abstractions;
+using Moq;
 using NArchitecture.Core.CrossCuttingConcerns.Exception.Types;
 using NArchitecture.Core.Localization.Abstraction;
 using NArchitecture.Core.Localization.Resource.Yaml;
@@ -35,7 +37,8 @@ public class LoginTests
     public LoginTests(
         OperationClaimFakeData operationClaimFakeData,
         RefreshTokenFakeData refreshTokenFakeData,
-        UserFakeData userFakeData
+        UserFakeData userFakeData,
+        SessionFakeData sessionFakeData
     )
     {
         _configuration = MockConfiguration.GetConfigurationMock();
@@ -50,6 +53,8 @@ public class LoginTests
             MockEmailAuthenticatorRepository.GetEmailAuthenticatorRepositoryMock();
         IOtpAuthenticatorRepository _userOtpAuthenticatorRepository = MockOtpAuthRepository.GetOtpAuthenticatorMock();
         IUserRepository _userRepository = new MockUserRepository(userFakeData).GetUserMockRepository();
+        IUserSessionRepository _userSessionRepository = new MockUserSessionRepository(sessionFakeData).GetUserSessionMockRepository();
+        var mockSessionRepo = new Mock<IUserSessionRepository>();
         #endregion
         #region Mock Helpers
         TokenOptions tokenOptions =
@@ -75,6 +80,7 @@ public class LoginTests
         AuthBusinessRules authBusinessRules = new(_userRepository, localizationService);
         UserBusinessRules _userBusinessRules = new(_userRepository, localizationService);
         IUserService _userService = new UserService(_userRepository, _userBusinessRules);
+        IUserSessionService _userSessionService = new UserSessionService(_userRepository, _userBusinessRules);
         IAuthService _authService = new AuthService(
                    _userOperationClaimRepository,
                    _refreshTokenRepository,
@@ -87,7 +93,8 @@ public class LoginTests
                    _userEmailAuthenticatorRepository,
                    emailAuthenticatorHelper,
                    _userRepository,
-                   _userService // Added missing argument for 'userService'
+                   _userService,
+                     _userSessionService // Added missing argument for 'userSessionService'
                );
         IAuthService _authenticatorService = new AuthService(
             _userOperationClaimRepository,
@@ -101,12 +108,13 @@ public class LoginTests
             _userEmailAuthenticatorRepository,
             emailAuthenticatorHelper,
             _userRepository,
-            _userService // Added missing argument for 'userService'
+            _userService ,
+            _userSessionService
 
         );
         _validator = new LoginCommandValidator();
         _loginCommand = new LoginCommand();
-        _loginCommandHandler = new LoginCommandHandler(_userService, _authService, authBusinessRules, _authenticatorService);
+        _loginCommandHandler = new LoginCommandHandler(_userService, _authService, authBusinessRules);
     }
 
     [Fact]

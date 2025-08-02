@@ -76,14 +76,31 @@ public class EnableEmailAuthenticatorCommand : IRequest, ISecuredRequest
             var toEmailList = new List<MailboxAddress> { new(name: user.Email, user.Email) };
 
             _mailService.SendMail(
-                new Mail
-                {
-                    ToList = toEmailList,
-                    Subject = $"E-postanızı Doğrulayın - {_appName}",
-                    TextBody =
-                        $"E-postanızı doğrulamak için bağlantıya tıklayın: {request.VerifyEmailUrlPrefix}?ActivationKey={HttpUtility.UrlEncode(addedEmailAuthenticator.ActivationKey)}"
-                }
-            );
+    new Mail
+    {
+        ToList = toEmailList,
+        Subject = $"E-postanızı Doğrulayın - {_appName}",
+        HtmlBody = $@"
+            <html>
+            <body>
+                <p>E-postanızı doğrulamak için lütfen aşağıdaki bağlantıya tıklayın:</p>
+                <p>
+                    <a href=""{request.VerifyEmailUrlPrefix}?ActivationKey={ConvertToUrlSafeBase64(addedEmailAuthenticator.ActivationKey!)}"">
+                        Tıklayın
+                    </a>
+                </p>
+                <p>Eğer bu işlemi siz başlatmadıysanız, bu e-postayı dikkate almayınız.</p>
+            </body>
+            </html>"
+    }
+);
+        }
+        private string ConvertToUrlSafeBase64(string base64)
+        {
+            return base64
+                .Replace('+', '-') // URL'de sorun çıkaran +
+                .Replace('/', '_') // URL'de sorun çıkaran /
+                .Replace("=", ""); // Padding karakterlerini kaldır
         }
     }
 }

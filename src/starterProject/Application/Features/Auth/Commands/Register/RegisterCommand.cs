@@ -13,17 +13,20 @@ public class RegisterCommand : IRequest<RegisteredResponse>
 {
     public UserForRegisterDto UserForRegisterDto { get; set; }
     public string IpAddress { get; set; }
+    public string UserAgent { get; set; }
 
     public RegisterCommand()
     {
         UserForRegisterDto = null!;
         IpAddress = string.Empty;
+        UserAgent = string.Empty;
     }
 
-    public RegisterCommand(UserForRegisterDto userForRegisterDto, string ipAddress)
+    public RegisterCommand(UserForRegisterDto userForRegisterDto, string ipAddress, string userAgent)
     {
         UserForRegisterDto = userForRegisterDto;
         IpAddress = ipAddress;
+        UserAgent = userAgent;
     }
 
     public class RegisterCommandHandler : IRequestHandler<RegisterCommand, RegisteredResponse>
@@ -82,7 +85,8 @@ public class RegisterCommand : IRequest<RegisteredResponse>
 
             Domain.Entities.RefreshToken createdRefreshToken = await _authService.CreateRefreshToken(
                 createdUser,
-                request.IpAddress
+                request.IpAddress,
+                request.UserAgent
             );
             Domain.Entities.RefreshToken addedRefreshToken = await _authService.AddRefreshToken(createdRefreshToken);
 

@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using NArchitecture.Core.Application.Dtos;
+using NArchitecture.Core.Security.Entities;
 using NArchitecture.Core.Security.OAuth.Services;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net;
@@ -70,7 +71,11 @@ public class AuthController : BaseController
     [HttpPost("Login")]
     public async Task<IActionResult> Login([FromBody] UserForLoginDto userForLoginDto)
     {
-        LoginCommand loginCommand = new() { UserForLoginDto = userForLoginDto, IpAddress = getIpAddress() };
+        // Oturum kaydı ve şüpheli kontrolü
+        var ip = HttpContext.Connection.RemoteIpAddress?.ToString() ?? string.Empty;
+        var ua = Request.Headers["User-Agent"].ToString();
+
+        LoginCommand loginCommand = new() { UserForLoginDto = userForLoginDto, IpAddress = getIpAddress(),UserAgent=ua };
         LoggedResponse result = await Mediator.Send(loginCommand);
 
         if (result.RefreshToken is not null)
@@ -83,9 +88,6 @@ public class AuthController : BaseController
         if (!Guid.TryParse(userIdClaim, out Guid userId))
             return Unauthorized();
 
-        // Oturum kaydı ve şüpheli kontrolü
-        var ip = HttpContext.Connection.RemoteIpAddress?.ToString() ?? string.Empty;
-        var ua = Request.Headers["User-Agent"].ToString();
 
         // Oturum kaydı ekle ve şüpheli oturumları kontrol et        
         await _sessionService.AddAsync(new UserSession
@@ -269,9 +271,14 @@ public class AuthController : BaseController
         if (!result.Success)
             return BadRequest(result.Error);
 
+        // Oturum kaydı ve şüpheli kontrolü
+        var ip = HttpContext.Connection.RemoteIpAddress?.ToString() ?? string.Empty;
+        var ua = Request.Headers["User-Agent"].ToString();
+
+       
         // Kullanıcıyı sistemde kaydet/güncelle ve JWT token üret
         // Token oluştur
-        var tokenResult = await _authService.CreateTokenForExternalUser(result.User);
+        var tokenResult = await _authService.CreateTokenForExternalUser(result.User!,ip,ua);
 
         // Refresh token'ı cookie'ye kaydet
         setRefreshTokenToCookie(tokenResult.RefreshToken);
@@ -302,7 +309,14 @@ public class AuthController : BaseController
         if (!result.Success)
             return BadRequest(result.Error);
 
-        var tokenResult = await _authService.CreateTokenForExternalUser(result.User);
+        // Oturum kaydı ve şüpheli kontrolü
+        var ip = HttpContext.Connection.RemoteIpAddress?.ToString() ?? string.Empty;
+        var ua = Request.Headers["User-Agent"].ToString();
+
+
+        // Kullanıcıyı sistemde kaydet/güncelle ve JWT token üret
+        // Token oluştur
+        var tokenResult = await _authService.CreateTokenForExternalUser(result.User!, ip, ua);
 
         // Refresh token'ı cookie'ye kaydet
         setRefreshTokenToCookie(tokenResult.RefreshToken);
