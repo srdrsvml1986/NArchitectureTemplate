@@ -1,21 +1,20 @@
 ﻿using System.Collections.Immutable;
+using Application.Features.UserSessions.Commands.Create;
 using Application.Services.Repositories;
-using Application.Services.UserSessions;
 using Application.Services.UsersService;
 using AutoMapper;
 using Domain.DTos;
 using Domain.Entities;
+using MediatR;
 using Microsoft.Extensions.Configuration;
 using MimeKit;
 using NArchitecture.Core.CrossCuttingConcerns.Exception.Types;
 using NArchitecture.Core.Mailing;
 using NArchitecture.Core.Security.EmailAuthenticator;
-using NArchitecture.Core.Security.Entities;
 using NArchitecture.Core.Security.Enums;
 using NArchitecture.Core.Security.JWT;
 using NArchitecture.Core.Security.OAuth.Models;
 using NArchitecture.Core.Security.OtpAuthenticator;
-using Org.BouncyCastle.Asn1.Ocsp;
 
 namespace Application.Services.AuthService;
 
@@ -31,9 +30,8 @@ public class AuthService : IAuthService
     private readonly IMailService _mailService;
     private readonly IOtpAuthenticatorHelper _otpAuthenticatorHelper;
     private readonly IOtpAuthenticatorRepository _otpAuthenticatorRepository;
-    private readonly IUserRepository _userRepository;
     private readonly IUserService _userService;
-    private readonly IUserSessionService _sessionService;
+    private readonly IMediator _mediator;
     private readonly string _appName;
 
     public AuthService(
@@ -47,9 +45,8 @@ public class AuthService : IAuthService
         IOtpAuthenticatorHelper otpAuthenticatorHelper,
         IEmailAuthenticatorRepository emailAuthenticatorRepository,
         IEmailAuthenticatorHelper emailAuthenticatorHelper,
-        IUserRepository userRepository,
         IUserService userService,
-        IUserSessionService sessionService)
+        IMediator mediator)
     {
         _userOperationClaimRepository = userOperationClaimRepository;
         _refreshTokenRepository = refreshTokenRepository;
@@ -67,9 +64,8 @@ public class AuthService : IAuthService
         _otpAuthenticatorHelper = otpAuthenticatorHelper;
         _emailAuthenticatorRepository = emailAuthenticatorRepository;
         _emailAuthenticatorHelper = emailAuthenticatorHelper;
-        _userRepository = userRepository;
         _userService = userService;
-        _sessionService = sessionService;
+        _mediator = mediator;
     }
 
     public async Task<AccessToken> CreateAccessToken(User user)
@@ -148,15 +144,19 @@ public class AuthService : IAuthService
         );
 
         // Oturum kaydı ekle  
-        UserSession userSession = await _sessionService.AddAsync(new UserSession
+        CreatedUserSessionResponse response = await _mediator.Send(new CreateUserSessionCommand()
         {
-            UserId = user.Id,
             IpAddress = ipAddress,
+            UserId = user.Id,
             UserAgent = userAgent,
+            IsRevoked = false,
+            IsSuspicious = false,
+            LoginTime = DateTime.Now,
+            LocationInfo = "",
         });
 
         RefreshToken refreshToken = _mapper.Map<RefreshToken>(coreRefreshToken);
-        refreshToken.SessionId = userSession.Id;
+        refreshToken.SessionId = response.Id;
         return refreshToken;
     }
 

@@ -126,12 +126,20 @@ public class UserSessionService : IUserSessionService
 
             if (session.IsSuspicious)
             {
-                await _notificationService.NotifySuspiciousSessionAsync(session);
-                var token = await _authService.GetRefreshTokenBySessionAsync(session.Id);
-                await _mediator.Send(new RevokeTokenCommand(token, session.IpAddress));
+                try
+                {
+                    await _notificationService.NotifySuspiciousSessionAsync(session);
+                    var token = await _authService.GetRefreshTokenBySessionAsync(session.Id);
+                    await _mediator.Send(new RevokeTokenCommand(token, session.IpAddress));
+                }
+                catch (Exception)
+                {
+
+                    
+                }
                 session.IsRevoked = true;
             }
-            await _userSessionRepository.UpdateAsync(session);
+            await UpdateAsync(session);
         }
     }
     #region Yeni Eklenen Metotlar
