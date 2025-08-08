@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\core\Core.Application\Core.Application.csproj" />
+    <ProjectReference Include="..\..\core\Core.CrossCuttingConcerns.Exception\Core.CrossCuttingConcerns.Exception.csproj" />
+    <ProjectReference Include="..\..\core\Core.CrossCuttingConcerns.Logging.Serilog.File\Core.CrossCuttingConcerns.Logging.Serilog.File.csproj" />
+    <ProjectReference Include="..\..\core\Core.CrossCuttingConcerns.Logging.SeriLog\Core.CrossCuttingConcerns.Logging.Serilog.csproj" />
+    <ProjectReference Include="..\..\core\Core.ElasticSearch\Core.ElasticSearch.csproj" />
+    <ProjectReference Include="..\..\core\Core.Localization.Abstraction\Core.Localization.Abstraction.csproj" />
+    <ProjectReference Include="..\..\core\Core.Localization.Resource.Yaml.DependencyInjection\Core.Localization.Resource.Yaml.DependencyInjection.csproj" />
+    <ProjectReference Include="..\..\core\Core.Mailing.MailKit\Core.Mailing.MailKit.csproj" />
+    <ProjectReference Include="..\..\core\Core.Mailing\Core.Mailing.csproj" />
+    <ProjectReference Include="..\..\core\Core.Security.DependencyInjection\Core.Security.DependencyInjection.csproj" />
+    <ProjectReference Include="..\Domain\Domain.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="15.0.1" />
+    <PackageReference Include="MediatR" Version="13.0.0" />
+    <PackageReference Include="QRCoder" Version="1.6.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Features\**\Resources\Locales\*.*.yaml">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+</Project>

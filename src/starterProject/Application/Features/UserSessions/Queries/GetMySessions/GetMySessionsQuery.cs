@@ -1,0 +1,58 @@
+﻿using Application.Features.UserSessions.Queries.GetList;
+using Application.Services.UserSessions;
+using AutoMapper;
+using MediatR;
+using NArchitecture.Core.Application.Pipelines.Authorization;
+using NArchitecture.Core.Application.Requests;
+using NArchitecture.Core.Application.Responses;
+using NArchitecture.Core.Persistence.Paging;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using static Application.Features.UserSessions.Constants.UserSessionsOperationClaims;
+
+namespace Application.Features.UserSessions.Queries.GetMySessions;
+public class GetMySessionsQuery : IRequest<GetListResponse<GetListUserSessionListItemDto>>, ISecuredRequest
+{
+    public Guid UserId { get; set; }
+    public PageRequest PageRequest { get; set; }
+
+    public string[] Roles => [Admin, Read];
+
+    public class GetMySessionsQueryHandler : IRequestHandler<GetMySessionsQuery, GetListResponse<GetListUserSessionListItemDto>>
+    {
+        private readonly IUserSessionService _userSessionService;
+        private readonly IMapper _mapper;
+
+        public GetMySessionsQueryHandler(IUserSessionService userSessionService, IMapper mapper)
+        {
+            _userSessionService = userSessionService;
+            _mapper = mapper;
+        }
+
+        public async Task<GetListResponse<GetListUserSessionListItemDto>> Handle(GetMySessionsQuery request, CancellationToken cancellationToken)
+        {
+            IPaginate<UserSession>? userSessions = await _userSessionService.GetListAsync(
+                predicate: us => us.UserId == request.UserId,
+                index: request.PageRequest.PageIndex,
+                size: request.PageRequest.PageSize,
+                cancellationToken: cancellationToken
+            );
+            if (userSessions == null || userSessions.Items == null || !userSessions.Items.Any())
+            {
+                return new GetListResponse<GetListUserSessionListItemDto>
+                {
+                    Items = new List<GetListUserSessionListItemDto>(),
+                    Index = 0,
+                    Size = 0,
+                    Count = 0,
+                    Pages = 0
+                };
+            }
+            GetListResponse<GetListUserSessionListItemDto> response = _mapper.Map<GetListResponse<GetListUserSessionListItemDto>>(userSessions);
+            return response;
+        }
+    }
+}

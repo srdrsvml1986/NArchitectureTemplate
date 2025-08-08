@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>NArchitecture.$(AssemblyName)</RootNamespace>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <PackageId>NArchitecture.$(AssemblyName)</PackageId>
+    <Version>1.0.1</Version>
+    <Title>NArchitecture $(AssemblyName)</Title>
+    <Description>Provides utilities for integrating security features with ASP.NET Web API projects,
+      focusing on Swagger integration.</Description>
+    <Product>NArchitecture</Product>
+    <Authors>serdarsevimli.tr, Contributors</Authors>
+    <Company>serdarsevimli.tr</Company>
+    <PackageTags>Clean Architecture, Union Architecture, Core, NArchitecture, Security,
+      Authentication, Authorization, Swagger, Web API, Documentation, JWT, Two-Factor
+      Authentication, OTP, Email Handling, Hashing, Encryption</PackageTags>
+  </PropertyGroup>
+
+
+  <ItemGroup>
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="9.0.3" />
+  </ItemGroup>
+
+</Project>
