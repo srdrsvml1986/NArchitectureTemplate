@@ -11,16 +11,13 @@ using Application.Features.Auth.Commands.VerifyOtpAuthenticator;
 using Application.Services.AuthService;
 using Application.Services.UserSessions;
 using Domain.Entities;
-using Elasticsearch.Net;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using NArchitecture.Core.Application.Dtos;
-using NArchitecture.Core.Security.Entities;
 using NArchitecture.Core.Security.OAuth.Services;
 using System.IdentityModel.Tokens.Jwt;
-using System.Net;
 using System.Security.Claims;
 
 namespace WebAPI.Controllers;
@@ -75,7 +72,7 @@ public class AuthController : BaseController
         var ip = HttpContext.Connection.RemoteIpAddress?.ToString() ?? string.Empty;
         var ua = Request.Headers["User-Agent"].ToString();
 
-        LoginCommand loginCommand = new() { UserForLoginDto = userForLoginDto, IpAddress = getIpAddress(),UserAgent=ua };
+        LoginCommand loginCommand = new() { UserForLoginDto = userForLoginDto, IpAddress = getIpAddress(), UserAgent = ua };
         LoggedResponse result = await Mediator.Send(loginCommand);
 
         if (result.RefreshToken is not null)
@@ -96,7 +93,7 @@ public class AuthController : BaseController
             IpAddress = ip,
             UserAgent = ua,
         });
-        await _sessionService.FlagAndHandleSuspiciousSessionsAsync(userId);
+        await _authService.FlagAndHandleSuspiciousSessionsAsync(userId);
 
         return Ok(result.ToHttpResponse());
     }
@@ -275,10 +272,10 @@ public class AuthController : BaseController
         var ip = HttpContext.Connection.RemoteIpAddress?.ToString() ?? string.Empty;
         var ua = Request.Headers["User-Agent"].ToString();
 
-       
+
         // Kullanıcıyı sistemde kaydet/güncelle ve JWT token üret
         // Token oluştur
-        var tokenResult = await _authService.CreateTokenForExternalUser(result.User!,ip,ua);
+        var tokenResult = await _authService.CreateTokenForExternalUser(result.User!, ip, ua);
 
         // Refresh token'ı cookie'ye kaydet
         setRefreshTokenToCookie(tokenResult.RefreshToken);

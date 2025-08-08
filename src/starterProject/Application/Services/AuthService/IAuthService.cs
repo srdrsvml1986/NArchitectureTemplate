@@ -23,4 +23,8 @@ public interface IAuthService
     Task VerifyAuthenticatorCode(User user, string authenticatorCode);
     Task<int> GetRefreshCountAsync(Guid userId, TimeSpan period);
     Task<string> GetRefreshTokenBySessionAsync(Guid userId);
+    Task RevokeUserSessionAsync(Guid sessionId);
+    Task RevokeAllOtherSessionsAsync(Guid userId, Guid currentSessionId);
+    Task FlagAndHandleSuspiciousSessionsAsync(Guid userId);
+    Task<IEnumerable<UserSession>> GetActiveSessionsAsync(Guid userId);
 }

@@ -22,7 +22,7 @@ public class GetMyActiveSessionCountQuery : IRequest<GetMyActiveSessionCountResp
 
         public async Task<GetMyActiveSessionCountResponse> Handle(GetMyActiveSessionCountQuery request, CancellationToken cancellationToken)
         {
-            var activeSessions = await _userSessionService.GetActiveSessionsAsync(request.UserId);
+            var activeSessions = await _userSessionService.GetUserSessionsAsync(request.UserId);
             var count = activeSessions.Count();
 
             return new GetMyActiveSessionCountResponse

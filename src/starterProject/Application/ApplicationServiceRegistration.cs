@@ -68,7 +68,7 @@ public static class ApplicationServiceRegistration
 
         services.AddYamlResourceLocalization();
 
-        services.AddSecurityServices<Guid, int, Guid>(tokenOptions);
+        services.AddSecurityServices<Guid, int,int, Guid>(tokenOptions);
 
         services.AddScoped<ICurrentUserAuthorizationService, CurrentUserAuthorizationService>();
 

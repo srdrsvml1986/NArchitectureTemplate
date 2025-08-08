@@ -1,45 +1,47 @@
 ﻿using System.Collections.Immutable;
+using Application.Features.UserSessions.Commands.Create;
 using Application.Services.Repositories;
 using Application.Services.UserSessions;
 using Application.Services.UsersService;
 using AutoMapper;
 using Domain.DTos;
 using Domain.Entities;
+using MediatR;
 using Microsoft.Extensions.Configuration;
 using MimeKit;
 using NArchitecture.Core.CrossCuttingConcerns.Exception.Types;
 using NArchitecture.Core.Mailing;
 using NArchitecture.Core.Security.EmailAuthenticator;
-using NArchitecture.Core.Security.Entities;
-using NArchitecture.Core.Security.Enums;
 using NArchitecture.Core.Security.JWT;
 using NArchitecture.Core.Security.OAuth.Models;
 using NArchitecture.Core.Security.OtpAuthenticator;
-using Org.BouncyCastle.Asn1.Ocsp;
+using NArchitecture.Core.Security.Enums;
 
 namespace Application.Services.AuthService;
 
 public class AuthService : IAuthService
 {
     private readonly IRefreshTokenRepository _refreshTokenRepository;
-    private readonly ITokenHelper<Guid, int, Guid> _tokenHelper;
+    private readonly ITokenHelper<Guid, int, int, Guid> _tokenHelper;
     private readonly TokenOptions _tokenOptions;
     private readonly IUserOperationClaimRepository _userOperationClaimRepository;
+    private readonly IUserRoleRepository _userRoleRepository;
     private readonly IMapper _mapper;
     private readonly IEmailAuthenticatorHelper _emailAuthenticatorHelper;
     private readonly IEmailAuthenticatorRepository _emailAuthenticatorRepository;
     private readonly IMailService _mailService;
     private readonly IOtpAuthenticatorHelper _otpAuthenticatorHelper;
     private readonly IOtpAuthenticatorRepository _otpAuthenticatorRepository;
-    private readonly IUserRepository _userRepository;
     private readonly IUserService _userService;
-    private readonly IUserSessionService _sessionService;
+    private readonly IUserSessionService _userSessionService;
+    private readonly INotificationService _notificationService;
+    private readonly IMediator _mediator;
     private readonly string _appName;
 
     public AuthService(
         IUserOperationClaimRepository userOperationClaimRepository,
         IRefreshTokenRepository refreshTokenRepository,
-        ITokenHelper<Guid, int, Guid> tokenHelper,
+        ITokenHelper<Guid, int, int, Guid> tokenHelper,
         IConfiguration configuration,
         IMapper mapper,
         IMailService mailService,
@@ -49,7 +51,10 @@ public class AuthService : IAuthService
         IEmailAuthenticatorHelper emailAuthenticatorHelper,
         IUserRepository userRepository,
         IUserService userService,
-        IUserSessionService sessionService)
+        IMediator mediator,
+        IUserSessionService userSessionService,
+        INotificationService notificationService,
+        IUserRoleRepository userRoleRepository)
     {
         _userOperationClaimRepository = userOperationClaimRepository;
         _refreshTokenRepository = refreshTokenRepository;
@@ -67,17 +72,22 @@ public class AuthService : IAuthService
         _otpAuthenticatorHelper = otpAuthenticatorHelper;
         _emailAuthenticatorRepository = emailAuthenticatorRepository;
         _emailAuthenticatorHelper = emailAuthenticatorHelper;
-        _userRepository = userRepository;
         _userService = userService;
-        _sessionService = sessionService;
+        _mediator = mediator;
+        _userSessionService = userSessionService;
+        _notificationService = notificationService;
+        _userRoleRepository = userRoleRepository;
     }
 
     public async Task<AccessToken> CreateAccessToken(User user)
     {
         IList<OperationClaim> operationClaims = await _userOperationClaimRepository.GetSecurityClaimsByUserIdAsync(user.Id);
+        IList<Role> roles = await _userRoleRepository.GetSecurityRolesByUserIdAsync(user.Id);
+
         AccessToken accessToken = _tokenHelper.CreateToken(
             user,
-            operationClaims.Select(op => (NArchitecture.Core.Security.Entities.OperationClaim<int>)op).ToImmutableList()
+            operationClaims.Select(op => (NArchitecture.Core.Security.Entities.OperationClaim<int>)op).ToImmutableList(),
+            roles.Select(role => (NArchitecture.Core.Security.Entities.Role<int>)role).ToImmutableList()
         );
         return accessToken;
     }
@@ -140,23 +150,19 @@ public class AuthService : IAuthService
             await RevokeDescendantRefreshTokens(refreshToken: childToken!, ipAddress, reason);
     }
 
-    public async Task<RefreshToken> CreateRefreshToken(User user,  string ipAddress, string userAgent)
+    public async Task<RefreshToken> CreateRefreshToken(User user, string ipAddress, string userAgent)
     {
+        // Oturum kaydı ekle  
+        UserSession userSession = new UserSession { IpAddress = ipAddress, UserAgent = userAgent, UserId = user.Id };
+        UserSession session = await _userSessionService.AddAsync(userSession);
+
         NArchitecture.Core.Security.Entities.RefreshToken<Guid, Guid> coreRefreshToken = _tokenHelper.CreateRefreshToken(
             user,
             ipAddress
         );
 
-        // Oturum kaydı ekle  
-        UserSession userSession = await _sessionService.AddAsync(new UserSession
-        {
-            UserId = user.Id,
-            IpAddress = ipAddress,
-            UserAgent = userAgent,
-        });
-
         RefreshToken refreshToken = _mapper.Map<RefreshToken>(coreRefreshToken);
-        refreshToken.SessionId = userSession.Id;
+        refreshToken.UserSessionId = userSession.Id;
         return refreshToken;
     }
 
@@ -267,7 +273,7 @@ public class AuthService : IAuthService
         var accessToken = await CreateAccessToken(user);
 
         // Refresh token oluştur
-        var refreshToken = await CreateRefreshToken(user, externalUser.IpAddress,userAgent);
+        var refreshToken = await CreateRefreshToken(user, externalUser.IpAddress, userAgent);
         await _refreshTokenRepository.AddAsync(refreshToken);
 
         return new TokenDto
@@ -291,5 +297,99 @@ public class AuthService : IAuthService
             rt.RevokedDate == null // İptal edilmemiş tokenlar
         );
         return token?.Token ?? string.Empty;
+    }
+    public async Task<IEnumerable<UserSession>> GetActiveSessionsAsync(Guid userId)
+    {
+        return (await _userSessionService.GetListAsync(
+            predicate: s => s.UserId == userId && !s.IsRevoked, enableTracking: false, orderBy: q => q.OrderByDescending(s => s.LoginTime), cancellationToken: default
+        )).Items;
+    }
+
+    /// <summary>
+    /// Şüpheli oturumları tespit eder ve gerekli işlemleri yapar.
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <returns></returns>
+    public async Task FlagAndHandleSuspiciousSessionsAsync(Guid userId)
+    {
+        var sessions = (await GetActiveSessionsAsync(userId)).ToList();
+        var now = DateTime.UtcNow;
+        foreach (var session in sessions)
+        {
+            // Rule1: Aynı anda >3 oturum
+            if (sessions.Count > 3)
+                session.IsSuspicious = true;
+
+            // Rule2: Farklı lokasyon
+            var recent = sessions.OrderByDescending(s => s.LoginTime).FirstOrDefault();
+            if (recent != null && session != recent && session.LocationInfo != recent.LocationInfo)
+                session.IsSuspicious = true;
+
+            // Rule3: Kısa sürede çok sayıda token yenileme
+            var refreshCount = await GetRefreshCountAsync(session.Id, TimeSpan.FromMinutes(5));
+            if (refreshCount > 5)
+                session.IsSuspicious = true;
+
+            if (session.IsSuspicious)
+            {
+                try
+                {
+                    await _notificationService.NotifySuspiciousSessionAsync(session);
+                    var token = await GetRefreshTokenBySessionAsync(session.Id);
+                    Domain.Entities.RefreshToken? refreshToken = await GetRefreshTokenByToken(token);
+                    if (refreshToken is not null)
+                        await RevokeRefreshToken(refreshToken!, session!.IpAddress, reason: "Token kaldırıldı");
+                }
+                catch (Exception)
+                {
+
+
+                }
+                session.IsRevoked = true;
+            }
+            await _userSessionService.UpdateAsync(session);
+        }
+    }
+
+
+    /// <summary>
+    /// Mevcut oturum dışındaki tüm oturumları sonlandırır
+    /// </summary>
+    public async Task RevokeAllOtherSessionsAsync(Guid userId, Guid currentSessionId)
+    {
+        var sessions = (await GetActiveSessionsAsync(userId))
+            .Where(s => s.Id != currentSessionId);
+
+        foreach (var session in sessions)
+        {
+            var token = await GetRefreshTokenBySessionAsync(session.Id);
+            Domain.Entities.RefreshToken? refreshToken = await GetRefreshTokenByToken(token);
+            if (refreshToken is not null)
+                await RevokeRefreshToken(refreshToken!, session!.IpAddress, reason: "Token kaldırıldı");
+
+            session.IsRevoked = true;
+            await _userSessionService.UpdateAsync(session);
+        }
+    }
+
+
+    /// <summary>
+    /// Belirtilen kullanıcı oturumunu sonlandırır
+    /// </summary>
+    public async Task RevokeUserSessionAsync(Guid sessionId)
+    {
+        var session = await _userSessionService.GetAsync(s => s.Id == sessionId);
+        if (session is not null)
+        {
+            var token = await GetRefreshTokenBySessionAsync(sessionId);
+
+            Domain.Entities.RefreshToken? refreshToken = await GetRefreshTokenByToken(token);
+            if (refreshToken is not null)
+                await RevokeRefreshToken(refreshToken!, session!.IpAddress, reason: "Token kaldırıldı");
+
+            session.IsRevoked = true;
+            await _userSessionService.UpdateAsync(session);
+        }
+
     }
 }

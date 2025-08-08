@@ -2,12 +2,14 @@
 using Application.Features.Auth.Profiles;
 using Application.Features.Auth.Rules;
 using Application.Features.Users.Rules;
+using Application.Services;
 using Application.Services.AuthService;
 using Application.Services.Repositories;
 using Application.Services.UserSessions;
 using Application.Services.UsersService;
 using AutoMapper;
 using FluentValidation.TestHelper;
+using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
@@ -33,14 +35,19 @@ public class LoginTests
     private readonly LoginCommandHandler _loginCommandHandler;
     private readonly LoginCommandValidator _validator;
     private readonly IConfiguration _configuration;
+    private readonly IMediator _mediator = Mock.Of<IMediator>();
 
     public LoginTests(
         OperationClaimFakeData operationClaimFakeData,
         RefreshTokenFakeData refreshTokenFakeData,
-        UserFakeData userFakeData,
-        SessionFakeData sessionFakeData
+        UserFakeData userFakeData
     )
     {
+        #region Eksik Mock'ları Ekleyin
+        // Yeni mock'lar ekleyin
+        IUserSessionService _userSessionService = Mock.Of<IUserSessionService>();
+        INotificationService _notificationService = Mock.Of<INotificationService>();
+        #endregion
         _configuration = MockConfiguration.GetConfigurationMock();
         #region Mock Repositories
         IUserOperationClaimRepository _userOperationClaimRepository = new MockUserClaimRepository(
@@ -49,17 +56,17 @@ public class LoginTests
         IRefreshTokenRepository _refreshTokenRepository = new MockRefreshTokenRepository(
             refreshTokenFakeData
         ).GetMockRefreshTokenRepository();
+        // YENİ EKLENEN KISIM: UserRoleRepository mock
+        IUserRoleRepository _userRoleRepository = Mock.Of<IUserRoleRepository>(); // <-- Bu satırı ekleyin
         IEmailAuthenticatorRepository _userEmailAuthenticatorRepository =
             MockEmailAuthenticatorRepository.GetEmailAuthenticatorRepositoryMock();
         IOtpAuthenticatorRepository _userOtpAuthenticatorRepository = MockOtpAuthRepository.GetOtpAuthenticatorMock();
         IUserRepository _userRepository = new MockUserRepository(userFakeData).GetUserMockRepository();
-        IUserSessionRepository _userSessionRepository = new MockUserSessionRepository(sessionFakeData).GetUserSessionMockRepository();
-        var mockSessionRepo = new Mock<IUserSessionRepository>();
         #endregion
         #region Mock Helpers
         TokenOptions tokenOptions =
             _configuration.GetSection("TokenOptions").Get<TokenOptions>() ?? throw new Exception("Token options not found.");
-        ITokenHelper<Guid, int, Guid> tokenHelper = new JwtHelper<Guid, int, Guid>(tokenOptions);
+        ITokenHelper<Guid, int, int, Guid> tokenHelper = new JwtHelper<Guid, int, int, Guid>(tokenOptions);
         IEmailAuthenticatorHelper emailAuthenticatorHelper = new EmailAuthenticatorHelper();
         MailSettings mailSettings =
             _configuration.GetSection("MailSettings").Get<MailSettings>() ?? throw new Exception("Mail settings not found.");
@@ -80,7 +87,6 @@ public class LoginTests
         AuthBusinessRules authBusinessRules = new(_userRepository, localizationService);
         UserBusinessRules _userBusinessRules = new(_userRepository, localizationService);
         IUserService _userService = new UserService(_userRepository, _userBusinessRules);
-        IUserSessionService _userSessionService = new UserSessionService(_userRepository, _userBusinessRules);
         IAuthService _authService = new AuthService(
                    _userOperationClaimRepository,
                    _refreshTokenRepository,
@@ -94,7 +100,10 @@ public class LoginTests
                    emailAuthenticatorHelper,
                    _userRepository,
                    _userService,
-                     _userSessionService // Added missing argument for 'userSessionService'
+                   _mediator,
+                   _userSessionService, // EKLENDİ
+                   _notificationService,  // EKLENDİ
+                     _userRoleRepository // EKLENDİ: UserRoleRepository ekleniyor
                );
         IAuthService _authenticatorService = new AuthService(
             _userOperationClaimRepository,
@@ -108,13 +117,16 @@ public class LoginTests
             _userEmailAuthenticatorRepository,
             emailAuthenticatorHelper,
             _userRepository,
-            _userService ,
-            _userSessionService
+            _userService,
+            _mediator,
+            _userSessionService, // EKLENDİ
+            _notificationService,  // EKLENDİ
+            _userRoleRepository // EKLENDİ: UserRoleRepository ekleniyor
 
         );
         _validator = new LoginCommandValidator();
         _loginCommand = new LoginCommand();
-        _loginCommandHandler = new LoginCommandHandler(_userService, _authService, authBusinessRules);
+        _loginCommandHandler = new LoginCommandHandler(_userService, _authService, authBusinessRules, _userSessionService);
     }
 
     [Fact]

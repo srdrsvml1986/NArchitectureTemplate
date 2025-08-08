@@ -18,7 +18,15 @@ public static class ClaimExtensions
     {
         claims.Add(new Claim(ClaimTypes.NameIdentifier, nameIdentifier));
     }
-
+    public static void AddPermissions(this ICollection<Claim> claims, ICollection<string> permissions)
+    {
+        foreach (string permission in permissions)
+            claims.AddPermission(permission);
+    }
+    public static void AddPermission(this ICollection<Claim> claims, string permission)
+    {
+        claims.Add(new Claim("Permission", permission));
+    }
     public static void AddRoles(this ICollection<Claim> claims, ICollection<string> roles)
     {
         foreach (string role in roles)

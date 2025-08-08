@@ -8,15 +8,15 @@ namespace NArchitecture.Core.Security.DependencyInjection;
 
 public static class SecurityServiceRegistration
 {
-    public static IServiceCollection AddSecurityServices<TUserId, TOperationClaimId, TRefreshTokenId>(
+    public static IServiceCollection AddSecurityServices<TUserId, TOperationClaimId, TRoleId, TRefreshTokenId>(
         this IServiceCollection services,
         TokenOptions tokenOptions
     )
     {
         services.AddScoped<
-            ITokenHelper<TUserId, TOperationClaimId, TRefreshTokenId>,
-            JwtHelper<TUserId, TOperationClaimId, TRefreshTokenId>
-        >(_ => new JwtHelper<TUserId, TOperationClaimId, TRefreshTokenId>(tokenOptions));
+            ITokenHelper<TUserId, TOperationClaimId, TRoleId, TRefreshTokenId>,
+            JwtHelper<TUserId, TOperationClaimId,TRoleId, TRefreshTokenId>
+        >(_ => new JwtHelper<TUserId, TOperationClaimId, TRoleId, TRefreshTokenId>(tokenOptions));
         services.AddScoped<IEmailAuthenticatorHelper, EmailAuthenticatorHelper>();
         services.AddScoped<IOtpAuthenticatorHelper, OtpNetOtpAuthenticatorHelper>();
 

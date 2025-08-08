@@ -1,10 +1,11 @@
-﻿using System.Linq.Expressions;
-using Application.Features.Users.Rules;
+﻿using Application.Features.Users.Rules;
 using Application.Services.Repositories;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore.Query;
 using NArchitecture.Core.Persistence.Paging;
 using NArchitecture.Core.Security.OAuth.Models;
+using System.Linq.Expressions;
+using static Domain.Entities.User;
 
 namespace Application.Services.UsersService;
 
@@ -75,6 +76,7 @@ public class UserService : IUserService
 
     public async Task<User> DeleteAsync(User user, bool permanent = false)
     {
+        user.Status = UserStatus.Deleted;
         User deletedUser = await _userRepository.DeleteAsync(user);
 
         return deletedUser;
@@ -90,7 +92,7 @@ public class UserService : IUserService
                 Email = externalUser.Email,
                 FirstName = externalUser.FirstName,
                 LastName = externalUser.LastName,
-                Status = User.UserStatus.Active,
+                Status = UserStatus.Active,
                 ExternalAuthProvider = externalUser.Provider
             };
             await _userRepository.AddAsync(user);

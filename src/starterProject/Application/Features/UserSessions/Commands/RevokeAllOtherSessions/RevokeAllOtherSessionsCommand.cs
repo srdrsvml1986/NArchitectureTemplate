@@ -33,7 +33,7 @@ public class RevokeAllOtherSessionsCommand : IRequest<RevokeAllOtherSessionsResp
 
         public async Task<RevokeAllOtherSessionsResponse> Handle(RevokeAllOtherSessionsCommand request, CancellationToken cancellationToken)
         {
-            var activeSessions = await _userSessionService.GetActiveSessionsAsync(request.UserId);
+            var activeSessions = await _userSessionService.GetUserSessionsAsync(request.UserId);
             var otherSessions = activeSessions.Where(s => s.Id != request.CurrentSessionId).ToList();
 
             foreach (var session in otherSessions)
