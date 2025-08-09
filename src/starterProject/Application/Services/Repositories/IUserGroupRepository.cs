@@ -5,4 +5,5 @@ namespace Application.Services.Repositories;
 
 public interface IUserGroupRepository : IAsyncRepository<UserGroup, int>, IRepository<UserGroup, int>
 {
+    Task<IList<Group>> GetSecurityGroupsByUserIdAsync(Guid userId);
 }

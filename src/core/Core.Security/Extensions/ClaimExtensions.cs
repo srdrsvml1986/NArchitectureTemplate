@@ -37,4 +37,15 @@ public static class ClaimExtensions
     {
         claims.Add(new Claim(ClaimTypes.Role, role));
     }
+
+    public static void AddGroups(this ICollection<Claim> claims, ICollection<string> groups)
+    {
+        foreach (string group in groups)
+            claims.AddRole(group);
+    }
+
+    public static void AddGroup(this ICollection<Claim> claims, string group)
+    {
+        claims.Add(new Claim("Group", group));
+    }
 }

@@ -58,6 +58,7 @@ public class LoginTests
         ).GetMockRefreshTokenRepository();
         // YENİ EKLENEN KISIM: UserRoleRepository mock
         IUserRoleRepository _userRoleRepository = Mock.Of<IUserRoleRepository>(); // <-- Bu satırı ekleyin
+        IUserGroupRepository _userGroupRepository = Mock.Of<IUserGroupRepository>(); // <-- Bu satırı ekleyin
         IEmailAuthenticatorRepository _userEmailAuthenticatorRepository =
             MockEmailAuthenticatorRepository.GetEmailAuthenticatorRepositoryMock();
         IOtpAuthenticatorRepository _userOtpAuthenticatorRepository = MockOtpAuthRepository.GetOtpAuthenticatorMock();
@@ -66,7 +67,7 @@ public class LoginTests
         #region Mock Helpers
         TokenOptions tokenOptions =
             _configuration.GetSection("TokenOptions").Get<TokenOptions>() ?? throw new Exception("Token options not found.");
-        ITokenHelper<Guid, int, int, Guid> tokenHelper = new JwtHelper<Guid, int, int, Guid>(tokenOptions);
+        ITokenHelper<Guid, int, int, int, Guid> tokenHelper = new JwtHelper<Guid, int, int, int, Guid>(tokenOptions);
         IEmailAuthenticatorHelper emailAuthenticatorHelper = new EmailAuthenticatorHelper();
         MailSettings mailSettings =
             _configuration.GetSection("MailSettings").Get<MailSettings>() ?? throw new Exception("Mail settings not found.");
@@ -102,7 +103,8 @@ public class LoginTests
                    _userService,
                    _userSessionService, // EKLENDİ
                    _notificationService,  // EKLENDİ
-                     _userRoleRepository // EKLENDİ: UserRoleRepository ekleniyor
+                     _userRoleRepository, // EKLENDİ: UserRoleRepository ekleniyor
+                     _userGroupRepository // EKLENDİ: UserGroupRepository ekleniyor
                );
         IAuthService _authenticatorService = new AuthService(
             _userOperationClaimRepository,
@@ -119,7 +121,8 @@ public class LoginTests
             _userService,
             _userSessionService, // EKLENDİ
             _notificationService,  // EKLENDİ
-            _userRoleRepository // EKLENDİ: UserRoleRepository ekleniyor
+            _userRoleRepository, // EKLENDİ: UserRoleRepository ekleniyor
+            _userGroupRepository // EKLENDİ: UserGroupRepository ekleniyor
 
         );
         _validator = new LoginCommandValidator();

@@ -57,8 +57,6 @@ public class BaseDbContext : DbContext
 
     //    // PendingModelChangesWarning uyarısını bastırmak için
     //    optionsBuilder.ConfigureWarnings(warnings => warnings.Ignore(RelationalEventId.PendingModelChangesWarning));
-    //    optionsBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
-
 
     //}
 

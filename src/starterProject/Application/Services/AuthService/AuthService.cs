@@ -5,7 +5,6 @@ using Application.Services.UsersService;
 using AutoMapper;
 using Domain.DTos;
 using Domain.Entities;
-using MediatR;
 using Microsoft.Extensions.Configuration;
 using MimeKit;
 using NArchitectureTemplate.Core.CrossCuttingConcerns.Exception.Types;
@@ -21,7 +20,7 @@ namespace Application.Services.AuthService;
 public class AuthService : IAuthService
 {
     private readonly IRefreshTokenRepository _refreshTokenRepository;
-    private readonly ITokenHelper<Guid, int, int, Guid> _tokenHelper;
+    private readonly ITokenHelper<Guid, int, int, int, Guid> _tokenHelper;
     private readonly TokenOptions _tokenOptions;
     private readonly IUserOperationClaimRepository _userOperationClaimRepository;
     private readonly IUserRoleRepository _userRoleRepository;
@@ -34,12 +33,13 @@ public class AuthService : IAuthService
     private readonly IUserService _userService;
     private readonly IUserSessionService _userSessionService;
     private readonly INotificationService _notificationService;
+    private readonly IUserGroupRepository _userGroupRepository;
     private readonly string _appName;
 
     public AuthService(
         IUserOperationClaimRepository userOperationClaimRepository,
         IRefreshTokenRepository refreshTokenRepository,
-        ITokenHelper<Guid, int, int, Guid> tokenHelper,
+        ITokenHelper<Guid, int, int, int, Guid> tokenHelper,
         IConfiguration configuration,
         IMapper mapper,
         IMailService mailService,
@@ -51,7 +51,8 @@ public class AuthService : IAuthService
         IUserService userService,
         IUserSessionService userSessionService,
         INotificationService notificationService,
-        IUserRoleRepository userRoleRepository)
+        IUserRoleRepository userRoleRepository,
+        IUserGroupRepository userGroupRepository)
     {
         _userOperationClaimRepository = userOperationClaimRepository;
         _refreshTokenRepository = refreshTokenRepository;
@@ -73,17 +74,20 @@ public class AuthService : IAuthService
         _userSessionService = userSessionService;
         _notificationService = notificationService;
         _userRoleRepository = userRoleRepository;
+        _userGroupRepository = userGroupRepository;
     }
 
     public async Task<AccessToken> CreateAccessToken(User user)
     {
         IList<OperationClaim> operationClaims = await _userOperationClaimRepository.GetSecurityClaimsByUserIdAsync(user.Id);
         IList<Role> roles = await _userRoleRepository.GetSecurityRolesByUserIdAsync(user.Id);
+        IList<Group> groups = (await _userGroupRepository.GetSecurityGroupsByUserIdAsync(user.Id));
 
         AccessToken accessToken = _tokenHelper.CreateToken(
             user,
             operationClaims.Select(op => (NArchitectureTemplate.Core.Security.Entities.OperationClaim<int>)op).ToImmutableList(),
-            roles.Select(role => (NArchitectureTemplate.Core.Security.Entities.Role<int>)role).ToImmutableList()
+            roles.Select(role => (NArchitectureTemplate.Core.Security.Entities.Role<int>)role).ToImmutableList(),
+            groups.Select(group => (NArchitectureTemplate.Core.Security.Entities.Group<int>)group).ToImmutableList()
         );
         return accessToken;
     }
