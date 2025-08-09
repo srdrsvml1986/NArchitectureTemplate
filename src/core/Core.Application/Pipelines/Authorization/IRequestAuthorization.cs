@@ -1,5 +1,5 @@
 ﻿
-namespace NArchitecture.Core.Application.Pipelines.Authorization;
+namespace NArchitectureTemplate.Core.Application.Pipelines.Authorization;
 
 public interface IRequestAuthorization
 {

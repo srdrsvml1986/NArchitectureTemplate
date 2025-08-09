@@ -1,4 +1,4 @@
-﻿using NArchitecture.Core.Application.Responses;
+﻿using NArchitectureTemplate.Core.Application.Responses;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

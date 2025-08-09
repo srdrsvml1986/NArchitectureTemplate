@@ -4,8 +4,8 @@ using Application.Services.Repositories;
 using Application.Services.UsersService;
 using Domain.Entities;
 using MediatR;
-using NArchitecture.Core.Application.Pipelines.Authorization;
-using NArchitecture.Core.Security.Enums;
+using NArchitectureTemplate.Core.Application.Pipelines.Authorization;
+using NArchitectureTemplate.Core.Security.Enums;
 
 namespace Application.Features.Auth.Commands.DisableEmailAuthenticator;
 

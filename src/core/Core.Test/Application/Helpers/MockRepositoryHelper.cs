@@ -1,10 +1,10 @@
 ﻿using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore.Query;
 using Moq;
-using NArchitecture.Core.Persistence.Paging;
-using NArchitecture.Core.Persistence.Repositories;
+using NArchitectureTemplate.Core.Persistence.Paging;
+using NArchitectureTemplate.Core.Persistence.Repositories;
 
-namespace NArchitecture.Core.Test.Application.Helpers;
+namespace NArchitectureTemplate.Core.Test.Application.Helpers;
 
 public static class MockRepositoryHelper
 {
@@ -106,10 +106,15 @@ public static class MockRepositoryHelper
         where TEntity : Entity<TEntityId>, new()
         where TRepository : class, IAsyncRepository<TEntity, TEntityId>, IRepository<TEntity, TEntityId>
     {
+        // Düzeltme: enableTracking parametresi eklendi
         mockRepo
-            .Setup(r => r.AddAsync(It.IsAny<TEntity>(), It.IsAny<CancellationToken>()))
+            .Setup(r => r.AddAsync(
+                It.IsAny<TEntity>(),
+                It.IsAny<bool>(), // enableTracking
+                It.IsAny<CancellationToken>()
+            ))
             .ReturnsAsync(
-                (TEntity entity, CancellationToken cancellationToken) =>
+                (TEntity entity, bool enableTracking, CancellationToken cancellationToken) =>
                 {
                     entityList.Add(entity);
                     return entity;
@@ -117,14 +122,19 @@ public static class MockRepositoryHelper
             );
     }
 
-    private static void SetupUpdateAsync<TRepository, TEntity, TEntityId2>(Mock<TRepository> mockRepo, List<TEntity> entityList)
-        where TEntity : Entity<TEntityId2>, new()
-        where TRepository : class, IAsyncRepository<TEntity, TEntityId2>, IRepository<TEntity, TEntityId2>
+    private static void SetupUpdateAsync<TRepository, TEntity, TEntityId>(Mock<TRepository> mockRepo, List<TEntity> entityList)
+        where TEntity : Entity<TEntityId>, new()
+        where TRepository : class, IAsyncRepository<TEntity, TEntityId>, IRepository<TEntity, TEntityId>
     {
+        // Düzeltme: enableTracking parametresi eklendi
         mockRepo
-            .Setup(r => r.UpdateAsync(It.IsAny<TEntity>(), It.IsAny<CancellationToken>()))!
+            .Setup(r => r.UpdateAsync(
+                It.IsAny<TEntity>(),
+                It.IsAny<bool>(), // enableTracking
+                It.IsAny<CancellationToken>()
+            ))
             .ReturnsAsync(
-                (TEntity entity, CancellationToken cancellationToken) =>
+                (TEntity entity, bool enableTracking, CancellationToken cancellationToken) =>
                 {
                     TEntity? result = entityList.FirstOrDefault(x => x.Id!.Equals(entity.Id));
                     if (result != null)
@@ -139,7 +149,11 @@ public static class MockRepositoryHelper
         where TRepository : class, IAsyncRepository<TEntity, TEntityId>, IRepository<TEntity, TEntityId>
     {
         mockRepo
-            .Setup(r => r.DeleteAsync(It.IsAny<TEntity>(), It.IsAny<bool>(), It.IsAny<CancellationToken>()))
+            .Setup(r => r.DeleteAsync(
+                It.IsAny<TEntity>(),
+                It.IsAny<bool>(), // permanent
+                It.IsAny<CancellationToken>()
+            ))
             .ReturnsAsync(
                 (TEntity entity, bool permanent, CancellationToken cancellationToken) =>
                 {

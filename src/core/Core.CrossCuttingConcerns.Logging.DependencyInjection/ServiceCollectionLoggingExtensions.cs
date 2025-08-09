@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using NArchitecture.Core.CrossCuttingConcerns.Logging.Abstraction;
+using NArchitectureTemplate.Core.CrossCuttingConcerns.Logging.Abstraction;
 
-namespace NArchitecture.Core.CrossCuttingConcerns.Logging.DependencyInjection;
+namespace NArchitectureTemplate.Core.CrossCuttingConcerns.Logging.DependencyInjection;
 
 public static class ServiceCollectionLoggingExtensions
 {

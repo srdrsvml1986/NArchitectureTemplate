@@ -3,7 +3,7 @@ using Application.Features.RoleOperationClaims.Rules;
 using Application.Services.RoleOperationClaims;
 using AutoMapper;
 using Domain.Entities;
-using NArchitecture.Core.Application.Pipelines.Authorization;
+using NArchitectureTemplate.Core.Application.Pipelines.Authorization;
 using MediatR;
 using static Application.Features.RoleOperationClaims.Constants.RoleOperationClaims;
 

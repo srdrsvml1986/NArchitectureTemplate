@@ -5,7 +5,7 @@ using Application.Services.Repositories;
 using AutoMapper;
 using Domain.Entities;
 using MediatR;
-using NArchitecture.Core.Application.Pipelines.Authorization;
+using NArchitectureTemplate.Core.Application.Pipelines.Authorization;
 using static Application.Features.Users.Constants.UsersOperationClaims;
 
 namespace Application.Features.Users.Commands.UpdateUserClaims;
@@ -62,7 +62,7 @@ public class UpdateUserClaimsCommand : IRequest<UpdateUserClaimsResponse>, ISecu
                 .ToList();
 
             if (claimsToAdd.Any())
-                await _userClaimRepository.AddRangeAsync(claimsToAdd, cancellationToken);
+                await _userClaimRepository.AddRangeAsync(claimsToAdd, true, cancellationToken);
 
             if (claimsToRemove.Any())
                 await _userClaimRepository.DeleteRangeAsync(claimsToRemove);

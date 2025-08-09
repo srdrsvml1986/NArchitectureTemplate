@@ -1,4 +1,4 @@
-using NArchitecture.Core.Application.Responses;
+using NArchitectureTemplate.Core.Application.Responses;
 using static Domain.Entities.User;
 
 namespace Application.Features.Users.Commands.UpdateStatus;

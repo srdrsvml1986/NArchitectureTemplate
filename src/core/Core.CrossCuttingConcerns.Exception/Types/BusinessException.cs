@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 
-namespace NArchitecture.Core.CrossCuttingConcerns.Exception.Types;
+namespace NArchitectureTemplate.Core.CrossCuttingConcerns.Exception.Types;
 
 public class BusinessException : System.Exception
 {

@@ -1,4 +1,4 @@
-using NArchitecture.Core.Application.Dtos;
+using NArchitectureTemplate.Core.Application.Dtos;
 
 namespace Application.Features.OperationClaims.Queries.GetList;
 

@@ -1,8 +1,8 @@
-﻿using NArchitecture.Core.Persistence.Repositories;
+﻿using NArchitectureTemplate.Core.Persistence.Repositories;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Domain.Entities;
-public class ResetPasswordToken: NArchitecture.Core.Security.Entities.ResetPasswordToken<int,Guid>
+public class ResetPasswordToken: NArchitectureTemplate.Core.Security.Entities.ResetPasswordToken<int,Guid>
 {
     [ForeignKey(nameof(User))]
     public required Guid UserId { get; set; }

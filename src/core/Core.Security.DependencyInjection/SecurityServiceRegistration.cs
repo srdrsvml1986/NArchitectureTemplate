@@ -1,10 +1,10 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using NArchitecture.Core.Security.EmailAuthenticator;
-using NArchitecture.Core.Security.JWT;
-using NArchitecture.Core.Security.OtpAuthenticator;
-using NArchitecture.Core.Security.OtpAuthenticator.OtpNet;
+using NArchitectureTemplate.Core.Security.EmailAuthenticator;
+using NArchitectureTemplate.Core.Security.JWT;
+using NArchitectureTemplate.Core.Security.OtpAuthenticator;
+using NArchitectureTemplate.Core.Security.OtpAuthenticator.OtpNet;
 
-namespace NArchitecture.Core.Security.DependencyInjection;
+namespace NArchitectureTemplate.Core.Security.DependencyInjection;
 
 public static class SecurityServiceRegistration
 {

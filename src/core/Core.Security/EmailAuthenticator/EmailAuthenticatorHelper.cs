@@ -1,6 +1,6 @@
 ﻿using System.Security.Cryptography;
 
-namespace NArchitecture.Core.Security.EmailAuthenticator;
+namespace NArchitectureTemplate.Core.Security.EmailAuthenticator;
 
 public class EmailAuthenticatorHelper : IEmailAuthenticatorHelper
 {

@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace NArchitecture.Core.Persistence.DbMigrationApplier;
+namespace NArchitectureTemplate.Core.Persistence.DbMigrationApplier;
 
 public class DbMigrationApplierService<TDbContext> : IDbMigrationApplierService<TDbContext>
     where TDbContext : DbContext

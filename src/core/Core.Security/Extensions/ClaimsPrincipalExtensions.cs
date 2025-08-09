@@ -1,7 +1,7 @@
 ﻿using System.Collections.Immutable;
 using System.Security.Claims;
 
-namespace NArchitecture.Core.Security.Extensions;
+namespace NArchitectureTemplate.Core.Security.Extensions;
 
 public static class ClaimsPrincipalExtensions
 {

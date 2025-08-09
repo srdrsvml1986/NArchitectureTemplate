@@ -1,6 +1,6 @@
 ﻿using Domain.Entities;
 
-public class RoleOperationClaim : NArchitecture.Core.Security.Entities.RoleOperationClaim<int,int,int>
+public class RoleOperationClaim : NArchitectureTemplate.Core.Security.Entities.RoleOperationClaim<int,int,int>
 {
     // Navigation Properties
     public virtual OperationClaim OperationClaim { get; set; }

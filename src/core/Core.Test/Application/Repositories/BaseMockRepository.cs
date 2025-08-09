@@ -1,13 +1,13 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
-using NArchitecture.Core.Application.Rules;
-using NArchitecture.Core.Localization.Resource.Yaml;
-using NArchitecture.Core.Persistence.Repositories;
-using NArchitecture.Core.Test.Application.FakeData;
-using NArchitecture.Core.Test.Application.Helpers;
+using NArchitectureTemplate.Core.Application.Rules;
+using NArchitectureTemplate.Core.Localization.Resource.Yaml;
+using NArchitectureTemplate.Core.Persistence.Repositories;
+using NArchitectureTemplate.Core.Test.Application.FakeData;
+using NArchitectureTemplate.Core.Test.Application.Helpers;
 
-namespace NArchitecture.Core.Test.Application.Repositories;
+namespace NArchitectureTemplate.Core.Test.Application.Repositories;
 
 public abstract class BaseMockRepository<TRepository, TEntity, TEntityId, TMappingProfile, TBusinessRules, TFakeData>
     where TEntity : Entity<TEntityId>, new()

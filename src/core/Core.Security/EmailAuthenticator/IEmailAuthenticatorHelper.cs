@@ -1,4 +1,4 @@
-﻿namespace NArchitecture.Core.Security.EmailAuthenticator;
+﻿namespace NArchitectureTemplate.Core.Security.EmailAuthenticator;
 
 public interface IEmailAuthenticatorHelper
 {

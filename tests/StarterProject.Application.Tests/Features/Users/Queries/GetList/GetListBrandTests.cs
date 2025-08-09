@@ -1,6 +1,6 @@
 ﻿using Application.Features.Users.Queries.GetList;
-using NArchitecture.Core.Application.Requests;
-using NArchitecture.Core.Application.Responses;
+using NArchitectureTemplate.Core.Application.Requests;
+using NArchitectureTemplate.Core.Application.Responses;
 using StarterProject.Application.Tests.Mocks.FakeDatas;
 using StarterProject.Application.Tests.Mocks.Repositories;
 using static Application.Features.Users.Queries.GetList.GetListUserQuery;

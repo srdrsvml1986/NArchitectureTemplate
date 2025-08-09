@@ -3,7 +3,7 @@ using Application.Features.Auth.Rules;
 using Application.Services.AuthService;
 using AutoMapper;
 using MediatR;
-using NArchitecture.Core.Application.Pipelines.Authorization;
+using NArchitectureTemplate.Core.Application.Pipelines.Authorization;
 using static Application.Features.Auth.Constants.AuthOperationClaims;
 
 namespace Application.Features.Auth.Commands.RevokeToken;

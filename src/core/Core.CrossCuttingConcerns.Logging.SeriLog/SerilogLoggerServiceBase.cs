@@ -1,7 +1,7 @@
-﻿using NArchitecture.Core.CrossCuttingConcerns.Logging.Abstraction;
+﻿using NArchitectureTemplate.Core.CrossCuttingConcerns.Logging.Abstraction;
 using PackageSerilog = Serilog;
 
-namespace NArchitecture.Core.CrossCuttingConcerns.Logging.Serilog;
+namespace NArchitectureTemplate.Core.CrossCuttingConcerns.Logging.Serilog;
 
 public abstract class SerilogLoggerServiceBase : ILogger
 {

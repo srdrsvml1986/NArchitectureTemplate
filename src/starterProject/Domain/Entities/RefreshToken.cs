@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Domain.Entities;
-public class RefreshToken : NArchitecture.Core.Security.Entities.RefreshToken<Guid, Guid>
+public class RefreshToken : NArchitectureTemplate.Core.Security.Entities.RefreshToken<Guid, Guid>
 {
     public Guid UserSessionId { get; set; } // Yeni eklenen özellik
 

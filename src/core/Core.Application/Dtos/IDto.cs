@@ -1,3 +1,3 @@
-﻿namespace NArchitecture.Core.Application.Dtos;
+﻿namespace NArchitectureTemplate.Core.Application.Dtos;
 
 public interface IDto { }

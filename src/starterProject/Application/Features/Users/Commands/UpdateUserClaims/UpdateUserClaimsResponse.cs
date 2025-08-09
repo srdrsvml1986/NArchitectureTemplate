@@ -1,5 +1,5 @@
 using Domain.Entities;
-using NArchitecture.Core.Application.Responses;
+using NArchitectureTemplate.Core.Application.Responses;
 
 namespace Application.Features.Users.Commands.UpdateUserClaims;
 

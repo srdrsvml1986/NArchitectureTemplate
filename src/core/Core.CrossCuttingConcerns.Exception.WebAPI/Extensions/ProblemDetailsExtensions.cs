@@ -1,7 +1,7 @@
 ﻿using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 
-namespace NArchitecture.Core.CrossCuttingConcerns.Exception.WebApi.Extensions;
+namespace NArchitectureTemplate.Core.CrossCuttingConcerns.Exception.WebApi.Extensions;
 
 public static class ProblemDetailsExtensions
 {

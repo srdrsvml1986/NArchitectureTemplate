@@ -4,7 +4,7 @@ using Application.Services.Repositories;
 using AutoMapper;
 using Domain.Entities;
 using MediatR;
-using NArchitecture.Core.Security.Hashing;
+using NArchitectureTemplate.Core.Security.Hashing;
 
 namespace Application.Features.Users.Commands.UpdateFromAuth;
 

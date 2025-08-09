@@ -1,7 +1,7 @@
 ﻿using Application.Services.UserSessions;
 using AutoMapper;
 using MediatR;
-using NArchitecture.Core.Application.Pipelines.Authorization;
+using NArchitectureTemplate.Core.Application.Pipelines.Authorization;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

@@ -1,4 +1,4 @@
-﻿namespace NArchitecture.Core.Persistence.Dynamic;
+﻿namespace NArchitectureTemplate.Core.Persistence.Dynamic;
 
 public class Filter
 {

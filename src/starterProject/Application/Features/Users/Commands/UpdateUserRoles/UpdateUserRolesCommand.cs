@@ -4,8 +4,8 @@ using Application.Services.Repositories;
 using AutoMapper;
 using Domain.Entities;
 using MediatR;
-using NArchitecture.Core.Application.Pipelines.Authorization;
-using NArchitecture.Core.Application.Responses;
+using NArchitectureTemplate.Core.Application.Pipelines.Authorization;
+using NArchitectureTemplate.Core.Application.Responses;
 using static Application.Features.Users.Constants.UsersOperationClaims;
 
 namespace Application.Features.Users.Commands.UpdateUserRoles;
@@ -62,7 +62,7 @@ public class UpdateUserRolesCommand : IRequest<UpdateUserRolesResponse>, ISecure
                 .ToList();
 
             if (groupsToAdd.Any())
-                await _userRoleRepository.AddRangeAsync(groupsToAdd, cancellationToken);
+                await _userRoleRepository.AddRangeAsync(groupsToAdd, true, cancellationToken);
 
             if (groupsToRemove.Any())
                 await _userRoleRepository.DeleteRangeAsync(groupsToRemove);

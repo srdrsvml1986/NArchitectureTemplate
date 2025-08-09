@@ -1,4 +1,4 @@
-﻿namespace NArchitecture.Core.Localization.Abstraction;
+﻿namespace NArchitectureTemplate.Core.Localization.Abstraction;
 
 public interface ILocalizationService
 {

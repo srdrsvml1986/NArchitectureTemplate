@@ -1,9 +1,9 @@
 ﻿using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore.Query;
-using NArchitecture.Core.Persistence.Dynamic;
-using NArchitecture.Core.Persistence.Paging;
+using NArchitectureTemplate.Core.Persistence.Dynamic;
+using NArchitectureTemplate.Core.Persistence.Paging;
 
-namespace NArchitecture.Core.Persistence.Repositories;
+namespace NArchitectureTemplate.Core.Persistence.Repositories;
 
 public interface IRepository<TEntity, TEntityId> : IQuery<TEntity>
     where TEntity : Entity<TEntityId>
@@ -44,13 +44,13 @@ public interface IRepository<TEntity, TEntityId> : IQuery<TEntity>
       Expression<Func<TEntity, bool>>? predicate = null,
       bool withDeleted = false
     );
-    TEntity Add(TEntity entity);
+    TEntity Add(TEntity entity, bool enableTracking = true);
 
-    ICollection<TEntity> AddRange(ICollection<TEntity> entities);
+    ICollection<TEntity> AddRange(ICollection<TEntity> entities, bool enableTracking = true);
 
-    TEntity Update(TEntity entity);
+    TEntity Update(TEntity entity, bool enableTracking = true);
 
-    ICollection<TEntity> UpdateRange(ICollection<TEntity> entities);
+    ICollection<TEntity> UpdateRange(ICollection<TEntity> entities, bool enableTracking = true);
 
     TEntity Delete(TEntity entity, bool permanent = false);
 

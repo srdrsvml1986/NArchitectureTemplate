@@ -4,7 +4,7 @@ using System;
 using System.Threading.RateLimiting;
 using System.Threading.Tasks;
 
-namespace NArchitecture.Core.Security.OAuth.Middleware;
+namespace NArchitectureTemplate.Core.Security.OAuth.Middleware;
 
 public class OAuthRateLimitMiddleware
 {

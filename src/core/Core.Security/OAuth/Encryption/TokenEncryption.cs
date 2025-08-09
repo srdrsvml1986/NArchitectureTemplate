@@ -5,7 +5,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NArchitecture.Core.Security.OAuth.Encryption;
+namespace NArchitectureTemplate.Core.Security.OAuth.Encryption;
 public static class TokenEncryption
 {
     public static string EncryptToken(string token, string key)

@@ -1,7 +1,7 @@
 ﻿using Domain.Entities;
-using NArchitecture.Core.Persistence.Repositories;
+using NArchitectureTemplate.Core.Persistence.Repositories;
 
-public class UserRole : NArchitecture.Core.Security.Entities.UserRole<int,Guid,int>
+public class UserRole : NArchitectureTemplate.Core.Security.Entities.UserRole<int,Guid,int>
 {
     // Navigation Properties
     public virtual User User { get; set; }

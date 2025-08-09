@@ -5,7 +5,7 @@ using Application.Services.UsersService;
 using Domain.Entities;
 using MediatR;
 using Microsoft.Extensions.Configuration;
-using NArchitecture.Core.Application.Pipelines.Authorization;
+using NArchitectureTemplate.Core.Application.Pipelines.Authorization;
 using QRCoder;
 
 namespace Application.Features.Auth.Commands.EnableOtpAuthenticator;

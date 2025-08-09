@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
-using NArchitecture.Core.Security.OAuth.Middleware;
-using NArchitecture.Core.Security.OAuth.Services;
+using NArchitectureTemplate.Core.Security.OAuth.Middleware;
+using NArchitectureTemplate.Core.Security.OAuth.Services;
 
-namespace NArchitecture.Core.Security.OAuth.Extensions;
+namespace NArchitectureTemplate.Core.Security.OAuth.Extensions;
 
 public static class OAuthMiddlewareExtensions
 {

@@ -1,9 +1,9 @@
 ﻿using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore.Query;
-using NArchitecture.Core.Persistence.Dynamic;
-using NArchitecture.Core.Persistence.Paging;
+using NArchitectureTemplate.Core.Persistence.Dynamic;
+using NArchitectureTemplate.Core.Persistence.Paging;
 
-namespace NArchitecture.Core.Persistence.Repositories;
+namespace NArchitectureTemplate.Core.Persistence.Repositories;
 
 public interface IAsyncRepository<TEntity, TEntityId> : IQuery<TEntity>
     where TEntity : Entity<TEntityId>
@@ -49,14 +49,14 @@ public interface IAsyncRepository<TEntity, TEntityId> : IQuery<TEntity>
     bool withDeleted = false,
     CancellationToken cancellationToken = default
     );
-    Task<TEntity> AddAsync(TEntity entity, CancellationToken cancellationToken = default);
+    Task<TEntity> AddAsync(TEntity entity, bool enableTracking = true, CancellationToken cancellationToken = default);
 
-    Task<ICollection<TEntity>> AddRangeAsync(ICollection<TEntity> entities, CancellationToken cancellationToken = default);
+    Task<ICollection<TEntity>> AddRangeAsync(ICollection<TEntity> entities, bool enableTracking = true, CancellationToken cancellationToken = default);
     Task<ICollection<TEntity>> AddOrUpdateEntityFromListAsync(ICollection<TEntity> entities, CancellationToken cancellationToken = default);
 
-    Task<TEntity> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default);
+    Task<TEntity> UpdateAsync(TEntity entity, bool enableTracking = true, CancellationToken cancellationToken = default);
 
-    Task<ICollection<TEntity>> UpdateRangeAsync(ICollection<TEntity> entities, CancellationToken cancellationToken = default);
+    Task<ICollection<TEntity>> UpdateRangeAsync(ICollection<TEntity> entities, bool enableTracking = true, CancellationToken cancellationToken = default);
 
     Task<TEntity> DeleteAsync(TEntity entity, bool permanent = false, CancellationToken cancellationToken = default);
 

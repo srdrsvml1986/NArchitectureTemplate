@@ -1,6 +1,6 @@
-﻿using NArchitecture.Core.Persistence.Repositories;
+﻿using NArchitectureTemplate.Core.Persistence.Repositories;
 
-namespace NArchitecture.Core.Security.Entities;
+namespace NArchitectureTemplate.Core.Security.Entities;
 
 public class RoleOperationClaim<TId, TRoleId, TOperationClaimId> : Entity<TId>
 {

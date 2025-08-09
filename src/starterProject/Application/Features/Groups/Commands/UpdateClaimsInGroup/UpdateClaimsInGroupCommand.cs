@@ -3,11 +3,11 @@ using Application.Features.Groups.Rules;
 using Application.Services.Repositories;
 using AutoMapper;
 using Domain.Entities;
-using NArchitecture.Core.Application.Pipelines.Authorization;
+using NArchitectureTemplate.Core.Application.Pipelines.Authorization;
 using MediatR;
 using static Application.Features.Groups.Constants.GroupsOperationClaims;
 using Domain.DTos;
-using NArchitecture.Core.Persistence.Paging;
+using NArchitectureTemplate.Core.Persistence.Paging;
 
 namespace Application.Features.Groups.Commands.UpdateClaimsInGroup;
 
@@ -72,7 +72,7 @@ public class UpdateClaimsInGroupCommand : IRequest<UpdateClaimsInGroupResponse>,
 
             // Apply changes
             if (claimsToAdd.Any())
-                await _groupClaimRepository.AddRangeAsync(claimsToAdd, cancellationToken);
+                await _groupClaimRepository.AddRangeAsync(claimsToAdd,true, cancellationToken);
 
             if (claimsToRemove.Any())
                 await _groupClaimRepository.DeleteRangeAsync(claimsToRemove);

@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.Caching.Distributed;
-using NArchitecture.Core.Security.Encryption;
-using NArchitecture.Core.Security.OAuth.Models;
+using NArchitectureTemplate.Core.Security.Encryption;
+using NArchitectureTemplate.Core.Security.OAuth.Models;
 
-namespace NArchitecture.Core.Security.OAuth.Services;
+namespace NArchitectureTemplate.Core.Security.OAuth.Services;
 public class TokenService : ITokenService
 {
     private readonly IDistributedCache _cache;

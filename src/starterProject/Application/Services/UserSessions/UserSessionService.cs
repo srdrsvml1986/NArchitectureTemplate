@@ -1,6 +1,6 @@
 using Application.Features.UserSessions.Rules;
 using Application.Services.Repositories;
-using NArchitecture.Core.Persistence.Paging;
+using NArchitectureTemplate.Core.Persistence.Paging;
 using Microsoft.EntityFrameworkCore.Query;
 using System.Linq.Expressions;
 
@@ -54,22 +54,22 @@ public class UserSessionService : IUserSessionService
         return userSessionList;
     }
 
-    public async Task<UserSession> AddAsync(UserSession userSession)
+    public async Task<UserSession> AddAsync(UserSession userSession, bool enableTracking = true)
     {
-        userSession.Id = Guid.Empty;
-        UserSession addedUserSession = await _userSessionRepository.AddAsync(userSession);
+        UserSession addedUserSession = await _userSessionRepository.AddAsync(userSession, enableTracking: enableTracking);
 
         return addedUserSession;
     }
-    public async Task<ICollection<UserSession>> UpdateAllAsync(ICollection<UserSession> userSession)
+
+    public async Task<UserSession> UpdateAsync(UserSession userSession, bool enableTracking = true)
     {
-        ICollection<UserSession> updatedUserSession = await _userSessionRepository.UpdateRangeAsync(userSession);
+        UserSession updatedUserSession = await _userSessionRepository.UpdateAsync(userSession, enableTracking);
 
         return updatedUserSession;
     }
-    public async Task<UserSession> UpdateAsync(UserSession userSession)
+    public async Task<ICollection<UserSession>> UpdateAllAsync(ICollection<UserSession> userSession, bool enableTracking = true)
     {
-        UserSession updatedUserSession = await _userSessionRepository.UpdateAsync(userSession);
+        ICollection<UserSession> updatedUserSession = await _userSessionRepository.UpdateRangeAsync(userSession, enableTracking: enableTracking);
 
         return updatedUserSession;
     }

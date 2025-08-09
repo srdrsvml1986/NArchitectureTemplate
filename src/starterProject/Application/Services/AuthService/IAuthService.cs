@@ -1,7 +1,7 @@
 ﻿using Domain.DTos;
 using Domain.Entities;
-using NArchitecture.Core.Security.JWT;
-using NArchitecture.Core.Security.OAuth.Models;
+using NArchitectureTemplate.Core.Security.JWT;
+using NArchitectureTemplate.Core.Security.OAuth.Models;
 
 namespace Application.Services.AuthService;
 

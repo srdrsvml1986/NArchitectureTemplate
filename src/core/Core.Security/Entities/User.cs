@@ -1,8 +1,8 @@
-﻿using NArchitecture.Core.Persistence.Repositories;
-using NArchitecture.Core.Security.Enums;
+﻿using NArchitectureTemplate.Core.Persistence.Repositories;
+using NArchitectureTemplate.Core.Security.Enums;
 using System.ComponentModel.DataAnnotations;
 
-namespace NArchitecture.Core.Security.Entities;
+namespace NArchitectureTemplate.Core.Security.Entities;
 
 public class User<TId> : Entity<TId>
 {

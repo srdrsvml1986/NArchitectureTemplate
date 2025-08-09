@@ -4,9 +4,9 @@ using Application.Features.Roles.Commands.Update;
 using Application.Features.Roles.Queries.GetById;
 using Application.Features.Roles.Queries.GetList;
 using AutoMapper;
-using NArchitecture.Core.Application.Responses;
+using NArchitectureTemplate.Core.Application.Responses;
 using Domain.Entities;
-using NArchitecture.Core.Persistence.Paging;
+using NArchitectureTemplate.Core.Persistence.Paging;
 
 namespace Application.Features.Roles.Profiles;
 

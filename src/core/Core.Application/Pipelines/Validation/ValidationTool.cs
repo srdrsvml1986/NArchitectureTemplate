@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using FluentValidation.Results;
 
-namespace NArchitecture.Core.Application.Pipelines.Validation;
+namespace NArchitectureTemplate.Core.Application.Pipelines.Validation;
 
 public static class ValidationTool
 {

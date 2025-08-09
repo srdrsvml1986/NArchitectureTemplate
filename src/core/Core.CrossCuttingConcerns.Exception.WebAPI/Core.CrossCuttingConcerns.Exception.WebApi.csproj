@@ -3,18 +3,19 @@
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <RootNamespace>NArchitecture.$(AssemblyName)</RootNamespace>
+    <RootNamespace>NArchitectureTemplate.$(AssemblyName)</RootNamespace>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <PackageId>NArchitecture.$(AssemblyName)</PackageId>
-    <Version>1.1.1</Version>
-    <Title>NArchitecture $(AssemblyName)</Title>
+    <PackageId>NArchitectureTemplate.$(AssemblyName)</PackageId>
+    <Version>2.0.0</Version>
+    <Title>NArchitectureTemplate $(AssemblyName)</Title>
     <Description>Provide exception handling components specifically tailored for ASP.NET Web API
       projects.</Description>
-    <Product>NArchitecture</Product>
+    <Product>NArchitectureTemplate</Product>
     <Authors>serdarsevimli.tr, Contributors</Authors>
     <Company>serdarsevimli.tr</Company>
-    <PackageTags>Clean Architecture, Union Architecture, Core, NArchitecture, Web API, Exception
-      Handling, Cross Cutting Concerns</PackageTags>
+    <PackageTags>
+		Clean Architecture, Union NArchitectureTemplate, Core, NArchitecture, Web API, Exception
+		Handling, Cross Cutting Concerns</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>

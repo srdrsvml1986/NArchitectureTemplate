@@ -5,8 +5,8 @@ using Application.Services.Repositories;
 using AutoMapper;
 using Domain.Entities;
 using MediatR;
-using NArchitecture.Core.Application.Pipelines.Authorization;
-using NArchitecture.Core.Security.Hashing;
+using NArchitectureTemplate.Core.Application.Pipelines.Authorization;
+using NArchitectureTemplate.Core.Security.Hashing;
 using static Application.Features.Users.Constants.UsersOperationClaims;
 
 namespace Application.Features.Users.Commands.UpdatePhotoURL;

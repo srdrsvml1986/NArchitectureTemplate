@@ -1,4 +1,4 @@
-using NArchitecture.Core.Application.Dtos;
+using NArchitectureTemplate.Core.Application.Dtos;
 using Domain.Entities;
 
 namespace Application.Features.Roles.Queries.GetList;

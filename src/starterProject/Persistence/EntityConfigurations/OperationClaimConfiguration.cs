@@ -5,7 +5,7 @@ using Application.Features.Users.Constants;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using NArchitecture.Core.Security.Constants;
+using NArchitectureTemplate.Core.Security.Constants;
 using Application.Features.Groups.Constants;
 using Application.Features.GroupOperationClaims.Constants;
 using Application.Features.UserGroups.Constants;

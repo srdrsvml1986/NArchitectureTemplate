@@ -1,3 +1,3 @@
-﻿namespace NArchitecture.Core.Application.Pipelines.Logging;
+﻿namespace NArchitectureTemplate.Core.Application.Pipelines.Logging;
 
 public interface ILoggableRequest { }

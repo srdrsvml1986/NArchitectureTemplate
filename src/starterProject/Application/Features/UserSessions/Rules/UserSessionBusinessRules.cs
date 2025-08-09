@@ -1,8 +1,8 @@
 using Application.Features.UserSessions.Constants;
 using Application.Services.Repositories;
-using NArchitecture.Core.Application.Rules;
-using NArchitecture.Core.CrossCuttingConcerns.Exception.Types;
-using NArchitecture.Core.Localization.Abstraction;
+using NArchitectureTemplate.Core.Application.Rules;
+using NArchitectureTemplate.Core.CrossCuttingConcerns.Exception.Types;
+using NArchitectureTemplate.Core.Localization.Abstraction;
 using Domain.Entities;
 
 namespace Application.Features.UserSessions.Rules;

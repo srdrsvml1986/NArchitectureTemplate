@@ -2,7 +2,7 @@
 
 namespace Domain.Entities;
 
-public class OperationClaim : NArchitecture.Core.Security.Entities.OperationClaim<int> 
+public class OperationClaim : NArchitectureTemplate.Core.Security.Entities.OperationClaim<int> 
 {
     public virtual ICollection<UserOperationClaim> UserOperationClaims { get; set; }
     public virtual ICollection<GroupOperationClaim> GroupOperationClaims { get; set; }

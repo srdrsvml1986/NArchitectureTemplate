@@ -1,5 +1,5 @@
 ﻿using Domain.Entities;
-using NArchitecture.Core.Security.JWT;
+using NArchitectureTemplate.Core.Security.JWT;
 using System;
 using System.Collections.Generic;
 using System.Linq;

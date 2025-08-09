@@ -4,10 +4,10 @@ using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Query;
-using NArchitecture.Core.Persistence.Dynamic;
-using NArchitecture.Core.Persistence.Paging;
+using NArchitectureTemplate.Core.Persistence.Dynamic;
+using NArchitectureTemplate.Core.Persistence.Paging;
 
-namespace NArchitecture.Core.Persistence.Repositories;
+namespace NArchitectureTemplate.Core.Persistence.Repositories;
 
 public class EfRepositoryBase<TEntity, TEntityId, TContext>
     : IAsyncRepository<TEntity, TEntityId>,
@@ -32,23 +32,57 @@ public class EfRepositoryBase<TEntity, TEntityId, TContext>
         entity.CreatedDate = DateTime.UtcNow;
     }
 
-    public async Task<TEntity> AddAsync(TEntity entity, CancellationToken cancellationToken = default)
+    public async Task<TEntity> AddAsync(TEntity entity, bool enableTracking = true, CancellationToken cancellationToken = default)
     {
         EditEntityPropertiesToAdd(entity);
-        await Context.AddAsync(entity, cancellationToken);
+
+        if (enableTracking)
+        {
+            await Context.AddAsync(entity, cancellationToken);
+        }
+        else
+        {
+            var entry = Context.Entry(entity);
+            entry.State = EntityState.Added;
+            entry.Context.ChangeTracker.AutoDetectChangesEnabled = false;
+        }
+
         await Context.SaveChangesAsync(cancellationToken);
+        if (!enableTracking)
+        {
+            Context.ChangeTracker.Clear();
+            Context.Entry(entity).State = EntityState.Detached;
+        }
         return entity;
     }
 
     public async Task<ICollection<TEntity>> AddRangeAsync(
-        ICollection<TEntity> entities,
+        ICollection<TEntity> entities, bool enableTracking = true,
         CancellationToken cancellationToken = default
     )
     {
         foreach (TEntity entity in entities)
             EditEntityPropertiesToAdd(entity);
-        await Context.AddRangeAsync(entities, cancellationToken);
+
+        if (enableTracking)
+        {
+            await Context.AddRangeAsync(entities, cancellationToken);
+        }
+        else
+        {
+            foreach (var entity in entities)
+            {
+                var entry = Context.Entry(entity);
+                entry.State = EntityState.Added;
+            }
+            Context.ChangeTracker.AutoDetectChangesEnabled = false;
+        }
+
         await Context.SaveChangesAsync(cancellationToken);
+        if (!enableTracking)
+        {
+            Context.ChangeTracker.Clear();
+        }
         return entities;
     }
 
@@ -97,25 +131,73 @@ public class EfRepositoryBase<TEntity, TEntityId, TContext>
         entity.UpdatedDate = DateTime.UtcNow;
     }
 
-    public async Task<TEntity> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default)
+    public async Task<TEntity> UpdateAsync(TEntity entity, bool enableTracking = true, CancellationToken cancellationToken = default)
     {
         EditEntityPropertiesToUpdate(entity);
-        Context.Update(entity);
+
+        if (enableTracking)
+        {
+            Context.Update(entity);
+        }
+        else
+        {
+            var entry = Context.Entry(entity);
+            if (entry.State == EntityState.Detached)
+            {
+                Context.Attach(entity);
+            }
+            entry.State = EntityState.Modified;
+            Context.ChangeTracker.AutoDetectChangesEnabled = false;
+        }
+
         await Context.SaveChangesAsync(cancellationToken);
-        Context.ChangeTracker.Clear();
+
+        if (!enableTracking)
+        {
+            Context.Entry(entity).State = EntityState.Detached;
+            Context.ChangeTracker.Clear();
+        }
+
         return entity;
     }
 
     public async Task<ICollection<TEntity>> UpdateRangeAsync(
-        ICollection<TEntity> entities,
+        ICollection<TEntity> entities, bool enableTracking = true,
         CancellationToken cancellationToken = default
     )
     {
         foreach (TEntity entity in entities)
             EditEntityPropertiesToUpdate(entity);
-        Context.UpdateRange(entities);
+
+        if (enableTracking)
+        {
+            Context.UpdateRange(entities);
+        }
+        else
+        {
+            foreach (var entity in entities)
+            {
+                var entry = Context.Entry(entity);
+                if (entry.State == EntityState.Detached)
+                {
+                    Context.Attach(entity);
+                }
+                entry.State = EntityState.Modified;
+            }
+            Context.ChangeTracker.AutoDetectChangesEnabled = false;
+        }
+
         await Context.SaveChangesAsync(cancellationToken);
-        Context.ChangeTracker.Clear();
+
+        if (!enableTracking)
+        {
+            foreach (var entity in entities)
+            {
+                Context.Entry(entity).State = EntityState.Detached;
+            }
+            Context.ChangeTracker.Clear();
+        }
+
         return entities;
     }
 
@@ -218,43 +300,126 @@ public class EfRepositoryBase<TEntity, TEntityId, TContext>
         return await queryable.AnyAsync(cancellationToken);
     }
 
-    public TEntity Add(TEntity entity)
+    public TEntity Add(TEntity entity, bool enableTracking = true)
     {
+        //EditEntityPropertiesToAdd(entity);
+
+        //Context.Add(entity);
+        //Context.SaveChanges();
+        //Context.ChangeTracker.Clear();
+        //return entity;
         EditEntityPropertiesToAdd(entity);
 
-        Context.Add(entity);
+        if (enableTracking)
+        {
+            Context.Add(entity);
+        }
+        else
+        {
+            var entry = Context.Entry(entity);
+            entry.State = EntityState.Added;
+            entry.Context.ChangeTracker.AutoDetectChangesEnabled = false;
+        }
+
         Context.SaveChanges();
-        Context.ChangeTracker.Clear();
+        if (!enableTracking)
+        {
+            Context.ChangeTracker.Clear();
+        }
         return entity;
     }
 
-    public ICollection<TEntity> AddRange(ICollection<TEntity> entities)
+    public ICollection<TEntity> AddRange(ICollection<TEntity> entities, bool enableTracking = true)
     {
         foreach (TEntity entity in entities)
             EditEntityPropertiesToAdd(entity);
-        Context.AddRange(entities);
+
+        if (enableTracking)
+        {
+            Context.AddRange(entities);
+        }
+        else
+        {
+            foreach (var entity in entities)
+            {
+                var entry = Context.Entry(entity);
+                entry.State = EntityState.Added;
+            }
+            Context.ChangeTracker.AutoDetectChangesEnabled = false;
+        }
+
         Context.SaveChanges();
-        Context.ChangeTracker.Clear();
+        if (!enableTracking)
+        {
+            Context.ChangeTracker.Clear();
+        }
         return entities;
     }
 
-    public TEntity Update(TEntity entity)
+    public TEntity Update(TEntity entity, bool enableTracking = true)
     {
-        EditEntityPropertiesToAdd(entity);
+        EditEntityPropertiesToUpdate(entity);
 
-        Context.Update(entity);
+        if (enableTracking)
+        {
+            Context.Update(entity);
+        }
+        else
+        {
+            var entry = Context.Entry(entity);
+            if (entry.State == EntityState.Detached)
+            {
+                Context.Attach(entity);
+            }
+            entry.State = EntityState.Modified;
+            Context.ChangeTracker.AutoDetectChangesEnabled = false;
+        }
+
         Context.SaveChanges();
-        Context.ChangeTracker.Clear();
+
+        if (!enableTracking)
+        {
+            Context.Entry(entity).State = EntityState.Detached;
+            Context.ChangeTracker.Clear();
+        }
+
         return entity;
     }
 
-    public ICollection<TEntity> UpdateRange(ICollection<TEntity> entities)
+    public ICollection<TEntity> UpdateRange(ICollection<TEntity> entities, bool enableTracking = true)
     {
         foreach (TEntity entity in entities)
-            EditEntityPropertiesToAdd(entity);
-        Context.UpdateRange(entities);
+            EditEntityPropertiesToUpdate(entity);
+
+        if (enableTracking)
+        {
+            Context.UpdateRange(entities);
+        }
+        else
+        {
+            foreach (var entity in entities)
+            {
+                var entry = Context.Entry(entity);
+                if (entry.State == EntityState.Detached)
+                {
+                    Context.Attach(entity);
+                }
+                entry.State = EntityState.Modified;
+            }
+            Context.ChangeTracker.AutoDetectChangesEnabled = false;
+        }
+
         Context.SaveChanges();
-        Context.ChangeTracker.Clear();
+
+        if (!enableTracking)
+        {
+            foreach (var entity in entities)
+            {
+                Context.Entry(entity).State = EntityState.Detached;
+            }
+            Context.ChangeTracker.Clear();
+        }
+
         return entities;
     }
 

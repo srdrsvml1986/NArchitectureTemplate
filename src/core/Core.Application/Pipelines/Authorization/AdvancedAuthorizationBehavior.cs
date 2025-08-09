@@ -1,11 +1,11 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
-using NArchitecture.Core.CrossCuttingConcerns.Exception.Types;
-using NArchitecture.Core.Security.Extensions;
+using NArchitectureTemplate.Core.CrossCuttingConcerns.Exception.Types;
+using NArchitectureTemplate.Core.Security.Extensions;
 using System.Security.Claims;
 
-namespace NArchitecture.Core.Application.Pipelines.Authorization;
+namespace NArchitectureTemplate.Core.Application.Pipelines.Authorization;
 
 public class AdvancedAuthorizationBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
     where TRequest : IRequest<TResponse>, IRequestAuthorization

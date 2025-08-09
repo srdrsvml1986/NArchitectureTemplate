@@ -2,10 +2,10 @@
 using Application.Services.UserSessions;
 using AutoMapper;
 using MediatR;
-using NArchitecture.Core.Application.Pipelines.Authorization;
-using NArchitecture.Core.Application.Requests;
-using NArchitecture.Core.Application.Responses;
-using NArchitecture.Core.Persistence.Paging;
+using NArchitectureTemplate.Core.Application.Pipelines.Authorization;
+using NArchitectureTemplate.Core.Application.Requests;
+using NArchitectureTemplate.Core.Application.Responses;
+using NArchitectureTemplate.Core.Persistence.Paging;
 using System;
 using System.Collections.Generic;
 using System.Linq;

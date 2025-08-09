@@ -1,4 +1,4 @@
-using NArchitecture.Core.Persistence.Paging;
+using NArchitectureTemplate.Core.Persistence.Paging;
 using Microsoft.EntityFrameworkCore.Query;
 using System.Linq.Expressions;
 
@@ -23,9 +23,9 @@ public interface IUserSessionService
         bool enableTracking = true,
         CancellationToken cancellationToken = default
     );
-    Task<UserSession> AddAsync(UserSession userSession);
-    Task<UserSession> UpdateAsync(UserSession userSession);
-    Task<ICollection<UserSession>> UpdateAllAsync(ICollection<UserSession> userSession);
+    Task<UserSession> AddAsync(UserSession userSession, bool enableTracking = true);
+    Task<UserSession> UpdateAsync(UserSession userSession, bool enableTracking = true);
+    Task<ICollection<UserSession>> UpdateAllAsync(ICollection<UserSession> userSession, bool enableTracking = true);
     Task<UserSession> DeleteAsync(UserSession userSession, bool permanent = false);
     Task<int> GetActiveSessionCountAsync();
     Task<IEnumerable<UserSession>> GetUserSessionsAsync(Guid userId);

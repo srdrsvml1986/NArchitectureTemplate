@@ -12,8 +12,8 @@ using Application.Features.UserSessions.Queries.GetActiveSessions;
 using Application.Features.UserSessions.Queries.GetMyActiveSessionCount;
 using Application.Features.UserSessions.Queries.GetMySessions;
 using Application.Features.UserSessions.Queries.GetUserSessions;
-using NArchitecture.Core.Application.Requests;
-using NArchitecture.Core.Application.Responses;
+using NArchitectureTemplate.Core.Application.Requests;
+using NArchitectureTemplate.Core.Application.Responses;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers;

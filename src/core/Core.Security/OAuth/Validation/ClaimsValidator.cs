@@ -1,4 +1,4 @@
-﻿using NArchitecture.Core.Security.OAuth.Models;
+﻿using NArchitectureTemplate.Core.Security.OAuth.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,7 +6,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NArchitecture.Core.Security.OAuth.Validation;
+namespace NArchitectureTemplate.Core.Security.OAuth.Validation;
 public class ClaimsValidator
 {
     public static bool ValidateUserClaims(ExternalAuthUser user, ClaimsPrincipal claims)

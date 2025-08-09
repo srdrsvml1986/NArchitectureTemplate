@@ -1,7 +1,7 @@
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using NArchitecture.Core.Security.Hashing;
+using NArchitectureTemplate.Core.Security.Hashing;
 
 namespace Persistence.EntityConfigurations;
 

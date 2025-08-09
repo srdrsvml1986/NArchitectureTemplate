@@ -1,6 +1,6 @@
-﻿using NArchitecture.Core.Persistence.Repositories;
+﻿using NArchitectureTemplate.Core.Persistence.Repositories;
 
-namespace NArchitecture.Core.Security.Entities;
+namespace NArchitectureTemplate.Core.Security.Entities;
 
 public class GroupOperationClaim<TId, TGroupId, TOperationClaimId> : Entity<TId>
 {

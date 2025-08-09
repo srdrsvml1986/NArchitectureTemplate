@@ -8,7 +8,7 @@ using System.Collections.ObjectModel;
 /// giriş zamanı, oturumun iptal edilip edilmediği, 
 /// şüpheli olup olmadığı ve konum bilgisi gibi detayları içerir.
 /// </summary>
-public class UserSession : NArchitecture.Core.Security.Entities.UserSession<Guid,Guid>
+public class UserSession : NArchitectureTemplate.Core.Security.Entities.UserSession<Guid,Guid>
 {
     public virtual User User { get; set; }
     public virtual Collection<RefreshToken> RefreshTokens { get; set; }

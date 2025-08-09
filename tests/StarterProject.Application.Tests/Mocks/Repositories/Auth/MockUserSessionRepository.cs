@@ -8,7 +8,7 @@ using Application.Services.Repositories;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore.Query;
 using Moq;
-using NArchitecture.Core.Persistence.Paging;
+using NArchitectureTemplate.Core.Persistence.Paging;
 using StarterProject.Application.Tests.Mocks.FakeDatas;
 
 namespace StarterProject.Application.Tests.Mocks.Repositories.Auth
@@ -103,10 +103,10 @@ namespace StarterProject.Application.Tests.Mocks.Repositories.Auth
             #region AddAsync Mock
             mockRepo
                 .Setup(s =>
-                    s.AddAsync(It.IsAny<UserSession>(), It.IsAny<CancellationToken>())
+                    s.AddAsync(It.IsAny<UserSession>(), It.IsAny<bool>(), It.IsAny<CancellationToken>())
                 )
                 .ReturnsAsync(
-                    (UserSession session, CancellationToken cancellationToken) =>
+                    (UserSession session, bool enableTracking, CancellationToken cancellationToken) =>
                     {
                         session.Id = Guid.NewGuid();
                         _sessions.Add(session);
@@ -118,10 +118,10 @@ namespace StarterProject.Application.Tests.Mocks.Repositories.Auth
             #region UpdateAsync Mock
             mockRepo
                 .Setup(s =>
-                    s.UpdateAsync(It.IsAny<UserSession>(), It.IsAny<CancellationToken>())
+                    s.UpdateAsync(It.IsAny<UserSession>(), It.IsAny<bool>(), It.IsAny<CancellationToken>())
                 )
                 .ReturnsAsync(
-                    (UserSession session, CancellationToken cancellationToken) =>
+                    (UserSession session, bool enableTracking, CancellationToken cancellationToken) =>
                     {
                         var index = _sessions.FindIndex(s => s.Id == session.Id);
                         if (index >= 0)
@@ -147,7 +147,7 @@ namespace StarterProject.Application.Tests.Mocks.Repositories.Auth
                 );
             #endregion
 
-    
+
 
             return mockRepo.Object;
         }

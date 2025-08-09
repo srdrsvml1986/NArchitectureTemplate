@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 
-namespace NArchitecture.Core.CrossCuttingConcerns.Logging.OAuth;
+namespace NArchitectureTemplate.Core.CrossCuttingConcerns.Logging.OAuth;
 public class OAuthAuditLogger
 {
     private readonly ILogger<OAuthAuditLogger> _logger;

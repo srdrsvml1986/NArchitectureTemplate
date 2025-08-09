@@ -1,10 +1,10 @@
 ﻿using Microsoft.Extensions.Options;
-using NArchitecture.Core.Security.OAuth.Configurations;
-using NArchitecture.Core.Security.OAuth.Models;
+using NArchitectureTemplate.Core.Security.OAuth.Configurations;
+using NArchitectureTemplate.Core.Security.OAuth.Models;
 using System.Net.Http.Json;
 using System.Text.Json.Serialization;
 
-namespace NArchitecture.Core.Security.OAuth.Services;
+namespace NArchitectureTemplate.Core.Security.OAuth.Services;
 
 public class GoogleAuthService : IGoogleAuthService
 {

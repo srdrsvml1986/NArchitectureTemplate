@@ -3,10 +3,10 @@ using Application.Features.Groups.Rules;
 using Application.Services.Repositories;
 using AutoMapper;
 using Domain.Entities;
-using NArchitecture.Core.Application.Pipelines.Authorization;
+using NArchitectureTemplate.Core.Application.Pipelines.Authorization;
 using MediatR;
 using static Application.Features.Groups.Constants.GroupsOperationClaims;
-using NArchitecture.Core.Persistence.Paging;
+using NArchitectureTemplate.Core.Persistence.Paging;
 using Domain.DTos;
 
 namespace Application.Features.Groups.Queries.GetClaimsByGroupId;

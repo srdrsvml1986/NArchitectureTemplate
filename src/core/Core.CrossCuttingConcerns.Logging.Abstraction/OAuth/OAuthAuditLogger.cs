@@ -1,4 +1,4 @@
-﻿namespace NArchitecture.Core.CrossCuttingConcerns.Logging.Abstraction.OAuth;
+﻿namespace NArchitectureTemplate.Core.CrossCuttingConcerns.Logging.Abstraction.OAuth;
 public class OAuthAuditLogger
 {
     private readonly ILogger _logger;

@@ -1,4 +1,4 @@
-﻿namespace NArchitecture.Core.Security.OAuth.Models;
+﻿namespace NArchitectureTemplate.Core.Security.OAuth.Models;
 public class OAuthResponse
 {
     public bool Success { get; set; }

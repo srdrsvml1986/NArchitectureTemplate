@@ -15,8 +15,8 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using NArchitecture.Core.Application.Dtos;
-using NArchitecture.Core.Security.OAuth.Services;
+using NArchitectureTemplate.Core.Application.Dtos;
+using NArchitectureTemplate.Core.Security.OAuth.Services;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
@@ -85,14 +85,6 @@ public class AuthController : BaseController
         if (!Guid.TryParse(userIdClaim, out Guid userId))
             return Unauthorized();
 
-
-        // Oturum kaydı ekle ve şüpheli oturumları kontrol et        
-        await _sessionService.AddAsync(new UserSession
-        {
-            UserId = userId,
-            IpAddress = ip,
-            UserAgent = ua,
-        });
         await _authService.FlagAndHandleSuspiciousSessionsAsync(userId);
 
         return Ok(result.ToHttpResponse());

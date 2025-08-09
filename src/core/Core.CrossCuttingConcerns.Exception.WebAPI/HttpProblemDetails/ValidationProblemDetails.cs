@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using NArchitecture.Core.CrossCuttingConcerns.Exception.Types;
+using NArchitectureTemplate.Core.CrossCuttingConcerns.Exception.Types;
 
-namespace NArchitecture.Core.CrossCuttingConcerns.Exception.WebApi.HttpProblemDetails;
+namespace NArchitectureTemplate.Core.CrossCuttingConcerns.Exception.WebApi.HttpProblemDetails;
 
 public class ValidationProblemDetails : ProblemDetails
 {

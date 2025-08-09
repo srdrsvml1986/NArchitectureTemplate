@@ -1,4 +1,4 @@
-﻿namespace NArchitecture.Core.Application.Pipelines.Caching;
+﻿namespace NArchitectureTemplate.Core.Application.Pipelines.Caching;
 
 public interface ICachableRequest
 {

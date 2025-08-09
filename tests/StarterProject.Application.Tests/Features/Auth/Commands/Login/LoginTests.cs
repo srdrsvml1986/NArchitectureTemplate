@@ -13,15 +13,15 @@ using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
-using NArchitecture.Core.CrossCuttingConcerns.Exception.Types;
-using NArchitecture.Core.Localization.Abstraction;
-using NArchitecture.Core.Localization.Resource.Yaml;
-using NArchitecture.Core.Mailing;
-using NArchitecture.Core.Mailing.MailKit;
-using NArchitecture.Core.Security.EmailAuthenticator;
-using NArchitecture.Core.Security.JWT;
-using NArchitecture.Core.Security.OtpAuthenticator;
-using NArchitecture.Core.Security.OtpAuthenticator.OtpNet;
+using NArchitectureTemplate.Core.CrossCuttingConcerns.Exception.Types;
+using NArchitectureTemplate.Core.Localization.Abstraction;
+using NArchitectureTemplate.Core.Localization.Resource.Yaml;
+using NArchitectureTemplate.Core.Mailing;
+using NArchitectureTemplate.Core.Mailing.MailKit;
+using NArchitectureTemplate.Core.Security.EmailAuthenticator;
+using NArchitectureTemplate.Core.Security.JWT;
+using NArchitectureTemplate.Core.Security.OtpAuthenticator;
+using NArchitectureTemplate.Core.Security.OtpAuthenticator.OtpNet;
 using StarterProject.Application.Tests.Mocks.Configurations;
 using StarterProject.Application.Tests.Mocks.FakeDatas;
 using StarterProject.Application.Tests.Mocks.Repositories.Auth;
@@ -100,7 +100,6 @@ public class LoginTests
                    emailAuthenticatorHelper,
                    _userRepository,
                    _userService,
-                   _mediator,
                    _userSessionService, // EKLENDİ
                    _notificationService,  // EKLENDİ
                      _userRoleRepository // EKLENDİ: UserRoleRepository ekleniyor
@@ -118,7 +117,6 @@ public class LoginTests
             emailAuthenticatorHelper,
             _userRepository,
             _userService,
-            _mediator,
             _userSessionService, // EKLENDİ
             _notificationService,  // EKLENDİ
             _userRoleRepository // EKLENDİ: UserRoleRepository ekleniyor

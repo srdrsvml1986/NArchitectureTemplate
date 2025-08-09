@@ -4,7 +4,7 @@ using Application.Services.Repositories;
 using AutoMapper;
 using Domain.Entities;
 using MediatR;
-using NArchitecture.Core.Application.Pipelines.Authorization;
+using NArchitectureTemplate.Core.Application.Pipelines.Authorization;
 using static Application.Features.Users.Constants.UsersOperationClaims;
 
 namespace Application.Features.Users.Commands.AddUserRoles;
@@ -56,7 +56,7 @@ public class AddUserRolesCommand : IRequest<AddUserRolesResponse>, ISecuredReque
                 .ToList();
 
             if (newRolesToAdd.Any())
-                await _userRoleRepository.AddRangeAsync(newRolesToAdd, cancellationToken);
+                await _userRoleRepository.AddRangeAsync(newRolesToAdd, true, cancellationToken);
 
             var addedRoles = _roleRepository.Query().Where(c => newRolesToAdd.Select(nc => nc.RoleId).Contains(c.Id));
 

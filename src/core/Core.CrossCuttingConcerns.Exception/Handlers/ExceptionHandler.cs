@@ -1,6 +1,6 @@
-﻿using NArchitecture.Core.CrossCuttingConcerns.Exception.Types;
+﻿using NArchitectureTemplate.Core.CrossCuttingConcerns.Exception.Types;
 
-namespace NArchitecture.Core.CrossCuttingConcerns.Exception.Handlers;
+namespace NArchitectureTemplate.Core.CrossCuttingConcerns.Exception.Handlers;
 
 public abstract class ExceptionHandler
 {

@@ -1,7 +1,7 @@
 ﻿using Domain.Entities;
-using NArchitecture.Core.Persistence.Repositories;
+using NArchitectureTemplate.Core.Persistence.Repositories;
 
-public class Role : NArchitecture.Core.Security.Entities.Role<int>
+public class Role : NArchitectureTemplate.Core.Security.Entities.Role<int>
 {
     public ICollection<UserRole> UserRoles { get; set; }
     public ICollection<RoleOperationClaim> RoleOperationClaims { get; set; }

@@ -2,7 +2,7 @@
 
 namespace Domain.Entities;
 
-public class User : NArchitecture.Core.Security.Entities.User<Guid>
+public class User : NArchitectureTemplate.Core.Security.Entities.User<Guid>
 {
     public virtual ICollection<UserOperationClaim> UserOperationClaims { get; set; } = default!;
     public virtual ICollection<UserGroup> UserGroups { get; set; } = default!;

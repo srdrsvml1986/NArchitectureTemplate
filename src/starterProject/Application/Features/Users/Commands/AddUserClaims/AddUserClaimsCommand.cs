@@ -4,7 +4,7 @@ using Application.Services.Repositories;
 using AutoMapper;
 using Domain.Entities;
 using MediatR;
-using NArchitecture.Core.Application.Pipelines.Authorization;
+using NArchitectureTemplate.Core.Application.Pipelines.Authorization;
 using static Application.Features.Users.Constants.UsersOperationClaims;
 
 namespace Application.Features.Users.Commands.AddUserClaims;
@@ -56,7 +56,7 @@ public class AddUserClaimsCommand : IRequest<AddUserClaimsResponse>, ISecuredReq
                 .ToList();
 
             if (newClaimsToAdd.Any())
-                await _userClaimRepository.AddRangeAsync(newClaimsToAdd, cancellationToken);
+                await _userClaimRepository.AddRangeAsync(newClaimsToAdd,true, cancellationToken);
 
             var addedClaims = _claimRepository.Query().Where(c => newClaimsToAdd.Select(nc => nc.OperationClaimId).Contains(c.Id));
 

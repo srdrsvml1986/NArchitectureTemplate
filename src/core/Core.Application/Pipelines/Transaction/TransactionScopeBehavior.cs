@@ -2,7 +2,7 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
 
-namespace NArchitecture.Core.Application.Pipelines.Transaction;
+namespace NArchitectureTemplate.Core.Application.Pipelines.Transaction;
 
 public class TransactionScopeBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
     where TRequest : IRequest<TResponse>, ITransactionalRequest

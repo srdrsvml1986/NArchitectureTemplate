@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NArchitecture.Core.Security.OAuth.Configurations;
+namespace NArchitectureTemplate.Core.Security.OAuth.Configurations;
 public class FacebookAuthConfig
 {
     public string AppId { get; set; } = string.Empty;

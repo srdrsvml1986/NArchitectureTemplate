@@ -1,6 +1,6 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 
-namespace NArchitecture.Core.Security.Encryption;
+namespace NArchitectureTemplate.Core.Security.Encryption;
 
 public static class SigningCredentialsHelper
 {

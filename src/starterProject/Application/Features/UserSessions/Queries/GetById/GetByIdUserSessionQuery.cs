@@ -3,7 +3,7 @@ using Application.Features.UserSessions.Rules;
 using Application.Services.UserSessions;
 using AutoMapper;
 using Domain.Entities;
-using NArchitecture.Core.Application.Pipelines.Authorization;
+using NArchitectureTemplate.Core.Application.Pipelines.Authorization;
 using MediatR;
 using static Application.Features.UserSessions.Constants.UserSessionsOperationClaims;
 

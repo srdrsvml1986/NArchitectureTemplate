@@ -1,4 +1,4 @@
-﻿namespace NArchitecture.Core.CrossCuttingConcerns.Logging.Abstraction;
+﻿namespace NArchitectureTemplate.Core.CrossCuttingConcerns.Logging.Abstraction;
 
 public interface ILogger
 {

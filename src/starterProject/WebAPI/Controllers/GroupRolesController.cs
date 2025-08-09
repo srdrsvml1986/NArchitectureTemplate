@@ -3,8 +3,8 @@ using Application.Features.GroupRoles.Commands.Delete;
 using Application.Features.GroupRoles.Commands.Update;
 using Application.Features.GroupRoles.Queries.GetById;
 using Application.Features.GroupRoles.Queries.GetList;
-using NArchitecture.Core.Application.Requests;
-using NArchitecture.Core.Application.Responses;
+using NArchitectureTemplate.Core.Application.Requests;
+using NArchitectureTemplate.Core.Application.Responses;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers;

@@ -1,6 +1,6 @@
 ﻿using Application.Services.AuthService;
 using MediatR;
-using NArchitecture.Core.Application.Pipelines.Authorization;
+using NArchitectureTemplate.Core.Application.Pipelines.Authorization;
 using static Application.Features.UserSessions.Constants.UserSessionsOperationClaims;
 
 namespace Application.Features.UserSessions.Commands.CheckSuspiciousSessions;

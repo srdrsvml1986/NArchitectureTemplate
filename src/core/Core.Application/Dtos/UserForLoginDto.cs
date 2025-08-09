@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace NArchitecture.Core.Application.Dtos;
+namespace NArchitectureTemplate.Core.Application.Dtos;
 
 public class UserForLoginDto : IDto
 {

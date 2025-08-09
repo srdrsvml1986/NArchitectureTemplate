@@ -2,8 +2,8 @@
 using Application.Services.Repositories;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore.Query;
-using NArchitecture.Core.Persistence.Paging;
-using NArchitecture.Core.Security.OAuth.Models;
+using NArchitectureTemplate.Core.Persistence.Paging;
+using NArchitectureTemplate.Core.Security.OAuth.Models;
 using System.Linq.Expressions;
 using static Domain.Entities.User;
 

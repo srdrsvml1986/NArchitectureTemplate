@@ -1,4 +1,4 @@
-﻿namespace NArchitecture.Core.Application.Requests;
+﻿namespace NArchitectureTemplate.Core.Application.Requests;
 
 public class PageRequest
 {

@@ -5,8 +5,8 @@ using AutoMapper;
 using Domain.Entities;
 using MediatR;
 using MimeKit;
-using NArchitecture.Core.CrossCuttingConcerns.Exception.Types;
-using NArchitecture.Core.Mailing;
+using NArchitectureTemplate.Core.CrossCuttingConcerns.Exception.Types;
+using NArchitectureTemplate.Core.Mailing;
 
 namespace Application.Features.Users.Commands.ForgotPassword;
 

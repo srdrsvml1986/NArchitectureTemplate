@@ -2,11 +2,11 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using NArchitecture.Core.CrossCuttingConcerns.Exception.Types;
-using NArchitecture.Core.Security.Constants;
-using NArchitecture.Core.Security.Extensions;
+using NArchitectureTemplate.Core.CrossCuttingConcerns.Exception.Types;
+using NArchitectureTemplate.Core.Security.Constants;
+using NArchitectureTemplate.Core.Security.Extensions;
 
-namespace NArchitecture.Core.Application.Pipelines.Authorization;
+namespace NArchitectureTemplate.Core.Application.Pipelines.Authorization;
 
 public class AuthorizationBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
     where TRequest : IRequest<TResponse>, ISecuredRequest

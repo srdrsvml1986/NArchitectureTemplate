@@ -1,3 +1,3 @@
-﻿namespace NArchitecture.Core.Application.Pipelines.Transaction;
+﻿namespace NArchitectureTemplate.Core.Application.Pipelines.Transaction;
 
 public interface ITransactionalRequest { }

@@ -2,10 +2,10 @@ using Application.Features.UserSessions.Constants;
 using Application.Features.UserSessions.Rules;
 using Application.Services.UserSessions;
 using AutoMapper;
-using NArchitecture.Core.Application.Pipelines.Authorization;
-using NArchitecture.Core.Application.Pipelines.Caching;
-using NArchitecture.Core.Application.Pipelines.Logging;
-using NArchitecture.Core.Application.Pipelines.Transaction;
+using NArchitectureTemplate.Core.Application.Pipelines.Authorization;
+using NArchitectureTemplate.Core.Application.Pipelines.Caching;
+using NArchitectureTemplate.Core.Application.Pipelines.Logging;
+using NArchitectureTemplate.Core.Application.Pipelines.Transaction;
 using MediatR;
 using static Application.Features.UserSessions.Constants.UserSessionsOperationClaims;
 

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Immutable;
-using Application.Features.UserSessions.Commands.Create;
 using Application.Services.Repositories;
 using Application.Services.UserSessions;
 using Application.Services.UsersService;
@@ -9,13 +8,13 @@ using Domain.Entities;
 using MediatR;
 using Microsoft.Extensions.Configuration;
 using MimeKit;
-using NArchitecture.Core.CrossCuttingConcerns.Exception.Types;
-using NArchitecture.Core.Mailing;
-using NArchitecture.Core.Security.EmailAuthenticator;
-using NArchitecture.Core.Security.JWT;
-using NArchitecture.Core.Security.OAuth.Models;
-using NArchitecture.Core.Security.OtpAuthenticator;
-using NArchitecture.Core.Security.Enums;
+using NArchitectureTemplate.Core.CrossCuttingConcerns.Exception.Types;
+using NArchitectureTemplate.Core.Mailing;
+using NArchitectureTemplate.Core.Security.EmailAuthenticator;
+using NArchitectureTemplate.Core.Security.JWT;
+using NArchitectureTemplate.Core.Security.OAuth.Models;
+using NArchitectureTemplate.Core.Security.OtpAuthenticator;
+using NArchitectureTemplate.Core.Security.Enums;
 
 namespace Application.Services.AuthService;
 
@@ -35,7 +34,6 @@ public class AuthService : IAuthService
     private readonly IUserService _userService;
     private readonly IUserSessionService _userSessionService;
     private readonly INotificationService _notificationService;
-    private readonly IMediator _mediator;
     private readonly string _appName;
 
     public AuthService(
@@ -51,7 +49,6 @@ public class AuthService : IAuthService
         IEmailAuthenticatorHelper emailAuthenticatorHelper,
         IUserRepository userRepository,
         IUserService userService,
-        IMediator mediator,
         IUserSessionService userSessionService,
         INotificationService notificationService,
         IUserRoleRepository userRoleRepository)
@@ -73,7 +70,6 @@ public class AuthService : IAuthService
         _emailAuthenticatorRepository = emailAuthenticatorRepository;
         _emailAuthenticatorHelper = emailAuthenticatorHelper;
         _userService = userService;
-        _mediator = mediator;
         _userSessionService = userSessionService;
         _notificationService = notificationService;
         _userRoleRepository = userRoleRepository;
@@ -86,8 +82,8 @@ public class AuthService : IAuthService
 
         AccessToken accessToken = _tokenHelper.CreateToken(
             user,
-            operationClaims.Select(op => (NArchitecture.Core.Security.Entities.OperationClaim<int>)op).ToImmutableList(),
-            roles.Select(role => (NArchitecture.Core.Security.Entities.Role<int>)role).ToImmutableList()
+            operationClaims.Select(op => (NArchitectureTemplate.Core.Security.Entities.OperationClaim<int>)op).ToImmutableList(),
+            roles.Select(role => (NArchitectureTemplate.Core.Security.Entities.Role<int>)role).ToImmutableList()
         );
         return accessToken;
     }
@@ -129,7 +125,7 @@ public class AuthService : IAuthService
 
     public async Task<RefreshToken> RotateRefreshToken(User user, RefreshToken refreshToken, string ipAddress)
     {
-        NArchitecture.Core.Security.Entities.RefreshToken<Guid, Guid> newCoreRefreshToken = _tokenHelper.CreateRefreshToken(
+        NArchitectureTemplate.Core.Security.Entities.RefreshToken<Guid, Guid> newCoreRefreshToken = _tokenHelper.CreateRefreshToken(
             user,
             ipAddress
         );
@@ -163,7 +159,7 @@ public class AuthService : IAuthService
         };
 
         // UserSession'ı veritabanına ekleyip ID'sini al
-        var session = await _userSessionService.AddAsync(userSession);
+        var session = await _userSessionService.AddAsync(userSession, enableTracking: false);
 
         // RefreshToken'ı manuel oluştur (mapper kullanmadan)
         var refreshToken = new RefreshToken
@@ -314,8 +310,11 @@ public class AuthService : IAuthService
     public async Task<IEnumerable<UserSession>> GetActiveSessionsAsync(Guid userId)
     {
         return (await _userSessionService.GetListAsync(
-            predicate: s => s.UserId == userId && !s.IsRevoked, enableTracking: false, orderBy: q => q.OrderByDescending(s => s.LoginTime), cancellationToken: default
-        )).Items;
+            predicate: s => s.UserId == userId && !s.IsRevoked, 
+            enableTracking: false, 
+            orderBy: q => q.OrderByDescending(s => s.LoginTime), 
+            cancellationToken: default
+        ))!.Items;
     }
 
     /// <summary>
@@ -350,7 +349,7 @@ public class AuthService : IAuthService
                 {
                     await _notificationService.NotifySuspiciousSessionAsync(session);
                     var token = await GetRefreshTokenBySessionAsync(session.Id);
-                    Domain.Entities.RefreshToken? refreshToken = await GetRefreshTokenByToken(token);
+                    RefreshToken? refreshToken = await GetRefreshTokenByToken(token);
                     if (refreshToken is not null)
                         await RevokeRefreshToken(refreshToken!, session!.IpAddress, reason: "Token kaldırıldı");
                 }
@@ -366,7 +365,7 @@ public class AuthService : IAuthService
             suspiciousSessions.Add(session);
         }
         // Güncellenmiş oturumları veritabanına kaydet
-        await _userSessionService.UpdateAllAsync(suspiciousSessions);
+        await _userSessionService.UpdateAllAsync(suspiciousSessions, false);
     }
 
 
@@ -381,7 +380,7 @@ public class AuthService : IAuthService
         foreach (var session in sessions)
         {
             var token = await GetRefreshTokenBySessionAsync(session.Id);
-            Domain.Entities.RefreshToken? refreshToken = await GetRefreshTokenByToken(token);
+            RefreshToken? refreshToken = await GetRefreshTokenByToken(token);
             if (refreshToken is not null)
                 await RevokeRefreshToken(refreshToken!, session!.IpAddress, reason: "Token kaldırıldı");
 

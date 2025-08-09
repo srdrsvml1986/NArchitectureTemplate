@@ -3,10 +3,10 @@ using Application.Features.GroupRoles.Rules;
 using Application.Services.GroupRoles;
 using AutoMapper;
 using Domain.Entities;
-using NArchitecture.Core.Application.Pipelines.Authorization;
-using NArchitecture.Core.Application.Pipelines.Caching;
-using NArchitecture.Core.Application.Pipelines.Logging;
-using NArchitecture.Core.Application.Pipelines.Transaction;
+using NArchitectureTemplate.Core.Application.Pipelines.Authorization;
+using NArchitectureTemplate.Core.Application.Pipelines.Caching;
+using NArchitectureTemplate.Core.Application.Pipelines.Logging;
+using NArchitectureTemplate.Core.Application.Pipelines.Transaction;
 using MediatR;
 using static Application.Features.GroupRoles.Constants.GroupRolesOperationClaims;
 

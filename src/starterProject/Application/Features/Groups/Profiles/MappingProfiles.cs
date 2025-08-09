@@ -4,9 +4,9 @@ using Application.Features.Groups.Commands.Update;
 using Application.Features.Groups.Queries.GetById;
 using Application.Features.Groups.Queries.GetList;
 using AutoMapper;
-using NArchitecture.Core.Application.Responses;
+using NArchitectureTemplate.Core.Application.Responses;
 using Domain.Entities;
-using NArchitecture.Core.Persistence.Paging;
+using NArchitectureTemplate.Core.Persistence.Paging;
 using Domain.DTos;
 
 namespace Application.Features.Groups.Profiles;

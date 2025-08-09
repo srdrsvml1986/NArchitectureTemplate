@@ -3,7 +3,7 @@ using Application.Features.GroupRoles.Rules;
 using Application.Services.GroupRoles;
 using AutoMapper;
 using Domain.Entities;
-using NArchitecture.Core.Application.Pipelines.Authorization;
+using NArchitectureTemplate.Core.Application.Pipelines.Authorization;
 using MediatR;
 using static Application.Features.GroupRoles.Constants.GroupRolesOperationClaims;
 

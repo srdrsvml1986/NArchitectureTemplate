@@ -1,4 +1,4 @@
-﻿namespace NArchitecture.Core.CrossCuttingConcerns.Logging;
+﻿namespace NArchitectureTemplate.Core.CrossCuttingConcerns.Logging;
 
 public class LogParameter
 {

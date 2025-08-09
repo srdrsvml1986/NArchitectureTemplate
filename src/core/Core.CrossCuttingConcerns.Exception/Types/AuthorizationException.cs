@@ -1,4 +1,4 @@
-﻿namespace NArchitecture.Core.CrossCuttingConcerns.Exception.Types;
+﻿namespace NArchitectureTemplate.Core.CrossCuttingConcerns.Exception.Types;
 
 public class AuthorizationException : System.Exception
 {

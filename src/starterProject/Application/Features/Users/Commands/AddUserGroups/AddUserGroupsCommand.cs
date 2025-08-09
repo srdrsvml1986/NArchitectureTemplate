@@ -4,8 +4,8 @@ using Application.Services.Repositories;
 using AutoMapper;
 using Domain.Entities;
 using MediatR;
-using NArchitecture.Core.Application.Pipelines.Authorization;
-using NArchitecture.Core.Application.Responses;
+using NArchitectureTemplate.Core.Application.Pipelines.Authorization;
+using NArchitectureTemplate.Core.Application.Responses;
 using static Application.Features.Users.Constants.UsersOperationClaims;
 
 namespace Application.Features.Users.Commands.AddUserGroups;
@@ -56,7 +56,7 @@ public class AddUserGroupsCommand : IRequest<AddUserGroupsResponse>, ISecuredReq
                 .ToList();
 
             if (newGroupsToAdd.Any())
-                await _userGroupRepository.AddRangeAsync(newGroupsToAdd, cancellationToken);
+                await _userGroupRepository.AddRangeAsync(newGroupsToAdd, true, cancellationToken);
 
             var addedGroups = _groupRepository.Query().Where(g => newGroupsToAdd.Select(ng => ng.GroupId).Contains(g.Id));
 

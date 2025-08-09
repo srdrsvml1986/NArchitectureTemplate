@@ -3,7 +3,7 @@ using Application.Features.UserGroups.Rules;
 using Application.Services.Repositories;
 using AutoMapper;
 using Domain.Entities;
-using NArchitecture.Core.Application.Pipelines.Authorization;
+using NArchitectureTemplate.Core.Application.Pipelines.Authorization;
 using MediatR;
 using static Application.Features.UserGroups.Constants.UserGroupsOperationClaims;
 

@@ -1,4 +1,4 @@
-using NArchitecture.Core.Application.Dtos;
+using NArchitectureTemplate.Core.Application.Dtos;
 using static Domain.Entities.User;
 
 namespace Application.Features.Users.Queries.GetList;

@@ -1,4 +1,4 @@
-﻿namespace NArchitecture.Core.Persistence.Repositories;
+﻿namespace NArchitectureTemplate.Core.Persistence.Repositories;
 
 public abstract class Entity<TId> : IEntity<TId>, IEntityTimestamps
 {

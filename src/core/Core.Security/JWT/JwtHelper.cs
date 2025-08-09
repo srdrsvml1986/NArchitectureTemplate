@@ -1,14 +1,14 @@
 ﻿using Microsoft.IdentityModel.Tokens;
-using NArchitecture.Core.Security.Entities;
-using NArchitecture.Core.Security.Encryption;
-using NArchitecture.Core.Security.Extensions;
+using NArchitectureTemplate.Core.Security.Entities;
+using NArchitectureTemplate.Core.Security.Encryption;
+using NArchitectureTemplate.Core.Security.Extensions;
 using System.Collections.Immutable;
 using System.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 
-namespace NArchitecture.Core.Security.JWT;
+namespace NArchitectureTemplate.Core.Security.JWT;
 
 public class JwtHelper<TUserId, TOperationClaimId, TRoleId, TRefreshTokenId> : ITokenHelper<TUserId, TOperationClaimId, TRoleId, TRefreshTokenId>
 {

@@ -2,7 +2,7 @@
 using System.Text;
 using Microsoft.Extensions.Configuration;
 
-namespace NArchitecture.Core.Security.Encryption;
+namespace NArchitectureTemplate.Core.Security.Encryption;
 
 public static class EncryptionHelper
 {

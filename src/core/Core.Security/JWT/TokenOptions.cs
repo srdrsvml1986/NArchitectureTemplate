@@ -1,4 +1,4 @@
-﻿namespace NArchitecture.Core.Security.JWT;
+﻿namespace NArchitectureTemplate.Core.Security.JWT;
 
 public class TokenOptions
 {

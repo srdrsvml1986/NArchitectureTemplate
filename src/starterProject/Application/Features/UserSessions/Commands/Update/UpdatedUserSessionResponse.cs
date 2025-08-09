@@ -1,4 +1,4 @@
-using NArchitecture.Core.Application.Responses;
+using NArchitectureTemplate.Core.Application.Responses;
 using Domain.Entities;
 
 namespace Application.Features.UserSessions.Commands.Update;

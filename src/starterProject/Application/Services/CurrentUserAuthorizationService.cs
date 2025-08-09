@@ -1,6 +1,6 @@
 ﻿using Application.Services.Repositories;
 using Microsoft.EntityFrameworkCore;
-using NArchitecture.Core.Application.Pipelines.Authorization;
+using NArchitectureTemplate.Core.Application.Pipelines.Authorization;
 
 namespace Application.Services;
 

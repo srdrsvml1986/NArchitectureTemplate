@@ -2,9 +2,9 @@ using Application.Services.Repositories;
 using Domain.Entities;
 using MediatR;
 using MimeKit;
-using NArchitecture.Core.CrossCuttingConcerns.Exception.Types;
-using NArchitecture.Core.Mailing;
-using NArchitecture.Core.Security.Hashing;
+using NArchitectureTemplate.Core.CrossCuttingConcerns.Exception.Types;
+using NArchitectureTemplate.Core.Mailing;
+using NArchitectureTemplate.Core.Security.Hashing;
 
 namespace Application.Features.Users.Commands.ResetPassword;
 

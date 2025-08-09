@@ -2,11 +2,11 @@ using Application.Features.Groups.Constants;
 using Application.Services.Repositories;
 using AutoMapper;
 using Domain.Entities;
-using NArchitecture.Core.Application.Pipelines.Authorization;
-using NArchitecture.Core.Application.Pipelines.Caching;
-using NArchitecture.Core.Application.Requests;
-using NArchitecture.Core.Application.Responses;
-using NArchitecture.Core.Persistence.Paging;
+using NArchitectureTemplate.Core.Application.Pipelines.Authorization;
+using NArchitectureTemplate.Core.Application.Pipelines.Caching;
+using NArchitectureTemplate.Core.Application.Requests;
+using NArchitectureTemplate.Core.Application.Responses;
+using NArchitectureTemplate.Core.Persistence.Paging;
 using MediatR;
 using static Application.Features.Groups.Constants.GroupsOperationClaims;
 

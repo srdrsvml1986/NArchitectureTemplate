@@ -1,5 +1,5 @@
 ﻿using Domain.Entities;
-using NArchitecture.Core.Test.Application.FakeData;
+using NArchitectureTemplate.Core.Test.Application.FakeData;
 using System;
 using StarterProject.Application.Tests.Mocks.FakeDatas; // UserFakeData'a erişim için
 
