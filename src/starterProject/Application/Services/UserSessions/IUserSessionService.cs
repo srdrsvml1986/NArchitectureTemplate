@@ -25,6 +25,7 @@ public interface IUserSessionService
     );
     Task<UserSession> AddAsync(UserSession userSession);
     Task<UserSession> UpdateAsync(UserSession userSession);
+    Task<ICollection<UserSession>> UpdateAllAsync(ICollection<UserSession> userSession);
     Task<UserSession> DeleteAsync(UserSession userSession, bool permanent = false);
     Task<int> GetActiveSessionCountAsync();
     Task<IEnumerable<UserSession>> GetUserSessionsAsync(Guid userId);

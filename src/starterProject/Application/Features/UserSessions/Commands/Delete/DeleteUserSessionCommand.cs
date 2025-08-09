@@ -1,9 +1,7 @@
 using Application.Features.UserSessions.Constants;
-using Application.Features.UserSessions.Constants;
 using Application.Features.UserSessions.Rules;
 using Application.Services.UserSessions;
 using AutoMapper;
-using Domain.Entities;
 using NArchitecture.Core.Application.Pipelines.Authorization;
 using NArchitecture.Core.Application.Pipelines.Caching;
 using NArchitecture.Core.Application.Pipelines.Logging;

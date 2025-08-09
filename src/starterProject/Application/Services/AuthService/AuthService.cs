@@ -152,17 +152,30 @@ public class AuthService : IAuthService
 
     public async Task<RefreshToken> CreateRefreshToken(User user, string ipAddress, string userAgent)
     {
-        // Oturum kaydı ekle  
-        UserSession userSession = new UserSession { IpAddress = ipAddress, UserAgent = userAgent, UserId = user.Id };
-        UserSession session = await _userSessionService.AddAsync(userSession);
+        var coreRefreshToken = _tokenHelper.CreateRefreshToken(user, ipAddress);
 
-        NArchitecture.Core.Security.Entities.RefreshToken<Guid, Guid> coreRefreshToken = _tokenHelper.CreateRefreshToken(
-            user,
-            ipAddress
-        );
+        // Yeni ve temiz bir UserSession nesnesi oluştur
+        var userSession = new UserSession
+        {
+            IpAddress = ipAddress,
+            UserAgent = userAgent,
+            UserId = user.Id
+        };
 
-        RefreshToken refreshToken = _mapper.Map<RefreshToken>(coreRefreshToken);
-        refreshToken.UserSessionId = userSession.Id;
+        // UserSession'ı veritabanına ekleyip ID'sini al
+        var session = await _userSessionService.AddAsync(userSession);
+
+        // RefreshToken'ı manuel oluştur (mapper kullanmadan)
+        var refreshToken = new RefreshToken
+        {
+            UserId = coreRefreshToken.UserId,
+            Token = coreRefreshToken.Token,
+            ExpirationDate = coreRefreshToken.ExpirationDate,
+            CreatedByIp = coreRefreshToken.CreatedByIp,
+            CreatedDate = coreRefreshToken.CreatedDate,
+            UserSessionId = session.Id // Foreign key ilişkisi
+        };
+
         return refreshToken;
     }
 
@@ -314,6 +327,7 @@ public class AuthService : IAuthService
     {
         var sessions = (await GetActiveSessionsAsync(userId)).ToList();
         var now = DateTime.UtcNow;
+        ICollection<UserSession> suspiciousSessions = new List<UserSession>();
         foreach (var session in sessions)
         {
             // Rule1: Aynı anda >3 oturum
@@ -347,8 +361,12 @@ public class AuthService : IAuthService
                 }
                 session.IsRevoked = true;
             }
-            await _userSessionService.UpdateAsync(session);
+            session.RefreshTokens = null; // Refresh tokenları temizle
+            session.User = null; // Kullanıcı bilgilerini temizle
+            suspiciousSessions.Add(session);
         }
+        // Güncellenmiş oturumları veritabanına kaydet
+        await _userSessionService.UpdateAllAsync(suspiciousSessions);
     }
 
 

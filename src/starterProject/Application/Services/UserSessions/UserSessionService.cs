@@ -22,7 +22,7 @@ public class UserSessionService : IUserSessionService
         Expression<Func<UserSession, bool>> predicate,
         Func<IQueryable<UserSession>, IIncludableQueryable<UserSession, object>>? include = null,
         bool withDeleted = false,
-        bool enableTracking = true,
+        bool enableTracking = false,
         CancellationToken cancellationToken = default
     )
     {
@@ -37,7 +37,7 @@ public class UserSessionService : IUserSessionService
         int index = 0,
         int size = 10,
         bool withDeleted = false,
-        bool enableTracking = true,
+        bool enableTracking = false,
         CancellationToken cancellationToken = default
     )
     {
@@ -56,11 +56,17 @@ public class UserSessionService : IUserSessionService
 
     public async Task<UserSession> AddAsync(UserSession userSession)
     {
+        userSession.Id = Guid.Empty;
         UserSession addedUserSession = await _userSessionRepository.AddAsync(userSession);
 
         return addedUserSession;
     }
+    public async Task<ICollection<UserSession>> UpdateAllAsync(ICollection<UserSession> userSession)
+    {
+        ICollection<UserSession> updatedUserSession = await _userSessionRepository.UpdateRangeAsync(userSession);
 
+        return updatedUserSession;
+    }
     public async Task<UserSession> UpdateAsync(UserSession userSession)
     {
         UserSession updatedUserSession = await _userSessionRepository.UpdateAsync(userSession);

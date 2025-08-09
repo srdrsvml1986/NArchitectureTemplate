@@ -1,5 +1,5 @@
 ﻿using Domain.Entities;
-using NArchitecture.Core.Persistence.Repositories;
+using System.Collections.ObjectModel;
 
 /// <summary>
 /// Kullanıcı oturumunu temsil eden varlık. 
@@ -10,6 +10,6 @@ using NArchitecture.Core.Persistence.Repositories;
 /// </summary>
 public class UserSession : NArchitecture.Core.Security.Entities.UserSession<Guid,Guid>
 {
-    // Navigation Property
     public virtual User User { get; set; }
+    public virtual Collection<RefreshToken> RefreshTokens { get; set; }
 }
