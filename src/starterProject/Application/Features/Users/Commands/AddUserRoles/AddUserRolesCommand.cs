@@ -18,23 +18,17 @@ public class AddUserRolesCommand : IRequest<AddUserRolesResponse>, ISecuredReque
 
     public class AddUserRolesCommandHandler : IRequestHandler<AddUserRolesCommand, AddUserRolesResponse>
     {
-        private readonly IUserRepository _userRepository;
         private readonly IUserRoleRepository _userRoleRepository;
         private readonly IRoleRepository _roleRepository;
-        private readonly IMapper _mapper;
         private readonly UserBusinessRules _userBusinessRules;
 
         public AddUserRolesCommandHandler(
-            IUserRepository userRepository,
             IUserRoleRepository userRoleRepository,
             IRoleRepository roleRepository,
-            IMapper mapper,
             UserBusinessRules userBusinessRules)
         {
-            _userRepository = userRepository;
             _userRoleRepository = userRoleRepository;
             _roleRepository = roleRepository;
-            _mapper = mapper;
             _userBusinessRules = userBusinessRules;
         }
 

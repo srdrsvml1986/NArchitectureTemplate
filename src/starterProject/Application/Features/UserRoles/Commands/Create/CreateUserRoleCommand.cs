@@ -2,7 +2,6 @@ using Application.Features.UserRoles.Constants;
 using Application.Features.UserRoles.Rules;
 using Application.Services.UserRoles;
 using AutoMapper;
-using Domain.Entities;
 using NArchitectureTemplate.Core.Application.Pipelines.Authorization;
 using NArchitectureTemplate.Core.Application.Pipelines.Caching;
 using NArchitectureTemplate.Core.Application.Pipelines.Logging;

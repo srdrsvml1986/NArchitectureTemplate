@@ -7,7 +7,6 @@ public class UpdateUserStatusCommandValidator : AbstractValidator<UpdateUserStat
 {
     public UpdateUserStatusCommandValidator()
     {
-        RuleFor(c => c.Email).NotEmpty().EmailAddress();
         RuleFor(c => c.Status).NotEmpty();
     }
 }

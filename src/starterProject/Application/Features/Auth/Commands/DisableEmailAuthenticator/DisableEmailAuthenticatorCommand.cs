@@ -18,21 +18,18 @@ public class DisableEmailAuthenticatorCommand : IRequest, ISecuredRequest
     public class DisableEmailAuthenticatorCommandHandler : IRequestHandler<DisableEmailAuthenticatorCommand>
     {
         private readonly AuthBusinessRules _authBusinessRules;
-        private readonly IAuthService _authenticatorService;
         private readonly IEmailAuthenticatorRepository _emailAuthenticatorRepository;
         private readonly IUserService _userService;
 
         public DisableEmailAuthenticatorCommandHandler(
             IUserService userService,
             IEmailAuthenticatorRepository emailAuthenticatorRepository,
-            AuthBusinessRules authBusinessRules,
-            IAuthService authenticatorService
+            AuthBusinessRules authBusinessRules
         )
         {
             _userService = userService;
             _emailAuthenticatorRepository = emailAuthenticatorRepository;
             _authBusinessRules = authBusinessRules;
-            _authenticatorService = authenticatorService;
         }
 
         public async Task Handle(DisableEmailAuthenticatorCommand request, CancellationToken cancellationToken)

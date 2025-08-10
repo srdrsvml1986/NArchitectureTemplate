@@ -19,23 +19,17 @@ public class UpdateUserRolesCommand : IRequest<UpdateUserRolesResponse>, ISecure
 
     public class UpdateUserRolesCommandHandler : IRequestHandler<UpdateUserRolesCommand, UpdateUserRolesResponse>
     {
-        private readonly IUserRepository _userRepository;
         private readonly IUserRoleRepository _userRoleRepository;
         private readonly IRoleRepository _groupRepository;
-        private readonly IMapper _mapper;
         private readonly UserBusinessRules _userBusinessRules;
 
         public UpdateUserRolesCommandHandler(
-            IUserRepository userRepository,
             IUserRoleRepository userRoleRepository,
             IRoleRepository groupRepository,
-            IMapper mapper,
             UserBusinessRules userBusinessRules)
         {
-            _userRepository = userRepository;
             _userRoleRepository = userRoleRepository;
             _groupRepository = groupRepository;
-            _mapper = mapper;
             _userBusinessRules = userBusinessRules;
         }
 

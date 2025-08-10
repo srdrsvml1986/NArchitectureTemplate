@@ -18,21 +18,18 @@ public class DisableOtpAuthenticatorCommand : IRequest, ISecuredRequest
     public class DisableOtpAuthenticatorCommandHandler : IRequestHandler<DisableOtpAuthenticatorCommand>
     {
         private readonly AuthBusinessRules _authBusinessRules;
-        private readonly IAuthService _authenticatorService;
         private readonly IOtpAuthenticatorRepository _otpAuthenticatorRepository;
         private readonly IUserService _userService;
 
         public DisableOtpAuthenticatorCommandHandler(
             IUserService userService,
             IOtpAuthenticatorRepository otpAuthenticatorRepository,
-            AuthBusinessRules authBusinessRules,
-            IAuthService authenticatorService
+            AuthBusinessRules authBusinessRules
         )
         {
             _userService = userService;
             _otpAuthenticatorRepository = otpAuthenticatorRepository;
             _authBusinessRules = authBusinessRules;
-            _authenticatorService = authenticatorService;
         }
 
         public async Task Handle(DisableOtpAuthenticatorCommand request, CancellationToken cancellationToken)

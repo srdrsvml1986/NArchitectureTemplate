@@ -3,12 +3,6 @@ using Application.Services.UserSessions;
 using AutoMapper;
 using MediatR;
 using NArchitectureTemplate.Core.Application.Pipelines.Authorization;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static Application.Features.UserSessions.Constants.UserSessionsOperationClaims;
 
 namespace Application.Features.UserSessions.Commands.RevokeUserSession;
@@ -43,7 +37,7 @@ public class RevokeUserSessionCommand : IRequest<RevokeMySessionResponse>, ISecu
 
             await _userSessionBusinessRules.UserSessionShouldExistWhenSelected(userSession);
 
-            userSession.IsRevoked = true;
+            userSession!.IsRevoked = true;
             await _userSessionService.UpdateAsync(userSession);
 
             RevokeMySessionResponse response = _mapper.Map<RevokeMySessionResponse>(userSession);

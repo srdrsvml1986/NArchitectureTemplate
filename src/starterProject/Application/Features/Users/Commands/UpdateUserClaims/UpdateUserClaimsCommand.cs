@@ -19,23 +19,17 @@ public class UpdateUserClaimsCommand : IRequest<UpdateUserClaimsResponse>, ISecu
 
     public class UpdateUserClaimsCommandHandler : IRequestHandler<UpdateUserClaimsCommand, UpdateUserClaimsResponse>
     {
-        private readonly IUserRepository _userRepository;
         private readonly IUserOperationClaimRepository _userClaimRepository;
         private readonly IOperationClaimRepository _claimRepository;
-        private readonly IMapper _mapper;
         private readonly UserBusinessRules _userBusinessRules;
 
         public UpdateUserClaimsCommandHandler(
-            IUserRepository userRepository,
             IUserOperationClaimRepository userClaimRepository,
             IOperationClaimRepository claimRepository,
-            IMapper mapper,
             UserBusinessRules userBusinessRules)
         {
-            _userRepository = userRepository;
             _userClaimRepository = userClaimRepository;
             _claimRepository = claimRepository;
-            _mapper = mapper;
             _userBusinessRules = userBusinessRules;
         }
 

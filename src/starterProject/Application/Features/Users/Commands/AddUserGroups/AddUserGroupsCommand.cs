@@ -19,23 +19,17 @@ public class AddUserGroupsCommand : IRequest<AddUserGroupsResponse>, ISecuredReq
 
     public class AddUserGroupsCommandHandler : IRequestHandler<AddUserGroupsCommand, AddUserGroupsResponse>
     {
-        private readonly IUserRepository _userRepository;
         private readonly IUserGroupRepository _userGroupRepository;
         private readonly IGroupRepository _groupRepository;
-        private readonly IMapper _mapper;
         private readonly UserBusinessRules _userBusinessRules;
 
         public AddUserGroupsCommandHandler(
-            IUserRepository userRepository,
             IUserGroupRepository userGroupRepository,
             IGroupRepository groupRepository,
-            IMapper mapper,
             UserBusinessRules userBusinessRules)
         {
-            _userRepository = userRepository;
             _userGroupRepository = userGroupRepository;
             _groupRepository = groupRepository;
-            _mapper = mapper;
             _userBusinessRules = userBusinessRules;
         }
 

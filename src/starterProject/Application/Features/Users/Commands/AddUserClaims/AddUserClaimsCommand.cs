@@ -11,6 +11,7 @@ namespace Application.Features.Users.Commands.AddUserClaims;
 
 public class AddUserClaimsCommand : IRequest<AddUserClaimsResponse>, ISecuredRequest
 {
+    
     public Guid UserId { get; set; }
     public IList<int> ClaimIds { get; set; }
 
@@ -18,23 +19,17 @@ public class AddUserClaimsCommand : IRequest<AddUserClaimsResponse>, ISecuredReq
 
     public class AddUserClaimsCommandHandler : IRequestHandler<AddUserClaimsCommand, AddUserClaimsResponse>
     {
-        private readonly IUserRepository _userRepository;
         private readonly IUserOperationClaimRepository _userClaimRepository;
         private readonly IOperationClaimRepository _claimRepository;
-        private readonly IMapper _mapper;
         private readonly UserBusinessRules _userBusinessRules;
 
         public AddUserClaimsCommandHandler(
-            IUserRepository userRepository,
             IUserOperationClaimRepository userClaimRepository,
             IOperationClaimRepository claimRepository,
-            IMapper mapper,
             UserBusinessRules userBusinessRules)
         {
-            _userRepository = userRepository;
             _userClaimRepository = userClaimRepository;
             _claimRepository = claimRepository;
-            _mapper = mapper;
             _userBusinessRules = userBusinessRules;
         }
 

@@ -7,6 +7,7 @@ using MediatR;
 using NArchitectureTemplate.Core.Application.Pipelines.Authorization;
 using NArchitectureTemplate.Core.Security.Hashing;
 using static Application.Features.Users.Constants.UsersOperationClaims;
+using static Domain.Entities.User;
 
 namespace Application.Features.Users.Commands.UpdateStatus;
 
@@ -14,21 +15,18 @@ public class UpdateUserStatusCommand : IRequest<UpdatedUserStatusResponse>, ISec
 {
     public Guid Id { get; set; }
 
-    public string Email { get; set; }
-    public bool Status { get; set; }
+    public UserStatus Status { get; set; }
 
     public DateTime? lastActivityDate { get; set; } = DateTime.Now;
 
     public UpdateUserStatusCommand()
     {
-        Email = string.Empty;
-        Status = false;
+        Status = UserStatus.Inactive;
     }
 
-    public UpdateUserStatusCommand(Guid id, string email,bool status = false)
+    public UpdateUserStatusCommand(Guid id, string email, UserStatus status = UserStatus.Inactive)
     {
         Id = id;
-        Email = email;
         Status = status;
     }
 
@@ -54,9 +52,8 @@ public class UpdateUserStatusCommand : IRequest<UpdatedUserStatusResponse>, ISec
                 cancellationToken: cancellationToken
             );
             await _userBusinessRules.UserShouldBeExistsWhenSelected(user);
-            await _userBusinessRules.UserEmailShouldNotExistsWhenUpdate(user!.Id, user.Email);
             user = _mapper.Map(request, user);
-
+            user.Status = request.Status;
             await _userRepository.UpdateAsync(user);
 
             UpdatedUserStatusResponse response = _mapper.Map<UpdatedUserStatusResponse>(user);

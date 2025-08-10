@@ -1,6 +1,5 @@
 ﻿using Application.Features.Auth.Rules;
 using Application.Services.AuthService;
-using Application.Services.UserSessions;
 using Application.Services.UsersService;
 using Domain.Entities;
 using MediatR;
@@ -35,29 +34,16 @@ public class LoginCommand : IRequest<LoggedResponse>
         private readonly AuthBusinessRules _authBusinessRules;
         private readonly IAuthService _authService;
         private readonly IUserService _userService;
-        private readonly IUserSessionService _sessionService;
-        private IUserService _userService1;
-        private IAuthService _authService1;
-        private AuthBusinessRules _authBusinessRules1;
-
-        public LoginCommandHandler(IUserService userService1, IAuthService authService1, AuthBusinessRules authBusinessRules1)
-        {
-            _userService1 = userService1;
-            _authService1 = authService1;
-            _authBusinessRules1 = authBusinessRules1;
-        }
 
         public LoginCommandHandler(
             IUserService userService,
             IAuthService authService,
-            AuthBusinessRules authBusinessRules
-,
-            IUserSessionService sessionService)
+            AuthBusinessRules authBusinessRules,
+            Services.UserSessions.IUserSessionService userSessionService)                   
         {
             _userService = userService;
             _authService = authService;
             _authBusinessRules = authBusinessRules;
-            _sessionService = sessionService;
         }
 
         public async Task<LoggedResponse> Handle(LoginCommand request, CancellationToken cancellationToken)

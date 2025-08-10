@@ -7,6 +7,7 @@ using MediatR;
 using NArchitectureTemplate.Core.Application.Pipelines.Authorization;
 using NArchitectureTemplate.Core.Security.Hashing;
 using static Application.Features.Users.Constants.UsersOperationClaims;
+using static Domain.Entities.User;
 
 namespace Application.Features.Users.Commands.Create;
 
@@ -16,7 +17,7 @@ public class CreateUserCommand : IRequest<CreatedUserResponse>, ISecuredRequest
     public string? LastName { get; set; }
     public string Email { get; set; }
     public string Password { get; set; }
-    public bool Status { get; set; }
+    public UserStatus Status { get; set; }
 
     public CreateUserCommand()
     {
@@ -26,14 +27,14 @@ public class CreateUserCommand : IRequest<CreatedUserResponse>, ISecuredRequest
         Password = string.Empty;
     }
 
-    public CreateUserCommand(string email, string password, bool status = false)
+    public CreateUserCommand(string email, string password, UserStatus status)
     {
         Email = email;
         Password = password;
         Status = status;
     }
 
-    public CreateUserCommand(string? firstName, string? lastName, string email, string password, bool status)
+    public CreateUserCommand(string? firstName, string? lastName, string email, string password, UserStatus status)
     {
         FirstName = firstName;
         LastName = lastName;
@@ -69,6 +70,7 @@ public class CreateUserCommand : IRequest<CreatedUserResponse>, ISecuredRequest
             );
             user.PasswordHash = passwordHash;
             user.PasswordSalt = passwordSalt;
+            user.Status = request.Status;
             User createdUser = await _userRepository.AddAsync(user);
 
             CreatedUserResponse response = _mapper.Map<CreatedUserResponse>(createdUser);
