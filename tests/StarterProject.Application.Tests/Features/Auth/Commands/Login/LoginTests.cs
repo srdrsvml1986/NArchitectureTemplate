@@ -13,6 +13,7 @@ using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
+using NArchitectureTemplate.Core.Application.Dtos;
 using NArchitectureTemplate.Core.CrossCuttingConcerns.Exception.Types;
 using NArchitectureTemplate.Core.Localization.Abstraction;
 using NArchitectureTemplate.Core.Localization.Resource.Yaml;
@@ -26,6 +27,7 @@ using StarterProject.Application.Tests.Mocks.Configurations;
 using StarterProject.Application.Tests.Mocks.FakeDatas;
 using StarterProject.Application.Tests.Mocks.Repositories.Auth;
 using static Application.Features.Auth.Commands.Login.LoginCommand;
+using static Domain.Entities.User;
 
 namespace StarterProject.Application.Tests.Features.Auth.Commands.Login;
 
@@ -184,4 +186,19 @@ public class LoginTests
         TestValidationResult<LoginCommand> validationResult = _validator.TestValidate(_loginCommand);
         validationResult.ShouldHaveValidationErrorFor(i => i.UserForLoginDto.Password);
     }
+
+    //[Theory]
+    //[InlineData(UserStatus.Unverified)]
+    //[InlineData(UserStatus.Inactive)]
+    //[InlineData(UserStatus.Suspended)]
+    //[InlineData(UserStatus.Deleted)]
+    //public async Task Login_Should_Throw_Exception_When_User_Not_Active(UserStatus status)
+    //{
+    //    // Arrange
+    //    var user = new User { Status = status, /* diğer özellikler */ };
+    //    var command = new LoginCommand(new UserForLoginDto("test@example.com", "password"));
+
+    //    // Act & Assert
+    //    await Assert.ThrowsAsync<BusinessException>(() => handler.Handle(command, CancellationToken.None));
+    //}
 }

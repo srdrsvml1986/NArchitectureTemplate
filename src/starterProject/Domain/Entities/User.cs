@@ -15,13 +15,38 @@ public class User : NArchitectureTemplate.Core.Security.Entities.User<Guid>
     // Önerilen
     public UserStatus Status { get; set; } = UserStatus.Active;
 
+    /// <summary>
+    /// Kullanıcı durumunu belirten enum
+    /// </summary>
     public enum UserStatus
     {
+        /// <summary>
+        /// Kullanıcı aktif ve hesabını kullanabilir durumda
+        /// </summary>
         Active,
+
+        /// <summary>
+        /// Kullanıcı e-posta doğrulamasını tamamlamamış
+        /// </summary>
+        Unverified,
+
+        /// <summary>
+        /// Kullanıcı pasif durumda (geçici olarak devre dışı)
+        /// </summary>
         Inactive,
+
+        /// <summary>
+        /// Kullanıcı yasaklanmış durumda
+        /// </summary>
         Suspended,
+
+        /// <summary>
+        /// Kullanıcı hesabı silinmiş
+        /// </summary>
         Deleted
     }
+
+
     public string? FirstName { get; set; }
     public string? LastName { get; set; }
     [Display(Name = "Full Name")]

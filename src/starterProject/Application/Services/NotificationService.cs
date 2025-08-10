@@ -1,10 +1,5 @@
 ﻿using Application.Services.Repositories;
 using Microsoft.AspNetCore.Identity.UI.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Services;
 public interface INotificationService
@@ -36,4 +31,7 @@ public class NotificationService : INotificationService
             $"Zaman: {session.LoginTime}";
         await _emailSender.SendEmailAsync(user.Email, subject, body);
     }
+
+
+
 }

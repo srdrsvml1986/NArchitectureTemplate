@@ -14,4 +14,9 @@ public static class AuthMessages
     public const string InvalidRefreshToken = "InvalidRefreshToken";
     public const string UserMailAlreadyExists = "UserMailAlreadyExists";
     public const string PasswordDontMatch = "PasswordDontMatch";
+    public const string UserStatusUnverified = "UserStatusUnverified";
+    public const string UserStatusInactive = "UserStatusInactive";
+    public const string UserStatusSuspended = "UserStatusSuspended";
+    public const string UserStatusDeleted = "UserStatusDeleted";
+    public const string UserStatusOther = "UserStatusOther";
 }

@@ -54,6 +54,7 @@ public class LoginCommand : IRequest<LoggedResponse>
             );
             await _authBusinessRules.UserShouldBeExistsWhenSelected(user);
             await _authBusinessRules.UserPasswordShouldBeMatch(user!, request.UserForLoginDto.Password);
+            await _authBusinessRules.UserShouldBeActive(user!);
 
             LoggedResponse loggedResponse = new();
 
@@ -68,6 +69,7 @@ public class LoginCommand : IRequest<LoggedResponse>
 
                 await _authService.VerifyAuthenticatorCode(user, request.UserForLoginDto.AuthenticatorCode);
             }
+
 
             AccessToken createdAccessToken = await _authService.CreateAccessToken(user);
 

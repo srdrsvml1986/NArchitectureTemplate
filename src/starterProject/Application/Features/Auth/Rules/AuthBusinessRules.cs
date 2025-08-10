@@ -6,6 +6,7 @@ using NArchitectureTemplate.Core.CrossCuttingConcerns.Exception.Types;
 using NArchitectureTemplate.Core.Localization.Abstraction;
 using NArchitectureTemplate.Core.Security.Enums;
 using NArchitectureTemplate.Core.Security.Hashing;
+using static Domain.Entities.User;
 
 namespace Application.Features.Auth.Rules;
 
@@ -85,5 +86,20 @@ public class AuthBusinessRules : BaseBusinessRules
     {
         if (!HashingHelper.VerifyPasswordHash(password, user!.PasswordHash, user.PasswordSalt))
             await throwBusinessException(AuthMessages.PasswordDontMatch);
+    }
+    public async Task UserShouldBeActive(User user)
+    {
+        if (user.Status != UserStatus.Active)
+        {
+            string errorMessage = user.Status switch
+            {
+                UserStatus.Unverified => AuthMessages.UserStatusUnverified,
+                UserStatus.Inactive => AuthMessages.UserStatusInactive,
+                UserStatus.Suspended => AuthMessages.UserStatusSuspended,
+                UserStatus.Deleted => AuthMessages.UserStatusDeleted,
+                _ => AuthMessages.UserStatusOther
+            };
+            throw new BusinessException(errorMessage);
+        }
     }
 }

@@ -5,7 +5,6 @@ using AutoMapper;
 using Domain.Entities;
 using MediatR;
 using NArchitectureTemplate.Core.Application.Pipelines.Authorization;
-using NArchitectureTemplate.Core.Security.Hashing;
 using static Application.Features.Users.Constants.UsersOperationClaims;
 using static Domain.Entities.User;
 
@@ -15,9 +14,14 @@ public class UpdateUserStatusCommand : IRequest<UpdatedUserStatusResponse>, ISec
 {
     public Guid Id { get; set; }
 
+    /// <summary>
+    /// Kullanýcýya atanacak yeni durum. 
+    /// Olasý deðerler: Active, Unverified, Inactive, Suspended, Deleted
+    /// </summary>
+    /// <example>Active</example>
     public UserStatus Status { get; set; }
 
-    public DateTime? lastActivityDate { get; set; } = DateTime.Now;
+    public DateTime? lastActivityDate { get;} = DateTime.Now;
 
     public UpdateUserStatusCommand()
     {
