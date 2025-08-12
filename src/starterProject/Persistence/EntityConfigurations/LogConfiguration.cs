@@ -14,6 +14,10 @@ public class LogConfiguration : IEntityTypeConfiguration<Log>
         builder.Property(l => l.CreatedDate).HasColumnName("CreatedDate").IsRequired();
         builder.Property(l => l.UpdatedDate).HasColumnName("UpdatedDate");
         builder.Property(l => l.DeletedDate).HasColumnName("DeletedDate");
+        builder.HasOne(el => el.User)
+        .WithMany()
+        .HasForeignKey(el => el.UserId)
+        .OnDelete(DeleteBehavior.SetNull);
 
         builder.HasQueryFilter(l => !l.DeletedDate.HasValue);
     }

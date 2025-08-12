@@ -14,6 +14,10 @@ public class ExceptionLogConfiguration : IEntityTypeConfiguration<ExceptionLog>
         builder.Property(el => el.CreatedDate).HasColumnName("CreatedDate").IsRequired();
         builder.Property(el => el.UpdatedDate).HasColumnName("UpdatedDate");
         builder.Property(el => el.DeletedDate).HasColumnName("DeletedDate");
+        builder.HasOne(el => el.User)
+            .WithMany()
+            .HasForeignKey(el => el.UserId)
+            .OnDelete(DeleteBehavior.SetNull);
 
         builder.HasQueryFilter(el => !el.DeletedDate.HasValue);
     }
