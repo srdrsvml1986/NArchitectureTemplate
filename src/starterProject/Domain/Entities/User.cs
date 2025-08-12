@@ -12,6 +12,10 @@ public class User : NArchitectureTemplate.Core.Security.Entities.User<Guid>
     // Navigation Properties
     public virtual ICollection<UserRole> UserRoles { get; set; }
     public virtual ICollection<UserSession> UserSessions { get; set; }
+    public virtual ICollection<Log> Logs { get; set; } = new HashSet<Log>();
+    public virtual ICollection<ExceptionLog> ExceptionLogs { get; set; } = new HashSet<ExceptionLog>();
+
+
     // Önerilen
     public UserStatus Status { get; set; } = UserStatus.Active;
 

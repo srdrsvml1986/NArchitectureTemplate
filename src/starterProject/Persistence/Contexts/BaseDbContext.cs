@@ -26,6 +26,8 @@ public class BaseDbContext : DbContext
     public DbSet<Role> Roles { get; set; }
     public DbSet<RoleOperationClaim> RoleClaims { get; set; }
     public DbSet<GroupRole> GroupRoles { get; set; }
+    public DbSet<Log> Logs { get; set; }
+    public DbSet<ExceptionLog> ExceptionLogs { get; set; }
 
     public BaseDbContext(DbContextOptions dbContextOptions, IConfiguration configuration)
         : base(dbContextOptions)

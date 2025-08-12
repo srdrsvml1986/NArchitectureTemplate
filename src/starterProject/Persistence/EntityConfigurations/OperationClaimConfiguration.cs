@@ -10,6 +10,10 @@ using Application.Features.Groups.Constants;
 using Application.Features.GroupOperationClaims.Constants;
 using Application.Features.UserGroups.Constants;
 using Application.Features.UserSessions.Constants;
+using Application.Features.Logs.Constants;
+using Application.Features.ExceptionLogs.Constants;
+using Application.Features.Logs.Constants;
+
 
 namespace Persistence.EntityConfigurations;
 
@@ -153,6 +157,107 @@ public class OperationClaimConfiguration : IEntityTypeConfiguration<OperationCla
                 new() { Id = ++lastId, Name = UserSessionsOperationClaims.Create },
                 new() { Id = ++lastId, Name = UserSessionsOperationClaims.Update },
                 new() { Id = ++lastId, Name = UserSessionsOperationClaims.Delete },
+            ]
+        );
+        #endregion
+        
+        
+        
+        
+        
+        #region Logs CRUD
+        featureOperationClaims.AddRange(
+            [
+                new() { Id = ++lastId, Name = LogsOperationClaims.Admin },
+                new() { Id = ++lastId, Name = LogsOperationClaims.Read },
+                new() { Id = ++lastId, Name = LogsOperationClaims.Write },
+                new() { Id = ++lastId, Name = LogsOperationClaims.Create },
+                new() { Id = ++lastId, Name = LogsOperationClaims.Update },
+                new() { Id = ++lastId, Name = LogsOperationClaims.Delete },
+            ]
+        );
+        #endregion
+        
+        
+        #region ExceptionLogs CRUD
+        featureOperationClaims.AddRange(
+            [
+                new() { Id = ++lastId, Name = ExceptionLogsOperationClaims.Admin },
+                new() { Id = ++lastId, Name = ExceptionLogsOperationClaims.Read },
+                new() { Id = ++lastId, Name = ExceptionLogsOperationClaims.Write },
+                new() { Id = ++lastId, Name = ExceptionLogsOperationClaims.Create },
+                new() { Id = ++lastId, Name = ExceptionLogsOperationClaims.Update },
+                new() { Id = ++lastId, Name = ExceptionLogsOperationClaims.Delete },
+            ]
+        );
+        #endregion
+        
+        
+        #region Logs CRUD
+        featureOperationClaims.AddRange(
+            [
+                new() { Id = ++lastId, Name = LogsOperationClaims.Admin },
+                new() { Id = ++lastId, Name = LogsOperationClaims.Read },
+                new() { Id = ++lastId, Name = LogsOperationClaims.Write },
+                new() { Id = ++lastId, Name = LogsOperationClaims.Create },
+                new() { Id = ++lastId, Name = LogsOperationClaims.Update },
+                new() { Id = ++lastId, Name = LogsOperationClaims.Delete },
+            ]
+        );
+        #endregion
+        
+        
+        #region Logs CRUD
+        featureOperationClaims.AddRange(
+            [
+                new() { Id = ++lastId, Name = LogsOperationClaims.Admin },
+                new() { Id = ++lastId, Name = LogsOperationClaims.Read },
+                new() { Id = ++lastId, Name = LogsOperationClaims.Write },
+                new() { Id = ++lastId, Name = LogsOperationClaims.Create },
+                new() { Id = ++lastId, Name = LogsOperationClaims.Update },
+                new() { Id = ++lastId, Name = LogsOperationClaims.Delete },
+            ]
+        );
+        #endregion
+        
+        
+        #region Logs CRUD
+        featureOperationClaims.AddRange(
+            [
+                new() { Id = ++lastId, Name = LogsOperationClaims.Admin },
+                new() { Id = ++lastId, Name = LogsOperationClaims.Read },
+                new() { Id = ++lastId, Name = LogsOperationClaims.Write },
+                new() { Id = ++lastId, Name = LogsOperationClaims.Create },
+                new() { Id = ++lastId, Name = LogsOperationClaims.Update },
+                new() { Id = ++lastId, Name = LogsOperationClaims.Delete },
+            ]
+        );
+        #endregion
+        
+        
+        #region ExceptionLogs CRUD
+        featureOperationClaims.AddRange(
+            [
+                new() { Id = ++lastId, Name = ExceptionLogsOperationClaims.Admin },
+                new() { Id = ++lastId, Name = ExceptionLogsOperationClaims.Read },
+                new() { Id = ++lastId, Name = ExceptionLogsOperationClaims.Write },
+                new() { Id = ++lastId, Name = ExceptionLogsOperationClaims.Create },
+                new() { Id = ++lastId, Name = ExceptionLogsOperationClaims.Update },
+                new() { Id = ++lastId, Name = ExceptionLogsOperationClaims.Delete },
+            ]
+        );
+        #endregion
+        
+        
+        #region Logs CRUD
+        featureOperationClaims.AddRange(
+            [
+                new() { Id = ++lastId, Name = LogsOperationClaims.Admin },
+                new() { Id = ++lastId, Name = LogsOperationClaims.Read },
+                new() { Id = ++lastId, Name = LogsOperationClaims.Write },
+                new() { Id = ++lastId, Name = LogsOperationClaims.Create },
+                new() { Id = ++lastId, Name = LogsOperationClaims.Update },
+                new() { Id = ++lastId, Name = LogsOperationClaims.Delete },
             ]
         );
         #endregion

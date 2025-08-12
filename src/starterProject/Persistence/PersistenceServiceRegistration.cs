@@ -35,6 +35,13 @@ public static class PersistenceServiceRegistration
         services.AddScoped<IRoleRepository, RoleRepository>();
         services.AddScoped<IRoleOperationClaimRepository, RoleOperationClaimRepository>();
         services.AddScoped<IGroupRoleRepository, GroupRoleRepository>();
+        services.AddScoped<ILogRepository, LogRepository>();
+        services.AddScoped<IExceptionLogRepository, ExceptionLogRepository>();
+        services.AddScoped<ILogRepository, LogRepository>();
+        services.AddScoped<ILogRepository, LogRepository>();
+        services.AddScoped<ILogRepository, LogRepository>();
+        services.AddScoped<IExceptionLogRepository, ExceptionLogRepository>();
+        services.AddScoped<ILogRepository, LogRepository>();
         return services;
     }
 }

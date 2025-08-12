@@ -30,6 +30,8 @@ using Application.Services.GroupRoles;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Application.Services.UserSessions;
 using Application.Services;
+using Application.Services.Logs;
+using Application.Services.ExceptionLogs;
 
 namespace Application;
 
@@ -86,6 +88,12 @@ public static class ApplicationServiceRegistration
         services.AddScoped<INotificationService, NotificationService>();
         services.AddScoped<IEmailSender, NoOpEmailSender>();
         services.AddScoped<IUserSessionService, UserSessionService>();
+        services.AddScoped<ILogService, LogService>();
+        services.AddScoped<IExceptionLogService, ExceptionLogService>();
+        services.AddScoped<ILogService, LogService>();
+        services.AddScoped<ILogService, LogService>();
+        services.AddScoped<IExceptionLogService, ExceptionLogService>();
+        services.AddScoped<ILogService, LogService>();
         return services;
     }
 
