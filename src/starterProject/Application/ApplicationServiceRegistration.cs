@@ -90,10 +90,6 @@ public static class ApplicationServiceRegistration
         services.AddScoped<IUserSessionService, UserSessionService>();
         services.AddScoped<ILogService, LogService>();
         services.AddScoped<IExceptionLogService, ExceptionLogService>();
-        services.AddScoped<ILogService, LogService>();
-        services.AddScoped<ILogService, LogService>();
-        services.AddScoped<IExceptionLogService, ExceptionLogService>();
-        services.AddScoped<ILogService, LogService>();
         return services;
     }
 
