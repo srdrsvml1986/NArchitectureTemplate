@@ -90,6 +90,15 @@ public static class ApplicationServiceRegistration
         services.AddScoped<IUserSessionService, UserSessionService>();
         services.AddScoped<ILogService, LogService>();
         services.AddScoped<IExceptionLogService, ExceptionLogService>();
+        services.AddSingleton<AuditService>();
+        services.AddSingleton<DisasterRecoveryService>();
+        services.AddSingleton<EmergencyAccessService>();
+        services.AddSingleton<EmergencyNotificationService>();
+
+        // Background servisler
+        services.AddHostedService<BackupService>();
+        services.AddHostedService<HealthCheckService>();
+
         return services;
     }
 

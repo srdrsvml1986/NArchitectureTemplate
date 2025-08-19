@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Microsoft.Extensions.Configuration;
-using Npgsql.EntityFrameworkCore.PostgreSQL;
 
 namespace Persistence.Contexts;
 
@@ -39,28 +38,38 @@ public class BaseDbContext : DbContext
     {
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
     }
-    ///// <summary> 
-    ///// Bu metod, veritabanı bağlantısını yapılandırmak için kullanılır.
-    ///// sadece MsSqlConfiguration ve PostgreConfiguration için kullanılmaktadır.
-    ///// </summary>
-    //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    //{
-    //    // burası önemli
-    //    //base.OnConfiguring(optionsBuilder);
-    //    var cn = Configuration.GetSection("SeriLogConfigurations")
-    //             .GetSection("MsSqlConfiguration")
-    //             .GetSection("ConnectionString");
+    /// <summary> 
+    /// Bu metod, veritabanı bağlantısını yapılandırmak için kullanılır.
+    /// sadece MsSqlConfiguration ve PostgreConfiguration için kullanılmaktadır.
+    /// </summary>
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        if (!optionsBuilder.IsConfigured)
+        {
+            var databaseSettings = Configuration.GetSection("DatabaseSettings");
+            var provider = databaseSettings["Provider"];
+            var connectionString = databaseSettings["ConnectionString"];
 
-    //    if (!optionsBuilder.IsConfigured)
-    //    {
-    //        optionsBuilder.UseSqlServer(cn.Value);
-    //          //optionsBuilder.UseNpgsql(cn.Value);
-    //    }
+            switch (provider)
+            {
+                case "SqlServer":
+                    optionsBuilder.UseSqlServer(connectionString);
+                    break;
+                case "PostgreSql":
+                    optionsBuilder.UseNpgsql(connectionString);
+                    break;
+                case "InMemory":
+                    break;
+                default:
+                    throw new Exception($"Desteklenmeyen veritabanı sağlayıcı: {provider}. " +
+                    "Geçerli değerler: 'InMemory', 'SqlServer', 'PostgreSql'");
+            }
+        }
 
-    //    // PendingModelChangesWarning uyarısını bastırmak için
-    //    optionsBuilder.ConfigureWarnings(warnings => warnings.Ignore(RelationalEventId.PendingModelChangesWarning));
+        // PendingModelChangesWarning uyarısını bastırmak için
+        optionsBuilder.ConfigureWarnings(warnings => warnings.Ignore(RelationalEventId.PendingModelChangesWarning));
 
-    //}
+    }
 
 
     /// <summary>

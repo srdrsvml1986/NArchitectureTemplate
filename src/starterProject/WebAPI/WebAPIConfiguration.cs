@@ -2,18 +2,20 @@
 
 public class WebApiConfiguration
 {
-    public string ApiDomain { get; set; }
-    public string[] AllowedOrigins { get; set; }
+    public string ApiDomain { get; set; } = "";
+    public string BasePath { get; set; } = "/api";
+    public string[] Origins { get; set; }
 
     public WebApiConfiguration()
     {
         ApiDomain = string.Empty;
-        AllowedOrigins = Array.Empty<string>();
+        Origins = Array.Empty<string>();
     }
 
-    public WebApiConfiguration(string apiDomain, string[] allowedOrigins)
+    public WebApiConfiguration(string apiDomain, string[] origins, string basePath)
     {
         ApiDomain = apiDomain;
-        AllowedOrigins = allowedOrigins;
+        Origins = origins;
+        BasePath = basePath;
     }
 }

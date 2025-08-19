@@ -1,4 +1,5 @@
 ﻿using Application.Features.Auth.Rules;
+using Application.Services;
 using Application.Services.AuthService;
 using Application.Services.UsersService;
 using Domain.Entities;
@@ -34,16 +35,19 @@ public class LoginCommand : IRequest<LoggedResponse>
         private readonly AuthBusinessRules _authBusinessRules;
         private readonly IAuthService _authService;
         private readonly IUserService _userService;
+        private readonly AuditService audit;
 
         public LoginCommandHandler(
             IUserService userService,
             IAuthService authService,
             AuthBusinessRules authBusinessRules,
-            Services.UserSessions.IUserSessionService userSessionService)                   
+            Services.UserSessions.IUserSessionService userSessionService,
+            AuditService audit)
         {
             _userService = userService;
             _authService = authService;
             _authBusinessRules = authBusinessRules;
+            this.audit = audit;
         }
 
         public async Task<LoggedResponse> Handle(LoginCommand request, CancellationToken cancellationToken)
@@ -73,9 +77,16 @@ public class LoginCommand : IRequest<LoggedResponse>
 
             AccessToken createdAccessToken = await _authService.CreateAccessToken(user);
 
-            Domain.Entities.RefreshToken createdRefreshToken = await _authService.CreateRefreshToken(user, request.IpAddress,request.UserAgent);
+            Domain.Entities.RefreshToken createdRefreshToken = await _authService.CreateRefreshToken(user, request.IpAddress, request.UserAgent);
             Domain.Entities.RefreshToken addedRefreshToken = await _authService.AddRefreshToken(createdRefreshToken);
             await _authService.DeleteOldRefreshTokens(user.Id);
+
+            audit.LogAccess(
+            "AUTH",
+            "LOGIN_SUCCESS",
+            request.UserForLoginDto.Email,
+            request.IpAddress
+            );
 
             loggedResponse.AccessToken = createdAccessToken;
             loggedResponse.RefreshToken = addedRefreshToken;

@@ -1,11 +1,15 @@
 using Application.Features.Auth.Constants;
+using Application.Services;
 using Application.Services.Repositories;
 using Domain.Entities;
+using Elasticsearch.Net;
 using NArchitectureTemplate.Core.Application.Rules;
 using NArchitectureTemplate.Core.CrossCuttingConcerns.Exception.Types;
 using NArchitectureTemplate.Core.Localization.Abstraction;
 using NArchitectureTemplate.Core.Security.Enums;
 using NArchitectureTemplate.Core.Security.Hashing;
+using Nest;
+using Org.BouncyCastle.Asn1.Ocsp;
 using static Domain.Entities.User;
 
 namespace Application.Features.Auth.Rules;
@@ -14,16 +18,26 @@ public class AuthBusinessRules : BaseBusinessRules
 {
     private readonly IUserRepository _userRepository;
     private readonly ILocalizationService _localizationService;
+    private readonly AuditService _auditService;
 
-    public AuthBusinessRules(IUserRepository userRepository, ILocalizationService localizationService)
+    public AuthBusinessRules(IUserRepository userRepository, ILocalizationService localizationService, AuditService auditService)
     {
         _userRepository = userRepository;
         _localizationService = localizationService;
+        _auditService = auditService;
     }
 
     private async Task throwBusinessException(string messageKey)
     {
         string message = await _localizationService.GetLocalizedAsync(messageKey, AuthMessages.SectionName);
+         
+                _auditService.LogAccess(
+                "AUTH",
+                "LOGIN_FAILED: "+ message,
+                "",
+                ""
+                );
+        
         throw new BusinessException(message);
     }
 
@@ -99,7 +113,7 @@ public class AuthBusinessRules : BaseBusinessRules
                 UserStatus.Deleted => AuthMessages.UserStatusDeleted,
                 _ => AuthMessages.UserStatusOther
             };
-            throw new BusinessException(errorMessage);
+            await throwBusinessException(errorMessage);
         }
     }
 }

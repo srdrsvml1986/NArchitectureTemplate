@@ -87,7 +87,8 @@ public class LoginTests
         IMapper mapper = config.CreateMapper();
 
         #endregion
-        AuthBusinessRules authBusinessRules = new(_userRepository, localizationService);
+        AuditService auditService = new();
+        AuthBusinessRules authBusinessRules = new(_userRepository, localizationService,auditService);
         UserBusinessRules _userBusinessRules = new(_userRepository, localizationService);
         IUserService _userService = new UserService(_userRepository, _userBusinessRules);
         IAuthService _authService = new AuthService(
@@ -108,28 +109,9 @@ public class LoginTests
                      _userRoleRepository, // EKLENDİ: UserRoleRepository ekleniyor
                      _userGroupRepository // EKLENDİ: UserGroupRepository ekleniyor
                );
-        IAuthService _authenticatorService = new AuthService(
-            _userOperationClaimRepository,
-            _refreshTokenRepository,
-            tokenHelper,
-            _configuration,
-            mapper,
-            mailService,
-            _userOtpAuthenticatorRepository,
-            otpAuthenticatorHelper,
-            _userEmailAuthenticatorRepository,
-            emailAuthenticatorHelper,
-            _userRepository,
-            _userService,
-            _userSessionService, // EKLENDİ
-            _notificationService,  // EKLENDİ
-            _userRoleRepository, // EKLENDİ: UserRoleRepository ekleniyor
-            _userGroupRepository // EKLENDİ: UserGroupRepository ekleniyor
-
-        );
         _validator = new LoginCommandValidator();
         _loginCommand = new LoginCommand();
-        _loginCommandHandler = new LoginCommandHandler(_userService, _authService, authBusinessRules, _userSessionService);
+        _loginCommandHandler = new LoginCommandHandler(_userService, _authService, authBusinessRules, _userSessionService,auditService);
     }
 
     [Fact]

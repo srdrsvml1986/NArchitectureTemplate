@@ -12,7 +12,24 @@ public static class PersistenceServiceRegistration
 {
     public static IServiceCollection AddPersistenceServices(this IServiceCollection services, IConfiguration configuration)
     {
-        //services.AddDbContext<BaseDbContext>(); //MS SQL i�in
+        var databaseSettings = configuration.GetSection("DatabaseSettings");
+        var provider = databaseSettings["Provider"];
+        var connectionString = databaseSettings["ConnectionString"];
+
+        switch (provider)
+        {
+            case "SqlServer" or "PostgreSql":
+                services.AddDbContext<BaseDbContext>();
+                break;
+            case "InMemory":
+                services.AddDbContext<BaseDbContext>(options =>
+                    options.UseInMemoryDatabase("BaseDb"));
+                break;
+            default:
+                throw new Exception($"Desteklenmeyen veritabanı sağlayıcı: {provider}. " +
+                "Geçerli değerler: 'InMemory','SqlServer', 'PostgreSql'");
+        }
+
         services.AddDbContext<BaseDbContext>(options => options.UseInMemoryDatabase("BaseDb"));
         services.AddDbMigrationApplier(buildServices => buildServices.GetRequiredService<BaseDbContext>());
 
