@@ -54,7 +54,7 @@ public class HealthCheckService : BackgroundService
             catch (Exception ex)
             {
                 _logger.LogError(ex, "HealthCheck Service'de hata oluştu");
-                await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken); // 1 dakika bekle ve tekrar dene
+                await Task.Delay(TimeSpan.FromMinutes(100), stoppingToken); // 100 dakika bekle ve tekrar dene
             }
         }
     }

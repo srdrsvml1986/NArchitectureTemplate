@@ -34,99 +34,7 @@ builder.Configuration
     .AddJsonFile("appsettings.json", optional: false)
     .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true);
 
-// Master key'i ortam deðiþkenlerinden al
-var masterKey = Environment.GetEnvironmentVariable("MASTER_KEY");
-if (string.IsNullOrEmpty(masterKey))
-    throw new Exception("MASTER_KEY ortam deðiþkeni tanýmlanmalý");
-
-// Servis kayýtlarý
-builder.Services.AddSingleton<IEncryptionService, EncryptionService>(enc => new EncryptionService(masterKey));
-builder.Services.AddSingleton<ILocalSecretsManager>(provider =>
-    new LocalSecretsManager(masterKey));
-
-var secretsToLoad = new Dictionary<string, string>
-{
-    // Database
-    ["DatabaseSettings:ConnectionString"] = "DatabaseSettings:ConnectionString",
-
-    // Token
-    ["TokenOptions:SecurityKey"] = "TokenOptions:SecurityKey",
-
-    // Security
-    ["Security:EncryptionKey"] = "Security:EncryptionKey",
-    ["Backup:EncryptionKey"] = "Backup:EncryptionKey",
-
-    // Cloudinary
-    ["CloudinaryAccount:ApiSecret"] = "CloudinaryAccount:ApiSecret",
-
-    // MailSettings
-    ["MailSettings:Password"] = "MailSettings:Password",
-    ["MailSettings:DkimPrivateKey"] = "MailSettings:DkimPrivateKey",
-    ["MailSettings:DomainName"] = "MailSettings:DomainName",
-    ["MailSettings:SenderEmail"] = "MailSettings:SenderEmail",
-    ["MailSettings:Server"] = "MailSettings:Server",
-    ["MailSettings:UserName"] = "MailSettings:UserName",
-
-    // Google Authentication
-    ["Authentication:Google:ClientId"] = "Authentication:Google:ClientId",
-    ["Authentication:Google:ClientSecret"] = "Authentication:Google:ClientSecret",
-    ["Authentication:Google:RedirectUri"] = "Authentication:Google:RedirectUri",
-
-    // Facebook Authentication
-    ["Authentication:Facebook:AppId"] = "Authentication:Facebook:AppId",
-    ["Authentication:Facebook:AppSecret"] = "Authentication:Facebook:AppSecret",
-    ["Authentication:Facebook:RedirectUri"] = "Authentication:Facebook:RedirectUri"
-};
-
-if (!string.IsNullOrEmpty(masterKey))
-{
-    // Secrets manager'ý baþlat
-    var secretsManager = new LocalSecretsManager(masterKey);
-
-    foreach (var (configPath, secretKey) in secretsToLoad)
-    {
-        var secretValue = secretsManager.GetSecret(secretKey);
-        if (!string.IsNullOrEmpty(secretValue))
-        {
-            builder.Configuration[configPath] = secretValue;
-            Console.WriteLine($"{secretKey} konfigürasyonu secrets manager'dan yüklendi");
-        }
-        else
-        {
-            // Ortam deðiþkeni fallback (örnek: Authentication__Google__ClientId)
-            var envVarName = secretKey.Replace(":", "__");
-            var envValue = Environment.GetEnvironmentVariable(envVarName);
-
-            if (!string.IsNullOrEmpty(envValue))
-            {
-                builder.Configuration[configPath] = envValue;
-                Console.WriteLine($"{secretKey} ortam deðiþkeninden yüklendi: {envVarName}");
-            }
-            else
-            {
-                // Kritik olmayanlar için uyarý, kritikler için hata
-                if (secretKey.StartsWith("DatabaseSettings") ||
-                    secretKey.StartsWith("TokenOptions"))
-                {
-                    throw new Exception($"Kritik konfigürasyon eksik: {secretKey}");
-                }
-
-                Console.ForegroundColor = ConsoleColor.Red;
-
-                Console.Error.WriteLine($"UYARI: {secretKey} konfigürasyonu bulunamadý! " +
-                                  "Lütfen secrets manager veya ortam deðiþkenlerini kontrol edin.");
-                Console.ResetColor();
-            }
-        }
-    }
-}
-else
-{
-    // Fallback: Ortam deðiþkenlerinden veya diðer kaynaklardan
-    builder.Configuration.AddEnvironmentVariables();
-}
-
-
+builder.Services.AddSecretsManagement(builder.Configuration);
 builder.Services.AddControllers();
 builder.Services.AddAntiforgery();
 builder.Services.AddSingleton<RateLimiter>(_ =>
@@ -271,7 +179,7 @@ if (app.Environment.IsDevelopment())
     });
 }
 
-
+app.SeedDefaultSecrets();
 //if (app.Environment.IsProduction())
 app.ConfigureCustomExceptionMiddleware(); //bu genel exeptions için Core'dan geliyor
 app.UseCustomExceptionHandler(); // bu middleware EmergencyNotificationService kullandýðýndan Core'a eklenmedi
@@ -329,7 +237,7 @@ app.Use(async (context, next) =>
 });
 
 // Secret yönetimi için endpoint (sadece development)
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment()||app.Environment.IsStaging())
 {
     app.MapSecretManagerEndpoints();
 }

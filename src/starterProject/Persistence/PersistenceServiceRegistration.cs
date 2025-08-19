@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using NArchitectureTemplate.Core.Persistence.DependencyInjection;
 using Persistence.Contexts;
 using Persistence.Repositories;
+using System.Configuration;
 
 namespace Persistence;
 
@@ -12,22 +13,20 @@ public static class PersistenceServiceRegistration
 {
     public static IServiceCollection AddPersistenceServices(this IServiceCollection services, IConfiguration configuration)
     {
-        var databaseSettings = configuration.GetSection("DatabaseSettings");
-        var provider = databaseSettings["Provider"];
-        var connectionString = databaseSettings["ConnectionString"];
+        var dbSettings = configuration.GetSection("DatabaseSettings").Get<DatabaseSettings>();
 
-        switch (provider)
+        if (dbSettings == null)
+            throw new InvalidOperationException("DatabaseSettings konfigürasyonu bulunamadı");
+
+        var selectedProviderConfig = dbSettings.GetSelectedProviderConfig();
+
+        if (selectedProviderConfig != null && selectedProviderConfig.Provider == "InMemory")
         {
-            case "SqlServer" or "PostgreSql":
-                services.AddDbContext<BaseDbContext>();
-                break;
-            case "InMemory":
-                services.AddDbContext<BaseDbContext>(options =>
-                    options.UseInMemoryDatabase("BaseDb"));
-                break;
-            default:
-                throw new Exception($"Desteklenmeyen veritabanı sağlayıcı: {provider}. " +
-                "Geçerli değerler: 'InMemory','SqlServer', 'PostgreSql'");
+            services.AddDbContext<BaseDbContext>(options => options.UseInMemoryDatabase("BaseDb"));
+        }
+        else if (selectedProviderConfig != null)
+        {
+            services.AddDbContext<BaseDbContext>();
         }
 
         services.AddDbContext<BaseDbContext>(options => options.UseInMemoryDatabase("BaseDb"));

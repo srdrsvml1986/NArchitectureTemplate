@@ -1,9 +1,10 @@
-using System.Reflection;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Microsoft.Extensions.Configuration;
+using MongoDB.Driver;
+using System.Reflection;
 
 namespace Persistence.Contexts;
 
@@ -46,23 +47,41 @@ public class BaseDbContext : DbContext
     {
         if (!optionsBuilder.IsConfigured)
         {
-            var databaseSettings = Configuration.GetSection("DatabaseSettings");
-            var provider = databaseSettings["Provider"];
-            var connectionString = databaseSettings["ConnectionString"];
+            var dbSettings = Configuration.GetSection("DatabaseSettings").Get<DatabaseSettings>();
 
-            switch (provider)
+            if (dbSettings == null)
+                throw new InvalidOperationException("DatabaseSettings konfigürasyonu bulunamadı");
+
+            var selectedProviderConfig = dbSettings.GetSelectedProviderConfig();
+
+            if (dbSettings.SelectedProvider?.ToLower() == "inmemory")
             {
-                case "SqlServer":
-                    optionsBuilder.UseSqlServer(connectionString);
+                optionsBuilder.UseInMemoryDatabase("InMemoryDb");
+                return;
+            }
+
+            if (selectedProviderConfig == null || string.IsNullOrEmpty(selectedProviderConfig.ConnectionString))
+                throw new InvalidOperationException($"Seçili provider için konfigürasyon bulunamadı: {dbSettings.SelectedProvider}");
+
+            switch (dbSettings.SelectedProvider?.ToLower())
+            {
+                case "postgresql":
+                    optionsBuilder.UseNpgsql(selectedProviderConfig.ConnectionString);
                     break;
-                case "PostgreSql":
-                    optionsBuilder.UseNpgsql(connectionString);
+                case "sqlserver":
+                    optionsBuilder.UseSqlServer(selectedProviderConfig.ConnectionString);
                     break;
-                case "InMemory":
+                case "oracle":
+                    // Oracle için gerekli NuGet paketini ekleyin: Oracle.EntityFrameworkCore
+                    optionsBuilder.UseOracle(selectedProviderConfig.ConnectionString);
+                    break;
+                case "mongodb":
+                    // MongoDB için gerekli NuGet paketini ekleyin: MongoDB.Driver
+                    // MongoDB için özel yapılandırma gerekebilir
+                    ConfigureMongoDb(optionsBuilder, selectedProviderConfig.ConnectionString);
                     break;
                 default:
-                    throw new Exception($"Desteklenmeyen veritabanı sağlayıcı: {provider}. " +
-                    "Geçerli değerler: 'InMemory', 'SqlServer', 'PostgreSql'");
+                    throw new InvalidOperationException($"Desteklenmeyen veritabanı sağlayıcı: {dbSettings.SelectedProvider}");
             }
         }
 
@@ -90,4 +109,18 @@ public class BaseDbContext : DbContext
         {
         }
     }
+    private void ConfigureMongoDb(DbContextOptionsBuilder optionsBuilder, string connectionString)
+    {
+        // MongoDB yapılandırması
+        // Bu kısım MongoDB driver ve Entity Framework Core entegrasyonuna göre özelleştirilmeli
+        var mongoUrl = new MongoUrl(connectionString);
+        var mongoClient = new MongoClient(mongoUrl);
+        var database = mongoClient.GetDatabase(mongoUrl.DatabaseName);
+
+        optionsBuilder.UseMongoDB(connectionString,mongoUrl.DatabaseName);
+        // MongoDB için özel yapılandırma
+        // optionsBuilder.UseMongoDb(...) gibi bir metod kullanılabilir
+        // Eğer EF Core için resmi MongoDB provider'ı yoksa, bu kısmı uygun şekilde değiştirin
+    }
+
 }
