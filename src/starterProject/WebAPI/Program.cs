@@ -111,7 +111,11 @@ if (!string.IsNullOrEmpty(masterKey))
                     throw new Exception($"Kritik konfigürasyon eksik: {secretKey}");
                 }
 
-                Console.WriteLine($"UYARI: {secretKey} konfigürasyonu bulunamadý!");
+                Console.ForegroundColor = ConsoleColor.Red;
+
+                Console.Error.WriteLine($"UYARI: {secretKey} konfigürasyonu bulunamadý! " +
+                                  "Lütfen secrets manager veya ortam deðiþkenlerini kontrol edin.");
+                Console.ResetColor();
             }
         }
     }
