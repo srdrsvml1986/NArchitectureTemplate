@@ -244,6 +244,12 @@ builder.Services.AddSwaggerGen(opt =>
     opt.OperationFilter<BearerSecurityRequirementOperationFilter>();
 });
 
+builder.Services.AddHsts(opts =>
+{
+    opts.Preload = true;
+    opts.IncludeSubDomains = true;
+    opts.MaxAge = TimeSpan.FromDays(365);
+});
 
 builder.Services.AddOAuthSecurity();
 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
@@ -300,12 +306,7 @@ app.UseCors(opt => opt.WithOrigins(corsPolicies).AllowAnyHeader().AllowAnyMethod
 
 app.UseResponseLocalization();
 
-builder.Services.AddHsts(opts =>
-{
-    opts.Preload = true;
-    opts.IncludeSubDomains = true;
-    opts.MaxAge = TimeSpan.FromDays(365);
-});
+app.UseHsts();
 
 app.UseHttpsRedirection();
 
