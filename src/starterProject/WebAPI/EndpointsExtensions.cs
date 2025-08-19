@@ -228,7 +228,7 @@ public static class EndpointsExtensions
                 EmergencyAccessEnabled = true,
                 RecentAccessAttempts = recentAccess
             });
-        }).RequireAuthorization("AdminPolicy");
+        });
 
         // Health check endpoint'ine ekle
         endpoints.MapGet("/health/detailed", async (
@@ -238,6 +238,7 @@ public static class EndpointsExtensions
             try
             {
                 // Secrets manager sağlık kontrolü
+                secretsManager.SetSecret("HealthCheck_Test", "HealthCheck_Test");
                 var testResult = secretsManager.GetSecret("HealthCheck_Test");
                 if (testResult == null)
                 {

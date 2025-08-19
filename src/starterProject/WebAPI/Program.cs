@@ -263,6 +263,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI(opt =>
     {
         opt.DocExpansion(DocExpansion.None);
+        opt.SwaggerEndpoint("/swagger/v2/swagger.json", "Auth API v2");
     });
 }
 

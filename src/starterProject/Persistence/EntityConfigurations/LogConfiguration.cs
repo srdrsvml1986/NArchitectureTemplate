@@ -11,13 +11,15 @@ public class LogConfiguration : IEntityTypeConfiguration<Log>
         builder.ToTable("Logs").HasKey(l => l.Id);
 
         builder.Property(l => l.Id).HasColumnName("Id").IsRequired();
+        builder.Property(l => l.UserId).HasColumnName("UserId"); // Explicitly map UserId
         builder.Property(l => l.CreatedDate).HasColumnName("CreatedDate").IsRequired();
         builder.Property(l => l.UpdatedDate).HasColumnName("UpdatedDate");
         builder.Property(l => l.DeletedDate).HasColumnName("DeletedDate");
-        builder.HasOne(el => el.User)
-        .WithMany()
-        .HasForeignKey(el => el.UserId)
-        .OnDelete(DeleteBehavior.SetNull);
+
+        builder.HasOne(l => l.User)
+            .WithMany(u => u.Logs) // User entity'sindeki Logs koleksiyonuna baðla
+            .HasForeignKey(l => l.UserId)
+            .OnDelete(DeleteBehavior.SetNull);
 
         builder.HasQueryFilter(l => !l.DeletedDate.HasValue);
     }

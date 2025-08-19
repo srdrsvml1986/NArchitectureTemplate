@@ -11,13 +11,15 @@ public class ExceptionLogConfiguration : IEntityTypeConfiguration<ExceptionLog>
         builder.ToTable("ExceptionLogs").HasKey(el => el.Id);
 
         builder.Property(el => el.Id).HasColumnName("Id").IsRequired();
+        builder.Property(el => el.UserId).HasColumnName("UserId"); // Explicitly map UserId
         builder.Property(el => el.CreatedDate).HasColumnName("CreatedDate").IsRequired();
         builder.Property(el => el.UpdatedDate).HasColumnName("UpdatedDate");
         builder.Property(el => el.DeletedDate).HasColumnName("DeletedDate");
+
         builder.HasOne(el => el.User)
-            .WithMany()
-            .HasForeignKey(el => el.UserId)
-            .OnDelete(DeleteBehavior.SetNull);
+        .WithMany(u => u.ExceptionLogs) // User entity'sindeki ExceptionLogs koleksiyonuna baðla
+        .HasForeignKey(el => el.UserId)
+        .OnDelete(DeleteBehavior.SetNull);
 
         builder.HasQueryFilter(el => !el.DeletedDate.HasValue);
     }
