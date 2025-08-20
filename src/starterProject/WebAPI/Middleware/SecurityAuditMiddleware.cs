@@ -1,6 +1,6 @@
 ﻿using Application.Services;
 
-namespace WebAPI;
+namespace WebAPI.Middleware;
 public class SecurityAuditMiddleware
 {
     private readonly RequestDelegate _next;

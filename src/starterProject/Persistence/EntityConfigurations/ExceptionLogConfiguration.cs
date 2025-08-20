@@ -11,7 +11,6 @@ public class ExceptionLogConfiguration : IEntityTypeConfiguration<ExceptionLog>
         builder.ToTable("ExceptionLogs").HasKey(el => el.Id);
 
         builder.Property(el => el.Id).HasColumnName("Id").IsRequired();
-        builder.Property(el => el.UserId).HasColumnName("UserId"); // Explicitly map UserId
         builder.Property(el => el.CreatedDate).HasColumnName("CreatedDate").IsRequired();
         builder.Property(el => el.UpdatedDate).HasColumnName("UpdatedDate");
         builder.Property(el => el.DeletedDate).HasColumnName("DeletedDate");

@@ -1,10 +1,8 @@
 using Application;
-using Application.Services;
 using Infrastructure;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -27,7 +25,9 @@ using Persistence.Contexts;
 using Swashbuckle.AspNetCore.SwaggerUI;
 using System.Text;
 using System.Threading.RateLimiting;
-using WebAPI;
+using WebAPI.Configrations;
+using WebAPI.Extensions;
+using WebAPI.Middleware;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -88,7 +88,9 @@ builder.Services.AddApplicationServices(
     elasticSearchConfig: builder.Configuration.GetSection("ElasticSearchConfig").Get<ElasticSearchConfig>()
         ?? throw new InvalidOperationException("ElasticSearchConfig section cannot found in configuration."),
     tokenOptions: builder.Configuration.GetSection("TokenOptions").Get<TokenOptions>()
-        ?? throw new InvalidOperationException("TokenOptions section cannot found in configuration.")
+        ?? throw new InvalidOperationException("TokenOptions section cannot found in configuration."),
+    loggingConfig: builder.Configuration.GetSection("LoggingConfig").Get<LoggingConfig>()
+    ?? throw new InvalidOperationException("loggingConfig section cannot found in configuration.")
 );
 builder.Services.AddPersistenceServices(builder.Configuration);
 builder.Services.AddInfrastructureServices();
@@ -171,7 +173,7 @@ Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 WebApplication app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment()|| app.Environment.IsStaging())
+if (app.Environment.IsDevelopment() || app.Environment.IsStaging())
 {
     app.UseSwagger();
     app.UseSwaggerUI(opt =>
@@ -239,36 +241,50 @@ app.Use(async (context, next) =>
 });
 
 // Secret yönetimi için endpoint (sadece development)
-if (app.Environment.IsDevelopment()||app.Environment.IsStaging())
+if (app.Environment.IsDevelopment() || app.Environment.IsStaging())
 {
     app.MapSecretManagerEndpoints();
 }
 
-// Database migration iþlemleri
-// Bu kýsým, EF Core migration'larýný uygulamak için kullanýlýr.
-// Eðer veritabaný henüz oluþturulmamýþsa, önce veritabanýný oluþturur, ardýndan migration'larý uygular.
-// Bu iþlem, uygulama baþlatýlýrken otomatik olarak yapýlýr.
-// Bu, genellikle geliþtirme ortamýnda kullanýlýr.
+//// Database migration iþlemleri
+//// Bu kýsým, EF Core migration'larýný uygulamak için kullanýlýr.
+//// Eðer veritabaný henüz oluþturulmamýþsa, önce veritabanýný oluþturur, ardýndan migration'larý uygular.
+//// Bu iþlem, uygulama baþlatýlýrken otomatik olarak yapýlýr.
+//// Bu, genellikle geliþtirme ortamýnda kullanýlýr.
+//using (var scope = app.Services.CreateScope())
+//{
+//    var env = scope.ServiceProvider.GetRequiredService<IWebHostEnvironment>();
+
+//    if (env.IsDevelopment() || env.IsStaging())
+//    {
+//        var dbContext = scope.ServiceProvider.GetRequiredService<BaseDbContext>();
+
+//        if (!dbContext.Database.GetMigrations().Any())
+//        {
+//            dbContext.Database.EnsureCreated();
+//        }
+//        else
+//        {
+//            dbContext.Database.Migrate();
+//        }
+
+//        dbContext.Database.Migrate();
+//    }
+//}
+
+// Uygulama baþlarken örnek log
 using (var scope = app.Services.CreateScope())
 {
-    var env = scope.ServiceProvider.GetRequiredService<IWebHostEnvironment>();
-
-    if (env.IsDevelopment() || env.IsStaging())
+    try
     {
-        var dbContext = scope.ServiceProvider.GetRequiredService<BaseDbContext>();
+        var logger = scope.ServiceProvider.GetRequiredService<NArchitectureTemplate.Core.CrossCuttingConcerns.Logging.Abstraction.ILogger>();
+        logger.Information($"Uygulama baþlatýldý: {DateTime.UtcNow}, Environment: {builder.Environment.EnvironmentName}");
 
-        if (!dbContext.Database.GetMigrations().Any())
-        {
-            dbContext.Database.EnsureCreated();
-        }
-        else
-        {
-            dbContext.Database.Migrate();
-        }
-
-        dbContext.Database.Migrate();
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Loglama hatasý: {ex.Message}");
     }
 }
-
 
 app.Run();

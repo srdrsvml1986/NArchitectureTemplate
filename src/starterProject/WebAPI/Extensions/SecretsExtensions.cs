@@ -1,4 +1,4 @@
-﻿namespace WebAPI;
+﻿namespace WebAPI.Extensions;
 
 using Application.Services;
 using Microsoft.AspNetCore.Builder;
@@ -126,7 +126,6 @@ public static class SecretsSeedExtensions
         };
 
         foreach (var (key, defaultValue) in defaultSecrets)
-        {
             try
             {
                 var existingValue = secretsManager.GetSecret(key);
@@ -137,15 +136,12 @@ public static class SecretsSeedExtensions
                     logger.LogInformation("Secret eklendi/güncellendi: {Key}", key);
                 }
                 else
-                {
                     logger.LogDebug("Secret zaten mevcut: {Key}", key);
-                }
             }
             catch (Exception ex)
             {
                 logger.LogError(ex, "Secret eklenirken/güncellenirken hata oluştu: {Key}", key);
             }
-        }
 
         logger.LogInformation("Default secret kontrolü tamamlandı");
         return app;
@@ -162,7 +158,6 @@ public static class SecretsSeedExtensions
         // Master key'i ortam değişkenlerinden al
         var masterKey = Environment.GetEnvironmentVariable("MASTER_KEY");
         if (string.IsNullOrEmpty(masterKey))
-        {
             // Development ortamında default bir master key kullan
             if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development"|| Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Staging")
             {
@@ -170,10 +165,7 @@ public static class SecretsSeedExtensions
                 Console.WriteLine("GELİŞTİRME MODU: Varsayılan master key kullanılıyor. Production'da MASTER_KEY ortam değişkeni ayarlayın.");
             }
             else
-            {
                 throw new Exception("MASTER_KEY ortam değişkeni tanımlanmalı");
-            }
-        }
 
         // Servis kayıtları
         services.AddSingleton<IEncryptionService>(new EncryptionService(masterKey));

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace WebAPI;
+namespace WebAPI.Extensions;
 using System.ComponentModel.DataAnnotations;
 
 public class EmergencyTokenRequest

@@ -1,6 +1,6 @@
 ﻿using Application.Services;
 using Microsoft.AspNetCore.Mvc;
-using WebAPI;
+using WebAPI.Extensions;
 
 public static class EndpointsExtensions
 {

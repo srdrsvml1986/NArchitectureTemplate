@@ -6,5 +6,5 @@ public class ResetPasswordToken: NArchitectureTemplate.Core.Security.Entities.Re
 {
     [ForeignKey(nameof(User))]
     public required Guid UserId { get; set; }
-    public virtual User? User { get; set; }
+    public virtual User User { get; set; }
 }

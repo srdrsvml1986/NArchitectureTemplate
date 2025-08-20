@@ -19,6 +19,7 @@ using NArchitectureTemplate.Core.Application.Dtos;
 using NArchitectureTemplate.Core.Security.OAuth.Services;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using WebAPI.Configrations;
 
 namespace WebAPI.Controllers;
 

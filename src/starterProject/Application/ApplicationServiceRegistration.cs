@@ -1,7 +1,20 @@
-using System.Reflection;
+using Application.Services;
 using Application.Services.AuthService;
+using Application.Services.ExceptionLogs;
+using Application.Services.GroupOperationClaims;
+using Application.Services.GroupRoles;
+using Application.Services.Groups;
+using Application.Services.LoggerService;
+using Application.Services.Logs;
+using Application.Services.PasswordResetTokens;
+using Application.Services.RoleOperationClaims;
+using Application.Services.Roles;
+using Application.Services.UserGroups;
+using Application.Services.UserRoles;
+using Application.Services.UserSessions;
 using Application.Services.UsersService;
 using FluentValidation;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.DependencyInjection;
 using NArchitectureTemplate.Core.Application.Pipelines.Authorization;
 using NArchitectureTemplate.Core.Application.Pipelines.Caching;
@@ -19,19 +32,7 @@ using NArchitectureTemplate.Core.Mailing;
 using NArchitectureTemplate.Core.Mailing.MailKit;
 using NArchitectureTemplate.Core.Security.DependencyInjection;
 using NArchitectureTemplate.Core.Security.JWT;
-using Application.Services.Groups;
-using Application.Services.GroupOperationClaims;
-using Application.Services.UserGroups;
-using Application.Services.PasswordResetTokens;
-using Application.Services.UserRoles;
-using Application.Services.Roles;
-using Application.Services.RoleOperationClaims;
-using Application.Services.GroupRoles;
-using Microsoft.AspNetCore.Identity.UI.Services;
-using Application.Services.UserSessions;
-using Application.Services;
-using Application.Services.Logs;
-using Application.Services.ExceptionLogs;
+using System.Reflection;
 
 namespace Application;
 
@@ -42,7 +43,8 @@ public static class ApplicationServiceRegistration
         MailSettings mailSettings,
         FileLogConfiguration fileLogConfiguration,
         ElasticSearchConfig elasticSearchConfig,
-        TokenOptions tokenOptions
+        TokenOptions tokenOptions,
+        LoggingConfig loggingConfig
     )
     {
         services.AddAutoMapper(cfg => { }, Assembly.GetExecutingAssembly());
@@ -61,8 +63,6 @@ public static class ApplicationServiceRegistration
 
         services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
-        services.AddSingleton<IMailService, MailKitMailService>(_ => new MailKitMailService(mailSettings));
-        services.AddSingleton<ILogger, SerilogFileLogger>(_ => new SerilogFileLogger(fileLogConfiguration));
         services.AddSingleton<IElasticSearch, ElasticSearchService>(_ => new ElasticSearchService(elasticSearchConfig));
 
         services.AddScoped<IAuthService, AuthService>();
@@ -98,6 +98,71 @@ public static class ApplicationServiceRegistration
         // Background servisler
         services.AddHostedService<BackupService>();
         services.AddHostedService<HealthCheckService>();
+
+
+        services.AddSingleton<IMailService, MailKitMailService>(_ => new MailKitMailService(mailSettings));
+
+
+        // Logger servislerini kaydet
+        services.AddSingleton<DatabaseLogger>();
+        services.AddSingleton<SerilogFileLogger>(_ =>
+        {
+            try
+            {
+                return new SerilogFileLogger(fileLogConfiguration);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"SerilogFileLogger oluþturulurken hata: {ex.Message}");
+                // Fallback: Basit bir console logger döndür
+                return new SerilogFileLogger(new FileLogConfiguration("/logs/"));
+            }
+        });
+
+        services.AddSingleton<ILogger>(sp =>
+        {
+            var loggers = new List<ILogger>();
+
+            // SerilogFileLogger'ý dene
+            try
+            {
+                var fileLogger = sp.GetRequiredService<SerilogFileLogger>();
+                loggers.Add(fileLogger);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"SerilogFileLogger alýnamadý: {ex.Message}");
+            }
+
+            // DatabaseLogger'ý ekle
+            try
+            {
+                var dbLogger = sp.GetRequiredService<DatabaseLogger>();
+                loggers.Add(dbLogger);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"DatabaseLogger alýnamadý: {ex.Message}");
+            }
+
+            // Hiç logger yoksa fallback
+            if (!loggers.Any())
+            {
+                loggers.Add(new ConsoleFallbackLogger());
+            }
+
+            // Hedef seçimine göre filtrele
+            IEnumerable<ILogger> filteredLoggers = loggingConfig.Target?.ToLowerInvariant() switch
+            {
+                "file" => loggers.OfType<SerilogFileLogger>(),
+                "database" => loggers.OfType<DatabaseLogger>(),
+                "all" => loggers,
+                _ => loggers
+            };
+
+            return new CompositeLogger(filteredLoggers, loggingConfig);
+        });
+
 
         return services;
     }

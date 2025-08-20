@@ -187,43 +187,43 @@ public class DisasterRecoveryService
 
     private void SetFilePermissions(string filePath)
     {
-        try
-        {
-            if (!File.Exists(filePath)) return;
+        //try
+        //{
+        //    if (!File.Exists(filePath)) return;
 
-            var fileInfo = new FileInfo(filePath);
-            var fileSecurity = fileInfo.GetAccessControl();
+        //    var fileInfo = new FileInfo(filePath);
+        //    var fileSecurity = fileInfo.GetAccessControl();
 
-            // Tüm miras alınan izinleri kaldır
-            fileSecurity.SetAccessRuleProtection(true, false);
+        //    // Tüm miras alınan izinleri kaldır
+        //    fileSecurity.SetAccessRuleProtection(true, false);
 
-            // Yöneticilere tam kontrol izni ver
-            var adminRule = new System.Security.AccessControl.FileSystemAccessRule(
-                "BUILTIN\\Administrators",
-                System.Security.AccessControl.FileSystemRights.FullControl,
-                System.Security.AccessControl.AccessControlType.Allow);
-            fileSecurity.AddAccessRule(adminRule);
+        //    // Yöneticilere tam kontrol izni ver
+        //    var adminRule = new System.Security.AccessControl.FileSystemAccessRule(
+        //        "BUILTIN\\Administrators",
+        //        System.Security.AccessControl.FileSystemRights.FullControl,
+        //        System.Security.AccessControl.AccessControlType.Allow);
+        //    fileSecurity.AddAccessRule(adminRule);
 
-            // SYSTEM hesabına tam kontrol izni ver
-            var systemRule = new System.Security.AccessControl.FileSystemAccessRule(
-                "SYSTEM",
-                System.Security.AccessControl.FileSystemRights.FullControl,
-                System.Security.AccessControl.AccessControlType.Allow);
-            fileSecurity.AddAccessRule(systemRule);
+        //    // SYSTEM hesabına tam kontrol izni ver
+        //    var systemRule = new System.Security.AccessControl.FileSystemAccessRule(
+        //        "SYSTEM",
+        //        System.Security.AccessControl.FileSystemRights.FullControl,
+        //        System.Security.AccessControl.AccessControlType.Allow);
+        //    fileSecurity.AddAccessRule(systemRule);
 
-            // Uygulama kullanıcısına okuma/yazma izni ver
-            var appUserRule = new System.Security.AccessControl.FileSystemAccessRule(
-                "IIS_APPPOOL\\MyAppPool",
-                System.Security.AccessControl.FileSystemRights.Read | System.Security.AccessControl.FileSystemRights.Write,
-                System.Security.AccessControl.AccessControlType.Allow);
-            fileSecurity.AddAccessRule(appUserRule);
+        //    // Uygulama kullanıcısına okuma/yazma izni ver
+        //    var appUserRule = new System.Security.AccessControl.FileSystemAccessRule(
+        //        "IIS_APPPOOL\\MyAppPool",
+        //        System.Security.AccessControl.FileSystemRights.Read | System.Security.AccessControl.FileSystemRights.Write,
+        //        System.Security.AccessControl.AccessControlType.Allow);
+        //    fileSecurity.AddAccessRule(appUserRule);
 
-            fileInfo.SetAccessControl(fileSecurity);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogWarning(ex, "Dosya izinleri ayarlanamadı: {FilePath}", filePath);
-        }
+        //    fileInfo.SetAccessControl(fileSecurity);
+        //}
+        //catch (Exception ex)
+        //{
+        //    _logger.LogWarning(ex, "Dosya izinleri ayarlanamadı: {FilePath}", filePath);
+        //}
     }
 
     private string GenerateBackupEncryptionKey()

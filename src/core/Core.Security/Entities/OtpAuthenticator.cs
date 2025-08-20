@@ -2,7 +2,7 @@
 
 namespace NArchitectureTemplate.Core.Security.Entities;
 
-public class OtpAuthenticator<TUserId> : Entity<TUserId>
+public class OtpAuthenticator<TId,TUserId> : Entity<TId>
 {
     public TUserId UserId { get; set; }
     public byte[] SecretKey { get; set; }
@@ -21,7 +21,7 @@ public class OtpAuthenticator<TUserId> : Entity<TUserId>
         IsVerified = isVerified;
     }
 
-    public OtpAuthenticator(TUserId id, TUserId userId, byte[] secretKey, bool isVerified)
+    public OtpAuthenticator(TId id, TUserId userId, byte[] secretKey, bool isVerified)
         : base(id)
     {
         UserId = userId;

@@ -1,4 +1,4 @@
-﻿namespace WebAPI;
+﻿namespace WebAPI.Configrations;
 
 public class WebApiConfiguration
 {

@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Diagnostics;
 using System.Security;
 
-namespace WebAPI;
+namespace WebAPI.Middleware;
 public static class CustomExceptionHandler
 {
     public static void UseCustomExceptionHandler(this IApplicationBuilder app)
@@ -17,12 +17,10 @@ public static class CustomExceptionHandler
                 var notificationService = context.RequestServices.GetService<EmergencyNotificationService>();
 
                 if (exception is SecurityException || exception is UnauthorizedAccessException)
-                {
                     await notificationService.SendEmergencyAlertAsync(
                         "SECURITY_BREACH",
                         $"Güvenlik ihlali tespit edildi: {exception.Message}"
                     );
-                }
 
                 // Diğer hata türleri için...
             });

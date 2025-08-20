@@ -2,7 +2,7 @@
 
 namespace Domain.Entities;
 
-public class User : NArchitectureTemplate.Core.Security.Entities.User<Guid>
+public partial class User : NArchitectureTemplate.Core.Security.Entities.User<Guid>
 {
     public virtual ICollection<UserOperationClaim> UserOperationClaims { get; set; } = default!;
     public virtual ICollection<UserGroup> UserGroups { get; set; } = default!;
@@ -12,8 +12,8 @@ public class User : NArchitectureTemplate.Core.Security.Entities.User<Guid>
     // Navigation Properties
     public virtual ICollection<UserRole> UserRoles { get; set; }
     public virtual ICollection<UserSession> UserSessions { get; set; }
-    public virtual ICollection<Log> Logs { get; set; } = new HashSet<Log>();
-    public virtual ICollection<ExceptionLog> ExceptionLogs { get; set; } = new HashSet<ExceptionLog>();
+    public virtual ICollection<Log> Logs { get; set; } = default!;
+    public virtual ICollection<ExceptionLog> ExceptionLogs { get; set; } = default!;
 
 
     // Önerilen
@@ -49,7 +49,6 @@ public class User : NArchitectureTemplate.Core.Security.Entities.User<Guid>
         /// </summary>
         Deleted
     }
-
 
     public string? FirstName { get; set; }
     public string? LastName { get; set; }
