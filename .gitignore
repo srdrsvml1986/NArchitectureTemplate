@@ -401,3 +401,4 @@ FodyWeavers.xsd
 # JetBrains Rider
 *.sln.iml
 /src/starterProject/WebAPI/secrets.dat
+/src/starterProject/Persistence/Migrations
