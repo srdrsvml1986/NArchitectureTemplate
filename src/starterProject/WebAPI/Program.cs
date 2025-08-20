@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -22,6 +23,7 @@ using NArchitectureTemplate.Core.Security.OAuth.Middleware;
 using NArchitectureTemplate.Core.Security.OAuth.Services;
 using NArchitectureTemplate.Core.Security.WebApi.Swagger.Extensions;
 using Persistence;
+using Persistence.Contexts;
 using Swashbuckle.AspNetCore.SwaggerUI;
 using System.Text;
 using System.Threading.RateLimiting;
@@ -169,7 +171,7 @@ Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 WebApplication app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment()|| app.Environment.IsStaging())
 {
     app.UseSwagger();
     app.UseSwaggerUI(opt =>
@@ -241,6 +243,32 @@ if (app.Environment.IsDevelopment()||app.Environment.IsStaging())
 {
     app.MapSecretManagerEndpoints();
 }
- 
+
+// Database migration iþlemleri
+// Bu kýsým, EF Core migration'larýný uygulamak için kullanýlýr.
+// Eðer veritabaný henüz oluþturulmamýþsa, önce veritabanýný oluþturur, ardýndan migration'larý uygular.
+// Bu iþlem, uygulama baþlatýlýrken otomatik olarak yapýlýr.
+// Bu, genellikle geliþtirme ortamýnda kullanýlýr.
+using (var scope = app.Services.CreateScope())
+{
+    var env = scope.ServiceProvider.GetRequiredService<IWebHostEnvironment>();
+
+    if (env.IsDevelopment() || env.IsStaging())
+    {
+        var dbContext = scope.ServiceProvider.GetRequiredService<BaseDbContext>();
+
+        if (!dbContext.Database.GetMigrations().Any())
+        {
+            dbContext.Database.EnsureCreated();
+        }
+        else
+        {
+            dbContext.Database.Migrate();
+        }
+
+        dbContext.Database.Migrate();
+    }
+}
+
 
 app.Run();

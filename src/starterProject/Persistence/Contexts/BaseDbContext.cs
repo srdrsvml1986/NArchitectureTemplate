@@ -1,3 +1,4 @@
+using Application.Services;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -63,22 +64,27 @@ public class BaseDbContext : DbContext
             if (selectedProviderConfig == null || string.IsNullOrEmpty(selectedProviderConfig.ConnectionString))
                 throw new InvalidOperationException($"Seçili provider için konfigürasyon bulunamadı: {dbSettings.SelectedProvider}");
 
+            // Çalışma zamanında secrets manager'dan connection string al
+            var connectionString = GetConnectionStringFromSecrets(dbSettings);
+            if (string.IsNullOrEmpty(connectionString))
+                throw new InvalidOperationException("Connection string alınamadı");
+
             switch (dbSettings.SelectedProvider?.ToLower())
             {
                 case "postgresql":
-                    optionsBuilder.UseNpgsql(selectedProviderConfig.ConnectionString);
+                    optionsBuilder.UseNpgsql(connectionString);
                     break;
                 case "sqlserver":
-                    optionsBuilder.UseSqlServer(selectedProviderConfig.ConnectionString);
+                    optionsBuilder.UseSqlServer(connectionString);
                     break;
                 case "oracle":
                     // Oracle için gerekli NuGet paketini ekleyin: Oracle.EntityFrameworkCore
-                    optionsBuilder.UseOracle(selectedProviderConfig.ConnectionString);
+                    optionsBuilder.UseOracle(connectionString);
                     break;
                 case "mongodb":
                     // MongoDB için gerekli NuGet paketini ekleyin: MongoDB.Driver
                     // MongoDB için özel yapılandırma gerekebilir
-                    ConfigureMongoDb(optionsBuilder, selectedProviderConfig.ConnectionString);
+                    ConfigureMongoDb(optionsBuilder, connectionString);
                     break;
                 default:
                     throw new InvalidOperationException($"Desteklenmeyen veritabanı sağlayıcı: {dbSettings.SelectedProvider}");
@@ -123,4 +129,33 @@ public class BaseDbContext : DbContext
         // Eğer EF Core için resmi MongoDB provider'ı yoksa, bu kısmı uygun şekilde değiştirin
     }
 
+    private string GetConnectionStringFromSecrets(DatabaseSettings dbSettings)
+    {
+        // Master key'i ortam değişkenlerinden al
+        var masterKey = Environment.GetEnvironmentVariable("MASTER_KEY");
+        if (string.IsNullOrEmpty(masterKey))
+        {
+            // Development ortamında default bir master key kullan
+            if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
+            {
+                masterKey = "dev-master-key";
+            }
+            else
+            {
+                throw new Exception("MASTER_KEY ortam değişkeni tanımlanmalı");
+            }
+        }
+
+        // Secrets manager'dan connection string'i al
+        var secretsManager = new LocalSecretsManager(masterKey);
+
+        return dbSettings.SelectedProvider?.ToLower() switch
+        {
+            "postgresql" => secretsManager.GetSecret("DatabaseSettings:PostgreConfiguration:ConnectionString"),
+            "sqlserver" => secretsManager.GetSecret("DatabaseSettings:MsSqlConfiguration:ConnectionString"),
+            "oracle" => secretsManager.GetSecret("DatabaseSettings:OracleConfiguration:ConnectionString"),
+            "mongodb" => secretsManager.GetSecret("DatabaseSettings:mongodbConfiguration:ConnectionString"),
+            _ => throw new InvalidOperationException($"Desteklenmeyen veritabanı sağlayıcı: {dbSettings.SelectedProvider}")
+        };
+    }
 }

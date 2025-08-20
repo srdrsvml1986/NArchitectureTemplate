@@ -7,6 +7,7 @@ public class DatabaseSettings
     public DatabaseProviderConfig MsSqlConfiguration { get; set; }
     public DatabaseProviderConfig OracleConfiguration { get; set; }
     public DatabaseProviderConfig MongoDbConfiguration { get; set; }
+    public DatabaseProviderConfig InMemoryConfiguration { get; set; }
 
     public DatabaseProviderConfig? GetSelectedProviderConfig()
     {
@@ -16,7 +17,7 @@ public class DatabaseSettings
             "sqlserver" => MsSqlConfiguration,
             "oracle" => OracleConfiguration,
             "mongodb" => MongoDbConfiguration,
-            "ınmemory" => null,
+            "ınmemory" => InMemoryConfiguration,
             _ => throw new InvalidOperationException($"Desteklenmeyen veritabanı sağlayıcı: {SelectedProvider}")
         };
     }

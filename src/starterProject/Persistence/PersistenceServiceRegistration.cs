@@ -18,9 +18,9 @@ public static class PersistenceServiceRegistration
         if (dbSettings == null)
             throw new InvalidOperationException("DatabaseSettings konfigürasyonu bulunamadı");
 
-        var selectedProviderConfig = dbSettings.GetSelectedProviderConfig();
+        var selectedProviderConfig = dbSettings.SelectedProvider;
 
-        if (selectedProviderConfig != null && selectedProviderConfig.Provider == "InMemory")
+        if (selectedProviderConfig != null && selectedProviderConfig == "InMemory")
         {
             services.AddDbContext<BaseDbContext>(options => options.UseInMemoryDatabase("BaseDb"));
         }
@@ -29,7 +29,6 @@ public static class PersistenceServiceRegistration
             services.AddDbContext<BaseDbContext>();
         }
 
-        services.AddDbContext<BaseDbContext>(options => options.UseInMemoryDatabase("BaseDb"));
         services.AddDbMigrationApplier(buildServices => buildServices.GetRequiredService<BaseDbContext>());
 
         services.AddScoped<IEmailAuthenticatorRepository, EmailAuthenticatorRepository>();
