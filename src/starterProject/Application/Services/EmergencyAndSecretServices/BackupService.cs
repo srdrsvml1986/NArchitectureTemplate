@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace Application.Services;
+namespace Application.Services.EmergencyAndSecretServices;
 public class BackupService : BackgroundService
 {
     private readonly ILogger<BackupService> _logger;
@@ -20,7 +20,6 @@ public class BackupService : BackgroundService
         _logger.LogInformation("Backup Service başlatıldı. Yedekleme aralığı: {BackupInterval}", _backupInterval);
 
         while (!stoppingToken.IsCancellationRequested)
-        {
             try
             {
                 using (var scope = _serviceProvider.CreateScope())
@@ -39,7 +38,6 @@ public class BackupService : BackgroundService
                 _logger.LogError(ex, "Backup Service'de hata oluştu");
                 await Task.Delay(TimeSpan.FromMinutes(5), stoppingToken); // 5 dakika bekle ve tekrar dene
             }
-        }
     }
 
     public override async Task StopAsync(CancellationToken cancellationToken)

@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 using System.Text;
 using System.Security.Cryptography;
 
-namespace Application.Services;
+namespace Application.Services.EmergencyAndSecretServices;
 
 public class DisasterRecoveryService
 {
@@ -20,9 +20,7 @@ public class DisasterRecoveryService
         _logger = logger;
         Directory.CreateDirectory(_backupDirectory);
         if (string.IsNullOrEmpty(_backupEncryptionKey))
-        {
             _backupEncryptionKey = "fixed-production-backup-key-2024"; 
-        }
     }
 
     public async Task<bool> CreateBackupAsync(string secretsFilePath)
@@ -55,9 +53,7 @@ public class DisasterRecoveryService
         {
             // Geçici dosyayı temizle
             if (tempBackupPath != null && File.Exists(tempBackupPath))
-            {
                 File.Delete(tempBackupPath);
-            }
         }
     }
 
@@ -102,9 +98,7 @@ public class DisasterRecoveryService
 
             // Geri yükleme başarısız olursa eski dosyayı geri getir
             if (tempBackupPath != null && File.Exists(tempBackupPath))
-            {
                 File.Move(tempBackupPath, targetFilePath, true);
-            }
 
             return false;
         }
@@ -112,9 +106,7 @@ public class DisasterRecoveryService
         {
             // Geçici dosyaları temizle
             if (tempRestorePath != null && File.Exists(tempRestorePath))
-            {
                 File.Delete(tempRestorePath);
-            }
         }
     }
 
@@ -134,9 +126,7 @@ public class DisasterRecoveryService
                 destinationStream,
                 aes.CreateEncryptor(),
                 CryptoStreamMode.Write))
-            {
                 await sourceStream.CopyToAsync(cryptoStream);
-            }
         }
     }
 
@@ -157,9 +147,7 @@ public class DisasterRecoveryService
                 sourceStream,
                 aes.CreateDecryptor(),
                 CryptoStreamMode.Read))
-            {
                 await cryptoStream.CopyToAsync(destinationStream);
-            }
         }
     }
 
@@ -170,9 +158,7 @@ public class DisasterRecoveryService
             Encoding.UTF8.GetBytes("FixedSaltForBackup"),
             10000,
             HashAlgorithmName.SHA256))
-        {
             return deriveBytes.GetBytes(32); // 256-bit key
-        }
     }
 
     private byte[] GenerateRandomBytes(int length)
@@ -247,9 +233,7 @@ public class DisasterRecoveryService
     {
         var backups = GetAvailableBackups();
         if (backups.Length > keepLast)
-        {
             foreach (var oldBackup in backups.Skip(keepLast))
-            {
                 try
                 {
                     File.Delete(oldBackup);
@@ -259,7 +243,5 @@ public class DisasterRecoveryService
                 {
                     _logger.LogWarning(ex, "Backup silinemedi: {BackupPath}", oldBackup);
                 }
-            }
-        }
     }
 }

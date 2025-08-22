@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 
-namespace Application.Services;
+namespace Application.Services.EmergencyAndSecretServices;
 public class LocalSecretsManager : ILocalSecretsManager
 {
     private const string SecretsFile = "secrets.dat";

@@ -4,6 +4,7 @@ using Application.Features.Auth.Rules;
 using Application.Features.Users.Rules;
 using Application.Services;
 using Application.Services.AuthService;
+using Application.Services.EmergencyAndSecretServices;
 using Application.Services.Repositories;
 using Application.Services.UserSessions;
 using Application.Services.UsersService;

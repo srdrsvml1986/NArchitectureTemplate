@@ -1,4 +1,4 @@
-﻿using Application.Services;
+﻿using Application.Services.EmergencyAndSecretServices;
 
 namespace WebAPI.Middleware;
 public class SecurityAuditMiddleware

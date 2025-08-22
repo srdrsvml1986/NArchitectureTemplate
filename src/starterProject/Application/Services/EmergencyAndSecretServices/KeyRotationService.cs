@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Logging;
 using System.Security.Cryptography;
 
-namespace Application.Services;
+namespace Application.Services.EmergencyAndSecretServices;
 // KeyRotationService.cs
 public class KeyRotationService : BackgroundService
 {
@@ -21,7 +21,6 @@ public class KeyRotationService : BackgroundService
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         while (!stoppingToken.IsCancellationRequested)
-        {
             try
             {
                 await Task.Delay(_rotationInterval, stoppingToken);
@@ -44,7 +43,6 @@ public class KeyRotationService : BackgroundService
             {
                 _logger.LogError(ex, "Anahtar rotasyonu sırasında hata oluştu");
             }
-        }
     }
 
     private async Task RotateAllSecrets(string newMasterKey)
@@ -56,7 +54,8 @@ public class KeyRotationService : BackgroundService
         foreach (var (key, value) in oldSecrets)
         {
             var reencryptedValue = newEncryptor.Encrypt(value);
-            // Geçici olarak farklı bir yere kaydet
+            // Güncelleme işlemi burada yapılmalı
+            _secretsManager.SetSecret(key, reencryptedValue);
         }
 
         // Tüm secret'ları atomik olarak güncelle

@@ -1,4 +1,4 @@
-﻿namespace Application.Services;
+﻿namespace Application.Services.EmergencyAndSecretServices;
 // AuditService.cs
 public class AuditService
 {
@@ -16,9 +16,7 @@ public class AuditService
         var logEntry = $"{DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} | {user} | {ipAddress} | {action} | {key}";
 
         lock (_lock)
-        {
             File.AppendAllText(_auditLogPath, logEntry + Environment.NewLine);
-        }
     }
 
     public IEnumerable<string> GetRecentAuditLogs(int maxEntries = 100)
@@ -27,8 +25,6 @@ public class AuditService
             return Enumerable.Empty<string>();
 
         lock (_lock)
-        {
             return File.ReadLines(_auditLogPath).TakeLast(maxEntries);
-        }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 
-namespace Application.Services;
+namespace Application.Services.EmergencyAndSecretServices;
 
 /// <summary>
 /// bu sınıf, metinleri AES algoritması ile şifrelemek ve şifrelenmiş metinleri çözmek için kullanılır.
@@ -30,9 +30,7 @@ public class EncryptionService : IEncryptionService
 
         using (var cs = new CryptoStream(ms, encryptor, CryptoStreamMode.Write))
         using (var sw = new StreamWriter(cs))
-        {
             sw.Write(plainText);
-        }
 
         return Convert.ToBase64String(ms.ToArray());
     }

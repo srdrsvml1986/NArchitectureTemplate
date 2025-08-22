@@ -1,4 +1,5 @@
-﻿using Application.Services;
+﻿using Application.Services.EmergencyAndSecretServices;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebAPI.Extensions;
 
@@ -6,17 +7,15 @@ public static class EndpointsExtensions
 {
     public static IEndpointRouteBuilder MapEmergencyEndpoints(this IEndpointRouteBuilder endpoints)
     {
-        // Acil durum secret erişim endpoint'i
-        endpoints.MapPost("/emergency/secrets", async context =>
+        // 1. Acil durum secret erişim endpoint'i
+        endpoints.MapPost("/emergency/secrets", async (
+            [FromBody] EmergencyAccessRequest request,
+            [FromServices] EmergencyAccessService emergencyService,
+            HttpContext context) =>
         {
-            var emergencyService = context.RequestServices.GetService<EmergencyAccessService>();
-            var request = await context.Request.ReadFromJsonAsync<EmergencyAccessRequest>();
-
             if (request == null || string.IsNullOrEmpty(request.Token))
             {
-                context.Response.StatusCode = StatusCodes.Status400BadRequest;
-                await context.Response.WriteAsync("Token gereklidir");
-                return;
+                return Results.BadRequest("Token gereklidir");
             }
 
             try
@@ -26,7 +25,7 @@ public static class EndpointsExtensions
                     context.Connection.RemoteIpAddress?.ToString()
                 );
 
-                await context.Response.WriteAsJsonAsync(new
+                return Results.Ok(new
                 {
                     Status = "EmergencyAccessGranted",
                     Secrets = secrets.Keys // Sadece key'leri döndür, değerleri değil
@@ -34,47 +33,28 @@ public static class EndpointsExtensions
             }
             catch (UnauthorizedAccessException)
             {
-                context.Response.StatusCode = StatusCodes.Status403Forbidden;
-                await context.Response.WriteAsync("Geçersiz token");
+                return Results.Forbid();
             }
         });
 
-        // Acil durum token yenileme endpoint'i
-        endpoints.MapPost("/emergency/rotate-token", async context =>
+        // 2. Acil durum token yenileme endpoint'i
+        endpoints.MapPost("/emergency/rotate-token", (
+            [FromServices] EmergencyAccessService emergencyService) =>
         {
-            var emergencyService = context.RequestServices.GetService<EmergencyAccessService>();
-            var request = await context.Request.ReadFromJsonAsync<EmergencyTokenRequest>();
 
-            if (request == null || string.IsNullOrEmpty(request.AdminPassword))
-            {
-                context.Response.StatusCode = StatusCodes.Status400BadRequest;
-                await context.Response.WriteAsync("Admin şifresi gereklidir");
-                return;
-            }
-
-            // Basit bir şifre kontrolü - production'da daha güvenli bir yöntem kullanın
-            if (request.AdminPassword != "PredefinedEmergencyPassword123!")
-            {
-                context.Response.StatusCode = StatusCodes.Status403Forbidden;
-                await context.Response.WriteAsync("Geçersiz admin şifresi");
-                return;
-            }
 
             emergencyService.RotateEmergencyToken();
-            await context.Response.WriteAsync("Acil durum tokenı yenilendi");
+            return Results.Ok("Acil durum tokenı yenilendi");
         });
 
-        // Acil durum bildirim test endpoint'i
-        endpoints.MapPost("/emergency/test-notification", async context =>
+        // 3. Acil durum bildirim test endpoint'i
+        endpoints.MapPost("/emergency/test-notification", async (
+            [FromBody] EmergencyNotificationRequest request,
+            [FromServices] EmergencyNotificationService notificationService) =>
         {
-            var notificationService = context.RequestServices.GetService<EmergencyNotificationService>();
-            var request = await context.Request.ReadFromJsonAsync<EmergencyNotificationRequest>();
-
             if (request == null || string.IsNullOrEmpty(request.Message))
             {
-                context.Response.StatusCode = StatusCodes.Status400BadRequest;
-                await context.Response.WriteAsync("Mesaj gereklidir");
-                return;
+                return Results.BadRequest("Mesaj gereklidir");
             }
 
             await notificationService.SendEmergencyAlertAsync(
@@ -82,34 +62,35 @@ public static class EndpointsExtensions
                 request.Message
             );
 
-            await context.Response.WriteAsync("Acil durum bildirimi gönderildi");
+            return Results.Ok("Acil durum bildirimi gönderildi");
         });
 
-        // Acil durum durum sorgulama endpoint'i
-        endpoints.MapGet("/emergency/status", async context =>
+        // 4. Acil durum durum sorgulama endpoint'i
+        endpoints.MapGet("/emergency/status", (
+            [FromServices] EmergencyAccessService emergencyService,
+            [FromServices] DisasterRecoveryService disasterRecoveryService,
+            [FromServices] AuditService auditService) =>
         {
-            var emergencyService = context.RequestServices.GetService<EmergencyAccessService>();
-            var disasterRecoveryService = context.RequestServices.GetService<DisasterRecoveryService>();
-            var auditService = context.RequestServices.GetService<AuditService>();
-
             var status = new
             {
                 EmergencyAccessEnabled = true,
                 LastBackupTime = DateTime.UtcNow.AddHours(-1),
-                BackupCount = disasterRecoveryService?.GetAvailableBackups()?.Length ?? 0,
-                RecentEmergencyAccess = auditService?.GetRecentAuditLogs(10)?.Where(log => log.Contains("EMERGENCY"))?.ToArray() ?? Array.Empty<string>()
+                BackupCount = disasterRecoveryService.GetAvailableBackups().Length,
+                RecentEmergencyAccess = auditService.GetRecentAuditLogs(10)
+                    .Where(log => log.Contains("EMERGENCY"))
+                    .ToArray()
             };
 
-            await context.Response.WriteAsJsonAsync(status);
+            return Results.Ok(status);
         });
 
-        // Yedekleri listeleme endpoint'i
-        endpoints.MapGet("/emergency/backups", async context =>
+        // 5. Yedekleri listeleme endpoint'i
+        endpoints.MapGet("/emergency/backups", (
+            [FromServices] DisasterRecoveryService disasterRecoveryService) =>
         {
-            var disasterRecoveryService = context.RequestServices.GetService<DisasterRecoveryService>();
-            var backups = disasterRecoveryService?.GetAvailableBackups() ?? Array.Empty<string>();
+            var backups = disasterRecoveryService.GetAvailableBackups();
 
-            await context.Response.WriteAsJsonAsync(new
+            return Results.Ok(new
             {
                 Count = backups.Length,
                 Backups = backups

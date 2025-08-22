@@ -3,7 +3,7 @@ using System.Security.Cryptography;
 using System.Net.Mail;
 using Microsoft.Extensions.Logging;
 
-namespace Application.Services;
+namespace Application.Services.EmergencyAndSecretServices;
 
 public class EmergencyAccessService
 {
@@ -98,18 +98,13 @@ public class EmergencyAccessService
         }
 
         foreach (var recipient in recipients)
-        {
             try
             {
                 var trimmedRecipient = recipient.Trim();
                 if (trimmedRecipient.Contains("@"))
-                {
                     SendEmergencyEmail(trimmedRecipient, newToken, validUntil);
-                }
                 else
-                {
                     SendEmergencySMS(trimmedRecipient, newToken, validUntil);
-                }
 
                 _logger.LogInformation("Acil durum tokenı {Recipient} adresine gönderildi", trimmedRecipient);
             }
@@ -117,7 +112,6 @@ public class EmergencyAccessService
             {
                 _logger.LogError(ex, "Acil durum tokenı {Recipient} adresine gönderilemedi", recipient);
             }
-        }
     }
 
     private void SendEmergencyEmail(string email, string token, DateTime validUntil)
@@ -184,18 +178,14 @@ Güvenlik Uyarısı:
 
             var response = client.PostAsync(apiUrl, content).Result;
             if (!response.IsSuccessStatusCode)
-            {
                 throw new Exception($"SMS gönderilemedi: {response.StatusCode}");
-            }
         }
     }
 
     public async Task<bool> ValidateAndExtendTokenAsync(string token, string requesterInfo)
     {
         if (!ValidateEmergencyToken(token))
-        {
             return false;
-        }
 
         // Token geçerliyse süresini uzat
         RotateEmergencyToken();

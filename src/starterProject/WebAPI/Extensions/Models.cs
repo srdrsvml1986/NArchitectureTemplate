@@ -3,11 +3,7 @@
 namespace WebAPI.Extensions;
 using System.ComponentModel.DataAnnotations;
 
-public class EmergencyTokenRequest
-{
-    [Required]
-    public string AdminPassword { get; set; }
-}
+
 
 public class EmergencyAccessRequest
 {

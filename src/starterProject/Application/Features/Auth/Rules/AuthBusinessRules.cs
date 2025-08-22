@@ -1,5 +1,5 @@
 using Application.Features.Auth.Constants;
-using Application.Services;
+using Application.Services.EmergencyAndSecretServices;
 using Application.Services.Repositories;
 using Domain.Entities;
 using Elasticsearch.Net;

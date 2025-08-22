@@ -183,7 +183,6 @@ if (app.Environment.IsDevelopment() || app.Environment.IsStaging())
     });
 }
 
-app.SeedDefaultSecrets();
 //if (app.Environment.IsProduction())
 app.ConfigureCustomExceptionMiddleware(); //bu genel exeptions için Core'dan geliyor
 app.UseCustomExceptionHandler(); // bu middleware EmergencyNotificationService kullandýðýndan Core'a eklenmedi
@@ -191,14 +190,9 @@ app.UseCustomExceptionHandler(); // bu middleware EmergencyNotificationService k
 app.UseMiddleware<EmergencyMonitoringMiddleware>();
 app.UseMiddleware<SecurityAuditMiddleware>();
 
-// Diðer middleware'ler...
-
-// Acil durum endpoint'leri
-app.MapEmergencyEndpoints();
 
 app.UseOAuthSecurity();
 app.UseMiddleware<OAuthRateLimitMiddleware>();
-
 
 app.UseDbMigrationApplier();
 app.UseHttpsRedirection();
@@ -244,6 +238,8 @@ app.Use(async (context, next) =>
 if (app.Environment.IsDevelopment() || app.Environment.IsStaging())
 {
     app.MapSecretManagerEndpoints();
+    // Acil durum endpoint'leri
+    app.MapEmergencyEndpoints();
 }
 
 //// Database migration iþlemleri

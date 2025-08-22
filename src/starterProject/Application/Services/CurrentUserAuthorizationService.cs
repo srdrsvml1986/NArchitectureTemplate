@@ -6,6 +6,9 @@ namespace Application.Services;
 
 using Application.Services.Repositories;
 
+/// <summary>
+/// AdvancedAuthorizationBehavior için 
+/// </summary>
 public class CurrentUserAuthorizationService : ICurrentUserAuthorizationService
 {
     private readonly IUserGroupRepository _userGroupRepository;

@@ -1,5 +1,6 @@
 ﻿using Application.Services.Repositories;
-using Microsoft.AspNetCore.Identity.UI.Services;
+using MimeKit;
+using NArchitectureTemplate.Core.Mailing;
 
 namespace Application.Services;
 public interface INotificationService
@@ -8,13 +9,13 @@ public interface INotificationService
 }
 public class NotificationService : INotificationService
 {
-    private readonly IEmailSender _emailSender;
+    private readonly IMailService _mailService;
     private readonly IUserRepository _userRepository;
 
-    public NotificationService(IEmailSender emailSender, IUserRepository userRepository)
+    public NotificationService(IUserRepository userRepository, IMailService mailService)
     {
-        _emailSender = emailSender;
         _userRepository = userRepository;
+        _mailService = mailService;
     }
 
     public async Task NotifySuspiciousSessionAsync(UserSession session)
@@ -29,7 +30,13 @@ public class NotificationService : INotificationService
             $"IP: {session.IpAddress}\n" +
             $"Lokasyon: {session.LocationInfo}\n" +
             $"Zaman: {session.LoginTime}";
-        await _emailSender.SendEmailAsync(user.Email, subject, body);
+
+        await _mailService.SendEmailAsync(new Mail
+        {
+            ToList = new List<MailboxAddress> { new(name: user.FullName, user.Email) },
+            Subject = subject,
+            TextBody = body
+        });
     }
 
 

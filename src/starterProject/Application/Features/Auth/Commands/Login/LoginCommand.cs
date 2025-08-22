@@ -1,6 +1,6 @@
 ﻿using Application.Features.Auth.Rules;
-using Application.Services;
 using Application.Services.AuthService;
+using Application.Services.EmergencyAndSecretServices;
 using Application.Services.UsersService;
 using Domain.Entities;
 using MediatR;

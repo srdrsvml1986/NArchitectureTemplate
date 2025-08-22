@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace Application.Services;
+namespace Application.Services.EmergencyAndSecretServices;
 public class HealthCheckService : BackgroundService
 {
     private readonly ILogger<HealthCheckService> _logger;
@@ -20,7 +20,6 @@ public class HealthCheckService : BackgroundService
         _logger.LogInformation("HealthCheck Service başlatıldı. Kontrol aralığı: {HealthCheckInterval}", _healthCheckInterval);
 
         while (!stoppingToken.IsCancellationRequested)
-        {
             try
             {
                 using (var scope = _serviceProvider.CreateScope())
@@ -37,16 +36,12 @@ public class HealthCheckService : BackgroundService
                     secretsManager.DeleteSecret(testKey);
 
                     if (retrievedValue != testValue)
-                    {
                         await notificationService.SendEmergencyAlertAsync(
                             "SEVERE",
                             "Secrets manager sağlık kontrolü başarısız!"
                         );
-                    }
                     else
-                    {
                         _logger.LogInformation("Secrets manager sağlık kontrolü başarılı");
-                    }
                 }
 
                 await Task.Delay(_healthCheckInterval, stoppingToken);
@@ -56,7 +51,6 @@ public class HealthCheckService : BackgroundService
                 _logger.LogError(ex, "HealthCheck Service'de hata oluştu");
                 await Task.Delay(TimeSpan.FromMinutes(100), stoppingToken); // 100 dakika bekle ve tekrar dene
             }
-        }
     }
 
     public override async Task StopAsync(CancellationToken cancellationToken)
