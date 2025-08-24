@@ -2,7 +2,7 @@
 using MimeKit;
 using NArchitectureTemplate.Core.Mailing;
 
-namespace Application.Services;
+namespace Application.Services.NotificationServices;
 public interface INotificationService
 {
     Task NotifySuspiciousSessionAsync(UserSession session);

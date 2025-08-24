@@ -7,6 +7,7 @@ using Application.Services.GroupRoles;
 using Application.Services.Groups;
 using Application.Services.LoggerService;
 using Application.Services.Logs;
+using Application.Services.NotificationServices;
 using Application.Services.PasswordResetTokens;
 using Application.Services.RoleOperationClaims;
 using Application.Services.Roles;
@@ -164,9 +165,12 @@ public static class ApplicationServiceRegistration
             return new CompositeLogger(filteredLoggers, loggingConfig);
         });
 
-
+        services.AddSingleton<ISmsServiceFactory, SmsServiceFactory>();
+        services.AddScoped<ISmsService, MultiProviderSmsService>();
         return services;
     }
+
+
 
     public static IServiceCollection AddSubClassesOfType(
         this IServiceCollection services,

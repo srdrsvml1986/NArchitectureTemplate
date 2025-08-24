@@ -2,6 +2,13 @@
 
 namespace NArchitectureTemplate.Core.Mailing;
 
+public enum MailPriority
+{
+    Normal = 0,
+    Low = 1,
+    High = 2
+}
+
 public class Mail
 {
     public string Subject { get; set; }
@@ -12,6 +19,7 @@ public class Mail
     public List<MailboxAddress>? CcList { get; set; }
     public List<MailboxAddress>? BccList { get; set; }
     public string? UnsubscribeLink { get; set; }
+    public MailPriority Priority { get; set; } // Yeni özellik
 
     public Mail()
     {
@@ -19,13 +27,15 @@ public class Mail
         TextBody = string.Empty;
         HtmlBody = string.Empty;
         ToList = [];
+        Priority = MailPriority.Normal; // Varsayılan değer
     }
 
-    public Mail(string subject, string textBody, string htmlBody, List<MailboxAddress> toList)
+    public Mail(string subject, string textBody, string htmlBody, List<MailboxAddress> toList, MailPriority priority = MailPriority.Normal)
     {
         Subject = subject;
         TextBody = textBody;
         HtmlBody = htmlBody;
         ToList = toList;
+        Priority = priority;
     }
 }

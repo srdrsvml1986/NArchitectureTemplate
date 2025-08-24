@@ -39,7 +39,7 @@ public class SecurityAuditMiddleware
         catch (Exception ex)
         {
             var notificationService = context.RequestServices.GetService<EmergencyNotificationService>();
-            await notificationService.SendEmergencyAlertAsync(
+            await notificationService.NotifySecurityBreachAsync(
                 "AUDIT_ERROR",
                 $"SecurityAuditMiddleware hatası: {ex.Message}"
             );

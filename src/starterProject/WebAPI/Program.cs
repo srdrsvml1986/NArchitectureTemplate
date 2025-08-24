@@ -35,6 +35,18 @@ WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 builder.Configuration
     .AddJsonFile("appsettings.json", optional: false)
     .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true);
+// HTTP client'larý kaydet
+builder.Services.AddHttpClient("VodafoneSms", client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["Sms:Vodafone:BaseUrl"] ?? "https://api.vodafone.com/");
+    client.Timeout = TimeSpan.FromSeconds(30);
+});
+
+builder.Services.AddHttpClient("TurkcellSms", client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["Sms:Turkcell:BaseUrl"] ?? "https://mesajussu.turkcell.com.tr/api/");
+    client.Timeout = TimeSpan.FromSeconds(30);
+});
 
 builder.Services.AddSecretsManagement(builder.Configuration);
 builder.Services.AddControllers();

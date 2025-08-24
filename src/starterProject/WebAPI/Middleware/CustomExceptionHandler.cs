@@ -12,17 +12,21 @@ public static class CustomExceptionHandler
             exceptionApp.Run(async context =>
             {
                 var exceptionHandlerPathFeature = context.Features.Get<IExceptionHandlerPathFeature>();
+                var logger = context.Features.Get<NArchitectureTemplate.Core.CrossCuttingConcerns.Logging.Abstraction.ILogger>();
                 var exception = exceptionHandlerPathFeature?.Error;
 
                 var notificationService = context.RequestServices.GetService<EmergencyNotificationService>();
 
-                if (exception is SecurityException || exception is UnauthorizedAccessException)
-                    await notificationService.SendEmergencyAlertAsync(
-                        "SECURITY_BREACH",
-                        $"Güvenlik ihlali tespit edildi: {exception.Message}"
-                    );
+                if ((exception is SecurityException || exception is UnauthorizedAccessException)&& exception is not null)
+                    logger?.Error(exception,"Güvenlik ihlali: " +
+                        context.User.Identity?.Name + ", " +
+                        context.Connection.RemoteIpAddress?.ToString() + ": " + exception.Message);
 
-                // Diğer hata türleri için...
+                if (notificationService is not null)
+                await notificationService.NotifySecurityBreachAsync(
+                        "SECURITY_BREACH",
+                        $"Güvenlik ihlali: {exception?.Message} - User: {context.User.Identity?.Name} - IP: {context.Connection.RemoteIpAddress}"
+                    );
             });
         });
     }

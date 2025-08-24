@@ -45,12 +45,16 @@ public class CompositeLogger : ILogger
     public void Debug(string message) => Log(LogLevel.Debug, message);
     public void Information(string message) => Log(LogLevel.Information, message);
     public void Warning(string message) => Log(LogLevel.Warning, message);
-    public void Error(string message) => Log(LogLevel.Error, message);
     public void Critical(string message) => Log(LogLevel.Critical, message);
-
-    private void Log(LogLevel level, string message)
+    public void Error(Exception exception, string message) => Log(LogLevel.Error, message,exception);
+    private void Log(LogLevel level, string message,Exception exception=null)
     {
         if (!IsEnabled(level, null)) return;
+        if (exception == null && level == LogLevel.Error)
+        {
+            Console.WriteLine("LogLevel.Error olduğu halde exception null geldi");
+            return;
+        }
 
         foreach (var logger in _loggers)
         {
@@ -60,7 +64,7 @@ public class CompositeLogger : ILogger
                 case LogLevel.Debug: logger.Debug(message); break;
                 case LogLevel.Information: logger.Information(message); break;
                 case LogLevel.Warning: logger.Warning(message); break;
-                case LogLevel.Error: logger.Error(message); break;
+                case LogLevel.Error: logger.Error(exception,message); break;
                 case LogLevel.Critical: logger.Critical(message); break;
             }
         }

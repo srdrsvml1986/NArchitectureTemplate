@@ -14,6 +14,7 @@ using NArchitectureTemplate.Core.Security.JWT;
 using NArchitectureTemplate.Core.Security.OAuth.Models;
 using NArchitectureTemplate.Core.Security.OtpAuthenticator;
 using NArchitectureTemplate.Core.Security.Enums;
+using Application.Services.NotificationServices;
 
 namespace Application.Services.AuthService;
 

@@ -31,11 +31,11 @@ public class LoggingBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, 
             {
                 MethodName = next.Method.Name,
                 Parameters = logParameters,
-                User = _httpContextAccessor.HttpContext.User.Identity?.Name ?? "?",
+                User = _httpContextAccessor?.HttpContext?.User.Identity?.Name ?? "?",
                 Timestamp = DateTime.UtcNow // Zaman damgası eklendi
             };
 
-        _logger.Error(JsonSerializer.Serialize(logDetail));
+        _logger.Critical(JsonSerializer.Serialize(logDetail));
         return await next();
     }
 }

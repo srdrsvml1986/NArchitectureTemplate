@@ -176,6 +176,7 @@ public static class SecretsSeedExtensions
             else
                 throw new Exception("MASTER_KEY ortam değişkeni tanımlanmalı");
 
+
         // Servis kayıtları
         services.AddSingleton<IEncryptionService>(new EncryptionService(masterKey));
         services.AddSingleton<ILocalSecretsManager>(provider =>

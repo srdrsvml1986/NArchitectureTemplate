@@ -37,7 +37,7 @@ public class EmergencyMonitoringMiddleware
         catch (Exception ex)
         {
             var notificationService = context.RequestServices.GetService<EmergencyNotificationService>();
-            await notificationService.SendEmergencyAlertAsync(
+            await notificationService.NotifySecurityBreachAsync(
                 "MIDDLEWARE_ERROR",
                 $"EmergencyMonitoringMiddleware hatası: {ex.Message}"
             );

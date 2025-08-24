@@ -1,4 +1,6 @@
-﻿namespace Application.Services.EmergencyAndSecretServices;
+﻿using System.Text.Json;
+
+namespace Application.Services.EmergencyAndSecretServices;
 // AuditService.cs
 public class AuditService
 {
@@ -11,12 +13,23 @@ public class AuditService
         Directory.CreateDirectory(logDirectory);
     }
 
-    public void LogAccess(string key, string action, string user, string ipAddress, string t="")
+    public void LogAccess(string key, string action, string user, string ipAddress, string details = "")
     {
-        var logEntry = $"{DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} | {user} | {ipAddress} | {action} | {key}";
+        var logEntry = new
+        {
+            Timestamp = DateTime.UtcNow,
+            User = user,
+            IP = ipAddress,
+            Action = action,
+            Key = key,
+            Details = details,
+            Environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")
+        };
+
+        var logMessage = JsonSerializer.Serialize(logEntry);
 
         lock (_lock)
-            File.AppendAllText(_auditLogPath, logEntry + Environment.NewLine);
+            File.AppendAllText(_auditLogPath, logMessage + Environment.NewLine);
     }
 
     public IEnumerable<string> GetRecentAuditLogs(int maxEntries = 100)

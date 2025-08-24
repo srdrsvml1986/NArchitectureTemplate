@@ -22,9 +22,9 @@ public abstract class SerilogLoggerServiceBase : ILogger
         Logger?.Debug(message);
     }
 
-    public void Error(string message)
+    public void Error(Exception exception,string message)
     {
-        Logger?.Error(message);
+        Logger?.Error(message+ ", StackTrace:" + exception?.StackTrace);
     }
 
     public void Information(string message)

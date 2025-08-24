@@ -1,26 +1,31 @@
 ﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using System.Text;
+using NArchitectureTemplate.Core.CrossCuttingConcerns.Logging.Abstraction;
+using System.Runtime.InteropServices;
+using System.Security.AccessControl;
 using System.Security.Cryptography;
+using System.Text;
 
 namespace Application.Services.EmergencyAndSecretServices;
 
 public class DisasterRecoveryService
 {
     private readonly string _backupDirectory;
-    private readonly ILogger<DisasterRecoveryService> _logger;
+    private readonly ILogger _logger;
     private readonly string _backupEncryptionKey;
 
     public DisasterRecoveryService(
         IConfiguration configuration,
-        ILogger<DisasterRecoveryService> logger)
+        ILogger logger,
+        ILocalSecretsManager secretsManager)
     {
         _backupDirectory = configuration["Backup:Directory"] ?? "C:\\App";
-        _backupEncryptionKey = configuration["Backup:EncryptionKey"];
+        _backupEncryptionKey = secretsManager.GetSecret("Backup:EncryptionKey"); // SecretsManager'dan al
+        if (string.IsNullOrEmpty(_backupEncryptionKey))
+        {
+            throw new InvalidOperationException("Backup encryption key not configured");
+        }
         _logger = logger;
         Directory.CreateDirectory(_backupDirectory);
-        if (string.IsNullOrEmpty(_backupEncryptionKey))
-            _backupEncryptionKey = "fixed-production-backup-key-2024"; 
     }
 
     public async Task<bool> CreateBackupAsync(string secretsFilePath)
@@ -41,12 +46,12 @@ public class DisasterRecoveryService
             // Dosya izinlerini ayarla
             SetFilePermissions(backupPath);
 
-            _logger.LogInformation($"Backup oluşturuldu: {backupPath}");
+            _logger.Information($"Backup oluşturuldu: {backupPath}");
             return true;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Backup oluşturulamadı");
+            _logger.Error(ex, "Backup oluşturulamadı");
             return false;
         }
         finally
@@ -66,7 +71,7 @@ public class DisasterRecoveryService
         {
             if (!File.Exists(backupFilePath))
             {
-                _logger.LogError("Backup dosyası bulunamadı: {BackupPath}", backupFilePath);
+                _logger.Critical(String.Format("Backup dosyası bulunamadı: {BackupPath}", backupFilePath));
                 return false;
             }
 
@@ -89,12 +94,12 @@ public class DisasterRecoveryService
             // İzinleri yeniden ayarla
             SetFilePermissions(targetFilePath);
 
-            _logger.LogInformation("Backup başarıyla geri yüklendi");
+            _logger.Information("Backup başarıyla geri yüklendi");
             return true;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Backup geri yükleme hatası");
+            _logger.Error(ex, "Backup geri yükleme hatası");
 
             // Geri yükleme başarısız olursa eski dosyayı geri getir
             if (tempBackupPath != null && File.Exists(tempBackupPath))
@@ -173,43 +178,37 @@ public class DisasterRecoveryService
 
     private void SetFilePermissions(string filePath)
     {
-        //try
-        //{
-        //    if (!File.Exists(filePath)) return;
+        try
+        {
+            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                // Linux/Mac için izinler
+                File.SetUnixFileMode(filePath,
+                    UnixFileMode.UserRead | UnixFileMode.UserWrite |
+                    UnixFileMode.GroupRead | UnixFileMode.GroupWrite);
+                return;
+            }
 
-        //    var fileInfo = new FileInfo(filePath);
-        //    var fileSecurity = fileInfo.GetAccessControl();
+            // Windows için izinler (commentleri kaldır ve düzelt)
+            var fileInfo = new FileInfo(filePath);
+            var fileSecurity = fileInfo.GetAccessControl();
 
-        //    // Tüm miras alınan izinleri kaldır
-        //    fileSecurity.SetAccessRuleProtection(true, false);
+            fileSecurity.SetAccessRuleProtection(true, false);
 
-        //    // Yöneticilere tam kontrol izni ver
-        //    var adminRule = new System.Security.AccessControl.FileSystemAccessRule(
-        //        "BUILTIN\\Administrators",
-        //        System.Security.AccessControl.FileSystemRights.FullControl,
-        //        System.Security.AccessControl.AccessControlType.Allow);
-        //    fileSecurity.AddAccessRule(adminRule);
+            // Yönetici ve SYSTEM izinleri
+            var adminRule = new FileSystemAccessRule(
+                "BUILTIN\\Administrators",
+                FileSystemRights.FullControl,
+                AccessControlType.Allow);
+            fileSecurity.AddAccessRule(adminRule);
 
-        //    // SYSTEM hesabına tam kontrol izni ver
-        //    var systemRule = new System.Security.AccessControl.FileSystemAccessRule(
-        //        "SYSTEM",
-        //        System.Security.AccessControl.FileSystemRights.FullControl,
-        //        System.Security.AccessControl.AccessControlType.Allow);
-        //    fileSecurity.AddAccessRule(systemRule);
-
-        //    // Uygulama kullanıcısına okuma/yazma izni ver
-        //    var appUserRule = new System.Security.AccessControl.FileSystemAccessRule(
-        //        "IIS_APPPOOL\\MyAppPool",
-        //        System.Security.AccessControl.FileSystemRights.Read | System.Security.AccessControl.FileSystemRights.Write,
-        //        System.Security.AccessControl.AccessControlType.Allow);
-        //    fileSecurity.AddAccessRule(appUserRule);
-
-        //    fileInfo.SetAccessControl(fileSecurity);
-        //}
-        //catch (Exception ex)
-        //{
-        //    _logger.LogWarning(ex, "Dosya izinleri ayarlanamadı: {FilePath}", filePath);
-        //}
+            // ... diğer izin kuralları
+            fileInfo.SetAccessControl(fileSecurity);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, String.Format("Dosya izinleri ayarlanamadı: {FilePath}", filePath));
+        }
     }
 
     private string GenerateBackupEncryptionKey()
@@ -237,11 +236,11 @@ public class DisasterRecoveryService
                 try
                 {
                     File.Delete(oldBackup);
-                    _logger.LogInformation("Eski backup silindi: {BackupPath}", oldBackup);
+                    _logger.Information(String.Format("Eski backup silindi: {BackupPath}", oldBackup));
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogWarning(ex, "Backup silinemedi: {BackupPath}", oldBackup);
+                    _logger.Error(ex, String.Format("Backup silinemedi: {BackupPath}", oldBackup));
                 }
     }
 }

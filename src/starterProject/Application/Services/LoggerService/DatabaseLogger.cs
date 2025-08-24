@@ -17,11 +17,16 @@ public class DatabaseLogger : ILogger
     public void Debug(string message) => Log("Debug", message);
     public void Information(string message) => Log("Information", message);
     public void Warning(string message) => Log("Warning", message);
-    public void Error(string message) => Log("Error", message);
+    public void Error(Exception exception, string message) => Log("Error", message, exception);
     public void Critical(string message) => Log("Critical", message);
 
-    private async void Log(string level, string message)
+    private async void Log(string level, string message, Exception exception=null)
     {
+        if (exception == null && level == "Error")
+        {
+            Console.WriteLine("LogLevel.Error olduğu halde exception null geldi");
+            return;
+        }
         try
         {
             var log = new Domain.Entities.Log

@@ -36,7 +36,7 @@ public class HealthCheckService : BackgroundService
                     secretsManager.DeleteSecret(testKey);
 
                     if (retrievedValue != testValue)
-                        await notificationService.SendEmergencyAlertAsync(
+                        await notificationService.NotifySecurityBreachAsync(
                             "SEVERE",
                             "Secrets manager sağlık kontrolü başarısız!"
                         );

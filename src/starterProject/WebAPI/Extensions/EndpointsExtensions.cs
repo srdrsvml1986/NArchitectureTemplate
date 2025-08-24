@@ -57,7 +57,7 @@ public static class EndpointsExtensions
                 return Results.BadRequest("Mesaj gereklidir");
             }
 
-            await notificationService.SendEmergencyAlertAsync(
+            await notificationService.NotifySecurityBreachAsync(
                 request.Severity,
                 request.Message
             );
@@ -223,7 +223,7 @@ public static class EndpointsExtensions
                 var testResult = secretsManager.GetSecret("HealthCheck_Test");
                 if (testResult == null)
                 {
-                    await notificationService.SendEmergencyAlertAsync(
+                    await notificationService.NotifySecurityBreachAsync(
                         "SEVERE",
                         "Secrets manager erişilemez durumda!"
                     );
@@ -234,7 +234,7 @@ public static class EndpointsExtensions
             }
             catch (Exception ex)
             {
-                await notificationService.SendEmergencyAlertAsync(
+                await notificationService.NotifySecurityBreachAsync(
                     "CRITICAL",
                     $"Sistem sağlık kontrolü başarısız: {ex.Message}"
                 );
