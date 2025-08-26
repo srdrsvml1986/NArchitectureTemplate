@@ -43,8 +43,6 @@ public class SecurityAuditMiddleware
                 "AUDIT_ERROR",
                 $"SecurityAuditMiddleware hatası: {ex.Message}"
             );
-
-            throw;
         }
     }
 }

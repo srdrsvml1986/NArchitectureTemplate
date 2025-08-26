@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Http;
-using System;
 using System.Threading.RateLimiting;
-using System.Threading.Tasks;
 
 namespace NArchitectureTemplate.Core.Security.OAuth.Middleware;
 

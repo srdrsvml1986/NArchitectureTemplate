@@ -130,7 +130,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 builder.Services.AddDistributedMemoryCache();
-
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddCors(opt =>
     opt.AddDefaultPolicy(p =>
@@ -194,17 +193,14 @@ if (app.Environment.IsDevelopment() || app.Environment.IsStaging())
         opt.SwaggerEndpoint("/swagger/v2/swagger.json", "Auth API v2");
     });
 }
-
-//if (app.Environment.IsProduction())
+//// Middleware'ler
 app.ConfigureCustomExceptionMiddleware(); //bu genel exeptions için Core'dan geliyor
 app.UseCustomExceptionHandler(); // bu middleware EmergencyNotificationService kullandýðýndan Core'a eklenmedi
-// Middleware'ler
 app.UseMiddleware<EmergencyMonitoringMiddleware>();
 app.UseMiddleware<SecurityAuditMiddleware>();
-
-
 app.UseOAuthSecurity();
 app.UseMiddleware<OAuthRateLimitMiddleware>();
+
 
 app.UseDbMigrationApplier();
 app.UseHttpsRedirection();

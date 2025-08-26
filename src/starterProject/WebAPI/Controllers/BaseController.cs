@@ -24,7 +24,15 @@ public class BaseController : ControllerBase
 
     protected Guid getUserIdFromRequest() //todo authentication behavior?
     {
-        var userId = Guid.Parse(HttpContext.User.GetIdClaim()!);
+        var userIdClaim = HttpContext.User?.GetIdClaim();
+        if (string.IsNullOrEmpty(userIdClaim))
+        {
+            throw new UnauthorizedAccessException("Kullanıcı kimliği bulunamadı.");
+        }
+        if (!Guid.TryParse(userIdClaim, out Guid userId))
+        {
+            throw new FormatException("Kullanıcı kimliği geçerli bir GUID formatında değil.");
+        }
         return userId;
     }
 }

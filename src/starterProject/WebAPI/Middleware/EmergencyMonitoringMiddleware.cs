@@ -40,9 +40,7 @@ public class EmergencyMonitoringMiddleware
             await notificationService.NotifySecurityBreachAsync(
                 "MIDDLEWARE_ERROR",
                 $"EmergencyMonitoringMiddleware hatası: {ex.Message}"
-            );
-
-            throw;
+            );            
         }
     }
 }

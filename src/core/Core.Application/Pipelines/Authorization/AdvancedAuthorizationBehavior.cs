@@ -8,7 +8,7 @@ using System.Security.Claims;
 namespace NArchitectureTemplate.Core.Application.Pipelines.Authorization;
 
 public class AdvancedAuthorizationBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
-    where TRequest : IRequest<TResponse>, IRequestAuthorization
+    where TRequest : IRequest<TResponse>, IRequestAdvancedAuthorization
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IConfiguration _configuration;

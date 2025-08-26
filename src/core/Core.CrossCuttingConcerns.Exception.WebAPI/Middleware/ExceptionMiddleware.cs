@@ -31,15 +31,15 @@ public class ExceptionMiddleware
         catch (System.Exception exception)
         {
             await LogException(context, exception);
-            // Context'in dispose edilmediğinden emin ol
-            if (context.Response.HasStarted)
-            {
-                throw new System.Exception("işlem zaten başlatıldı"); // Veya loglama yapıp işlemi sonlandır
-            }
-            if (context.RequestAborted.IsCancellationRequested)
-            {
-                throw new System.Exception("işlem iptal edildi"); // Veya loglama yapıp işlemi sonlandır
-            }
+            ////Context'in dispose edilmediğinden emin ol
+            //if (context.Response.HasStarted)
+            //{
+            //    throw new System.Exception("işlem zaten başlatıldı"); // Veya loglama yapıp işlemi sonlandır
+            //}
+            //if (context.RequestAborted.IsCancellationRequested)
+            //{
+            //    throw new System.Exception("işlem iptal edildi"); // Veya loglama yapıp işlemi sonlandır
+            //}
             await HandleExceptionAsync(context.Response, exception);
         }
     }

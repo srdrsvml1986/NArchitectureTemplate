@@ -8,17 +8,11 @@ namespace Application.Services.NotificationServices
     public class FirebasePushNotificationService : IPushNotificationService
     {
         private readonly ILogger _logger;
-        private readonly string _credentialPath;
-        private readonly string _credentialJson;
 
-        public FirebasePushNotificationService(
-            ILogger logger,
-            string credentialPath = null,
-            string credentialJson = null)
+        public FirebasePushNotificationService(ILogger logger)
         {
             _logger = logger;
-            _credentialPath = credentialPath;
-            _credentialJson = credentialJson;
+
             InitializeFirebase();
         }
 
@@ -28,20 +22,12 @@ namespace Application.Services.NotificationServices
             {
                 try
                 {
-                    GoogleCredential credential;
+                    var credentialPath = Path.Combine(AppContext.BaseDirectory, "Configs", "serviceAccountKey.json");
 
-                    if (!string.IsNullOrEmpty(_credentialPath) && File.Exists(_credentialPath))
-                    {
-                        credential = GoogleCredential.FromFile(_credentialPath);
-                    }
-                    else if (!string.IsNullOrEmpty(_credentialJson))
-                    {
-                        credential = GoogleCredential.FromJson(_credentialJson);
-                    }
-                    else
-                    {
-                        throw new InvalidOperationException("Firebase kimlik bilgileri bulunamadı. Lütfen credentialPath veya credentialJson sağlayın.");
-                    }
+                    if (!File.Exists(credentialPath))
+                        throw new FileNotFoundException("Firebase service account key dosyası bulunamadı.", credentialPath);
+
+                    var credential = GoogleCredential.FromFile(credentialPath);
 
                     FirebaseApp.Create(new AppOptions()
                     {

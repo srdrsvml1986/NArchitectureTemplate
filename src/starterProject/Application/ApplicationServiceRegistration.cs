@@ -58,6 +58,7 @@ public static class ApplicationServiceRegistration
         {
             configuration.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
             configuration.AddOpenBehavior(typeof(AuthorizationBehavior<,>));
+            configuration.AddOpenBehavior(typeof(AdvancedAuthorizationBehavior<,>));
             configuration.AddOpenBehavior(typeof(CachingBehavior<,>));
             configuration.AddOpenBehavior(typeof(CacheRemovingBehavior<,>));
             configuration.AddOpenBehavior(typeof(LoggingBehavior<,>));
@@ -172,17 +173,7 @@ public static class ApplicationServiceRegistration
         services.AddSingleton<ISmsServiceFactory, SmsServiceFactory>();
         services.AddScoped<ISmsService, MultiProviderSmsService>();
 
-        services.AddScoped<IPushNotificationService, FirebasePushNotificationService>(provider =>
-        {
-            var logger = provider.GetRequiredService<ILogger>();
-            var configuration = provider.GetRequiredService<IConfiguration>();
-
-            return new FirebasePushNotificationService(
-                logger,
-                configuration["Firebase:CredentialPath"], // appsettings'den oku
-                configuration["Firebase:CredentialJson"]  // veya JSON direkt olarak
-            );
-        });
+        services.AddScoped<IPushNotificationService, FirebasePushNotificationService>();
 
         services.AddScoped<IDeviceTokenService, DeviceTokenService>();
         services.AddScoped<IUserNotificationSettingService, UserNotificationSettingService>();
