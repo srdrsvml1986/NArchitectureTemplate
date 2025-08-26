@@ -37,6 +37,8 @@ using NArchitectureTemplate.Core.Security.DependencyInjection;
 using NArchitectureTemplate.Core.Security.JWT;
 using System.Reflection;
 using Application.Services.DeviceTokens;
+using Application.Services.UserNotificationSettings;
+
 
 namespace Application;
 
@@ -183,7 +185,7 @@ public static class ApplicationServiceRegistration
         });
 
         services.AddScoped<IDeviceTokenService, DeviceTokenService>();
-
+        services.AddScoped<IUserNotificationSettingService, UserNotificationSettingService>();
         return services;
     }
 

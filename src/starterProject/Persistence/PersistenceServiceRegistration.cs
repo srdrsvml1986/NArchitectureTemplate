@@ -49,6 +49,8 @@ public static class PersistenceServiceRegistration
         services.AddScoped<IExceptionLogRepository, ExceptionLogRepository>();
         services.AddScoped<ILogRepository, LogRepository>();
         services.AddScoped<IDeviceTokenRepository, DeviceTokenRepository>();
+
+        services.AddScoped<IUserNotificationSettingRepository, UserNotificationSettingRepository>();
         return services;
     }
 }

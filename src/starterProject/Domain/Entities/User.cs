@@ -16,6 +16,8 @@ public partial class User : NArchitectureTemplate.Core.Security.Entities.User<Gu
     public virtual ICollection<ExceptionLog> ExceptionLogs { get; set; } = default!;
     public virtual ICollection<DeviceToken> DeviceTokens { get; set; } = new List<DeviceToken>();
 
+    public virtual ICollection<UserNotificationSetting> UserNotificationSetting { get; set; }
+      = new List<UserNotificationSetting>();
 
     // Önerilen
     public UserStatus Status { get; set; } = UserStatus.Active;

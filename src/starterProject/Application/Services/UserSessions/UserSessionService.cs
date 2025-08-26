@@ -1,7 +1,10 @@
 using Application.Features.UserSessions.Rules;
+using Application.Services.NotificationServices;
 using Application.Services.Repositories;
-using NArchitectureTemplate.Core.Persistence.Paging;
+using Application.Services.UsersService;
 using Microsoft.EntityFrameworkCore.Query;
+using NArchitectureTemplate.Core.CrossCuttingConcerns.Logging.Abstraction;
+using NArchitectureTemplate.Core.Persistence.Paging;
 using System.Linq.Expressions;
 
 namespace Application.Services.UserSessions;
@@ -9,13 +12,18 @@ namespace Application.Services.UserSessions;
 public class UserSessionService : IUserSessionService
 {
     private readonly IUserSessionRepository _userSessionRepository;
+    private readonly IPushNotificationService _pushNotificationService;
+    private readonly IUserService _userService;
+    private readonly ILogger _logger;
     private readonly UserSessionBusinessRules _userSessionBusinessRules;
 
-    public UserSessionService(IUserSessionRepository userSessionRepository, UserSessionBusinessRules userSessionBusinessRules)
+    public UserSessionService(IUserSessionRepository userSessionRepository, UserSessionBusinessRules userSessionBusinessRules, IPushNotificationService pushNotificationService, IUserService userService, ILogger logger)
     {
         _userSessionRepository = userSessionRepository;
         _userSessionBusinessRules = userSessionBusinessRules;
-
+        _pushNotificationService = pushNotificationService;
+        _userService = userService;
+        _logger = logger;
     }
 
     public async Task<UserSession?> GetAsync(
@@ -120,4 +128,52 @@ public class UserSessionService : IUserSessionService
     }
 
     #endregion
+
+    private async Task CheckSuspiciousSessionAndNotifyAsync(UserSession session)
+    {
+        try
+        {
+            var previousSessions = await _userSessionRepository.GetListAsync(
+                predicate: s => s.UserId == session.UserId && s.Id != session.Id,
+                orderBy: q => q.OrderByDescending(s => s.LoginTime),
+                size: 5
+            );
+
+            if (previousSessions.Items.Any())
+            {
+                var lastSession = previousSessions.Items.First();
+
+                // Farklý IP veya konumdan giriþ tespit edilirse
+                if (lastSession.IpAddress != session.IpAddress)
+                {
+                    // Kullanýcýnýn device token'larýný al
+                    var userTokens = await _userService.GetUserDeviceTokensAsync(session.UserId);
+
+                    if (userTokens.Any())
+                    {
+                        var notification = new PushNotification
+                        {
+                            Title = "Þüpheli Oturum Tespit Edildi",
+                            Body = $"Hesabýnýza {session.IpAddress} IP adresinden yeni bir oturum açýldý. Son oturumunuz {lastSession.IpAddress} IP adresindendi.",
+                            DeviceTokens = userTokens,
+                            Data = new Dictionary<string, string>
+                            {
+                                {"eventType", "suspiciousSession"},
+                                {"sessionId", session.Id.ToString()},
+                                {"ipAddress", session.IpAddress},
+                                {"loginTime", session.LoginTime.ToString("O")}
+                            },
+                            Priority = PushNotificationPriority.High
+                        };
+
+                        await _pushNotificationService.SendAsync(notification);
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex,ex.Message);
+        }
+    }
 }

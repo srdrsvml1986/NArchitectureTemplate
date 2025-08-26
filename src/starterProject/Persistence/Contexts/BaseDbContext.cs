@@ -30,6 +30,7 @@ public class BaseDbContext : DbContext
     public DbSet<Log> Logs { get; set; }
     public DbSet<ExceptionLog> ExceptionLogs { get; set; }
     public DbSet<DeviceToken> DeviceTokens { get; set; }
+    public DbSet<UserNotificationSetting> UserNotificationSettings { get; set; }
 
     public BaseDbContext(DbContextOptions dbContextOptions, IConfiguration configuration)
         : base(dbContextOptions)

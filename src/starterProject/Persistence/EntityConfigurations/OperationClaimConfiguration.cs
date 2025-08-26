@@ -13,6 +13,7 @@ using Application.Features.UserSessions.Constants;
 using Application.Features.Logs.Constants;
 using Application.Features.ExceptionLogs.Constants;
 using Application.Features.DeviceTokens.Constants;
+using Application.Features.UserNotificationSettings.Constants;
 
 namespace Persistence.EntityConfigurations;
 
@@ -194,6 +195,20 @@ public class OperationClaimConfiguration : IEntityTypeConfiguration<OperationCla
             ]
         );
         #endregion               
+      
+      
+      #region UserNotificationSettings CRUD
+      featureOperationClaims.AddRange(
+          [
+              new() { Id = ++lastId, Name = UserNotificationSettingsOperationClaims.Admin },
+              new() { Id = ++lastId, Name = UserNotificationSettingsOperationClaims.Read },
+              new() { Id = ++lastId, Name = UserNotificationSettingsOperationClaims.Write },
+              new() { Id = ++lastId, Name = UserNotificationSettingsOperationClaims.Create },
+              new() { Id = ++lastId, Name = UserNotificationSettingsOperationClaims.Update },
+              new() { Id = ++lastId, Name = UserNotificationSettingsOperationClaims.Delete },
+          ]
+      );
+      #endregion
       
         return featureOperationClaims;
     }
