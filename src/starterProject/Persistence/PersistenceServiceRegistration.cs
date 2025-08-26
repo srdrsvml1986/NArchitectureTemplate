@@ -5,7 +5,6 @@ using Microsoft.Extensions.DependencyInjection;
 using NArchitectureTemplate.Core.Persistence.DependencyInjection;
 using Persistence.Contexts;
 using Persistence.Repositories;
-using System.Configuration;
 
 namespace Persistence;
 
@@ -39,24 +38,17 @@ public static class PersistenceServiceRegistration
         services.AddScoped<IUserOperationClaimRepository, UserOperationClaimRepository>();
 
         services.AddScoped<IGroupRepository, GroupRepository>();
-        services.AddScoped<IGroupOperationClaimRepository, GroupOperationClaimRepository>();
         services.AddScoped<IUserGroupRepository, UserGroupRepository>();
-        services.AddScoped<IGroupRepository, GroupRepository>();
         services.AddScoped<IGroupOperationClaimRepository, GroupOperationClaimRepository>();
-        services.AddScoped<IUserGroupRepository, UserGroupRepository>();
         services.AddScoped<IPasswordResetTokenRepository, PasswordResetTokenRepository>();
         services.AddScoped<IUserSessionRepository, UserSessionRepository>();
         services.AddScoped<IUserRoleRepository, UserRoleRepository>();
         services.AddScoped<IRoleRepository, RoleRepository>();
         services.AddScoped<IRoleOperationClaimRepository, RoleOperationClaimRepository>();
         services.AddScoped<IGroupRoleRepository, GroupRoleRepository>();
-        services.AddScoped<ILogRepository, LogRepository>();
         services.AddScoped<IExceptionLogRepository, ExceptionLogRepository>();
         services.AddScoped<ILogRepository, LogRepository>();
-        services.AddScoped<ILogRepository, LogRepository>();
-        services.AddScoped<ILogRepository, LogRepository>();
-        services.AddScoped<IExceptionLogRepository, ExceptionLogRepository>();
-        services.AddScoped<ILogRepository, LogRepository>();
+        services.AddScoped<IDeviceTokenRepository, DeviceTokenRepository>();
         return services;
     }
 }

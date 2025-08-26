@@ -1,6 +1,9 @@
 ﻿using Application.Features.Users.Rules;
+using Application.Services.DeviceTokens;
+using Application.Services.NotificationServices;
 using Application.Services.Repositories;
 using Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using NArchitectureTemplate.Core.Persistence.Paging;
 using NArchitectureTemplate.Core.Security.OAuth.Models;
@@ -13,11 +16,16 @@ public class UserService : IUserService
 {
     private readonly IUserRepository _userRepository;
     private readonly UserBusinessRules _userBusinessRules;
+    private readonly IPushNotificationService _pushNotificationService;
+    private readonly IDeviceTokenService _deviceTokenService;
 
-    public UserService(IUserRepository userRepository, UserBusinessRules userBusinessRules)
+
+    public UserService(IUserRepository userRepository, UserBusinessRules userBusinessRules, IPushNotificationService pushNotificationService, IDeviceTokenService deviceTokenService)
     {
         _userRepository = userRepository;
         _userBusinessRules = userBusinessRules;
+        _pushNotificationService = pushNotificationService;
+        _deviceTokenService = deviceTokenService;
     }
 
     public async Task<User?> GetAsync(
@@ -106,5 +114,74 @@ public class UserService : IUserService
         }
 
         return user;
+    }
+
+    public async Task AddDeviceTokenAsync(Guid userId, string token, string deviceType, string deviceName = null)
+    {
+        var deviceToken = new DeviceToken
+        {
+            UserId = userId,
+            Token = token,
+            DeviceType = deviceType,
+            DeviceName = deviceName,
+            CreatedAt = DateTime.UtcNow,
+            IsActive = true
+        };
+
+        await _deviceTokenService.AddAsync(deviceToken);
+    }
+
+    public async Task RemoveDeviceTokenAsync(string token)
+    {
+        await _deviceTokenService.RemoveWithTokenAsync(token);
+    }
+
+    public async Task<List<string>> GetUserDeviceTokensAsync(Guid userId)
+    {
+        return await _deviceTokenService.GetUserDeviceTokensAsync(userId);
+    }
+
+    public async Task DeactivateDeviceTokenAsync(string token)
+    {
+        await _deviceTokenService.DeactivateTokenAsync(token);
+    }
+    private async Task SendNewUserNotificationToAdmins(User newUser)
+    {
+        //try
+        //{
+        //    var adminUsers = await _userRepository.GetListAsync(
+        //        predicate: u => u.UserRoles.Any(ur => ur.Role.Name == "Admin"),
+        //        include: u => u.Include(u => u.UserRoles).ThenInclude(ur => ur.Role)
+        //    );
+
+        //    var adminTokens = adminUsers.Items
+        //        .Where(u => u.DeviceTokens != null && u.DeviceTokens.Any())
+        //        .SelectMany(u => u.DeviceTokens)
+        //        .ToList();
+
+        //    if (adminTokens.Any())
+        //    {
+        //        var notification = new PushNotification
+        //        {
+        //            Title = "Yeni Kullanıcı Kaydı",
+        //            Body = $"{newUser.Email} email adresli yeni bir kullanıcı kayıt oldu.",
+        //            DeviceTokens = adminTokens,
+        //            Data = new Dictionary<string, string>
+        //            {
+        //                {"eventType", "userRegistered"},
+        //                {"userId", newUser.Id.ToString()},
+        //                {"userEmail", newUser.Email}
+        //            },
+        //            Priority = PushNotificationPriority.Normal
+        //        };
+
+        //        await _pushNotificationService.SendAsync(notification);
+        //    }
+        //}
+        //catch (Exception ex)
+        //{
+        //    // Bildirim hatası ana işlemi etkilememeli
+        //    // Loglama yapılabilir
+        //}
     }
 }

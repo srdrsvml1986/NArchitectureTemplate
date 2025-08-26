@@ -3,6 +3,7 @@ using Application.Features.Auth.Profiles;
 using Application.Features.Auth.Rules;
 using Application.Features.Users.Rules;
 using Application.Services.AuthService;
+using Application.Services.DeviceTokens;
 using Application.Services.EmergencyAndSecretServices;
 using Application.Services.NotificationServices;
 using Application.Services.Repositories;
@@ -62,10 +63,13 @@ public class LoginTests
         // YENİ EKLENEN KISIM: UserRoleRepository mock
         IUserRoleRepository _userRoleRepository = Mock.Of<IUserRoleRepository>(); // <-- Bu satırı ekleyin
         IUserGroupRepository _userGroupRepository = Mock.Of<IUserGroupRepository>(); // <-- Bu satırı ekleyin
+        IDeviceTokenService deviceTokenService = Mock.Of<IDeviceTokenService>(); // <-- Bu satırı ekleyin
         IEmailAuthenticatorRepository _userEmailAuthenticatorRepository =
             MockEmailAuthenticatorRepository.GetEmailAuthenticatorRepositoryMock();
         IOtpAuthenticatorRepository _userOtpAuthenticatorRepository = MockOtpAuthRepository.GetOtpAuthenticatorMock();
         IUserRepository _userRepository = new MockUserRepository(userFakeData).GetUserMockRepository();
+        IPushNotificationService _pushNotificationService = Mock.Of<IPushNotificationService>();
+
         #endregion
         #region Mock Helpers
         TokenOptions tokenOptions =
@@ -81,7 +85,8 @@ public class LoginTests
             AcceptLocales = new[] { "tr" }
         };
 
-        var config = new MapperConfiguration(cfg => {
+        var config = new MapperConfiguration(cfg =>
+        {
             cfg.AddProfile<MappingProfiles>();
         }, NullLoggerFactory.Instance); // ILoggerFactory parametresi eklendi.
 
@@ -89,9 +94,9 @@ public class LoginTests
 
         #endregion
         AuditService auditService = new();
-        AuthBusinessRules authBusinessRules = new(_userRepository, localizationService,auditService);
+        AuthBusinessRules authBusinessRules = new(_userRepository, localizationService, auditService);
         UserBusinessRules _userBusinessRules = new(_userRepository, localizationService);
-        IUserService _userService = new UserService(_userRepository, _userBusinessRules);
+        IUserService _userService = new UserService(_userRepository, _userBusinessRules,_pushNotificationService,deviceTokenService);
         IAuthService _authService = new AuthService(
                    _userOperationClaimRepository,
                    _refreshTokenRepository,
@@ -112,7 +117,7 @@ public class LoginTests
                );
         _validator = new LoginCommandValidator();
         _loginCommand = new LoginCommand();
-        _loginCommandHandler = new LoginCommandHandler(_userService, _authService, authBusinessRules, _userSessionService,auditService);
+        _loginCommandHandler = new LoginCommandHandler(_userService, _authService, authBusinessRules, _userSessionService, auditService);
     }
 
     [Fact]

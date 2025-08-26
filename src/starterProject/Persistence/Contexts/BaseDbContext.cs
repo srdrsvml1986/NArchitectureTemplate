@@ -29,6 +29,7 @@ public class BaseDbContext : DbContext
     public DbSet<GroupRole> GroupRoles { get; set; }
     public DbSet<Log> Logs { get; set; }
     public DbSet<ExceptionLog> ExceptionLogs { get; set; }
+    public DbSet<DeviceToken> DeviceTokens { get; set; }
 
     public BaseDbContext(DbContextOptions dbContextOptions, IConfiguration configuration)
         : base(dbContextOptions)
@@ -123,7 +124,7 @@ public class BaseDbContext : DbContext
         var mongoClient = new MongoClient(mongoUrl);
         var database = mongoClient.GetDatabase(mongoUrl.DatabaseName);
 
-        optionsBuilder.UseMongoDB(connectionString,mongoUrl.DatabaseName);
+        optionsBuilder.UseMongoDB(connectionString, mongoUrl.DatabaseName);
         // MongoDB için özel yapılandırma
         // optionsBuilder.UseMongoDb(...) gibi bir metod kullanılabilir
         // Eğer EF Core için resmi MongoDB provider'ı yoksa, bu kısmı uygun şekilde değiştirin

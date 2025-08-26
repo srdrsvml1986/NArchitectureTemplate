@@ -14,6 +14,7 @@ public partial class User : NArchitectureTemplate.Core.Security.Entities.User<Gu
     public virtual ICollection<UserSession> UserSessions { get; set; }
     public virtual ICollection<Log> Logs { get; set; } = default!;
     public virtual ICollection<ExceptionLog> ExceptionLogs { get; set; } = default!;
+    public virtual ICollection<DeviceToken> DeviceTokens { get; set; } = new List<DeviceToken>();
 
 
     // Önerilen

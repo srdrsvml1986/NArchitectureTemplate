@@ -12,8 +12,7 @@ using Application.Features.UserGroups.Constants;
 using Application.Features.UserSessions.Constants;
 using Application.Features.Logs.Constants;
 using Application.Features.ExceptionLogs.Constants;
-using Application.Features.Logs.Constants;
-
+using Application.Features.DeviceTokens.Constants;
 
 namespace Persistence.EntityConfigurations;
 
@@ -104,7 +103,6 @@ public class OperationClaimConfiguration : IEntityTypeConfiguration<OperationCla
             ]
         );
         #endregion
-
         
         #region Groups CRUD
         featureOperationClaims.AddRange(
@@ -117,8 +115,7 @@ public class OperationClaimConfiguration : IEntityTypeConfiguration<OperationCla
                 new() { Id = ++lastId, Name = GroupsOperationClaims.Delete },
             ]
         );
-        #endregion
-        
+        #endregion        
         
         #region GroupClaims CRUD
         featureOperationClaims.AddRange(
@@ -131,8 +128,7 @@ public class OperationClaimConfiguration : IEntityTypeConfiguration<OperationCla
                 new() { Id = ++lastId, Name = GroupOperationClaims.Delete },
             ]
         );
-        #endregion
-        
+        #endregion        
         
         #region UserGroups CRUD
         featureOperationClaims.AddRange(
@@ -145,8 +141,7 @@ public class OperationClaimConfiguration : IEntityTypeConfiguration<OperationCla
                 new() { Id = ++lastId, Name = UserGroupsClaims.Delete },
             ]
         );
-        #endregion
-        
+        #endregion        
         
         #region UserSessions CRUD
         featureOperationClaims.AddRange(
@@ -159,25 +154,7 @@ public class OperationClaimConfiguration : IEntityTypeConfiguration<OperationCla
                 new() { Id = ++lastId, Name = UserSessionsOperationClaims.Delete },
             ]
         );
-        #endregion
-        
-        
-        
-        
-        
-        #region Logs CRUD
-        featureOperationClaims.AddRange(
-            [
-                new() { Id = ++lastId, Name = LogsOperationClaims.Admin },
-                new() { Id = ++lastId, Name = LogsOperationClaims.Read },
-                new() { Id = ++lastId, Name = LogsOperationClaims.Write },
-                new() { Id = ++lastId, Name = LogsOperationClaims.Create },
-                new() { Id = ++lastId, Name = LogsOperationClaims.Update },
-                new() { Id = ++lastId, Name = LogsOperationClaims.Delete },
-            ]
-        );
-        #endregion
-        
+        #endregion                    
         
         #region ExceptionLogs CRUD
         featureOperationClaims.AddRange(
@@ -190,22 +167,7 @@ public class OperationClaimConfiguration : IEntityTypeConfiguration<OperationCla
                 new() { Id = ++lastId, Name = ExceptionLogsOperationClaims.Delete },
             ]
         );
-        #endregion
-        
-        
-        #region Logs CRUD
-        featureOperationClaims.AddRange(
-            [
-                new() { Id = ++lastId, Name = LogsOperationClaims.Admin },
-                new() { Id = ++lastId, Name = LogsOperationClaims.Read },
-                new() { Id = ++lastId, Name = LogsOperationClaims.Write },
-                new() { Id = ++lastId, Name = LogsOperationClaims.Create },
-                new() { Id = ++lastId, Name = LogsOperationClaims.Update },
-                new() { Id = ++lastId, Name = LogsOperationClaims.Delete },
-            ]
-        );
-        #endregion
-        
+        #endregion        
         
         #region Logs CRUD
         featureOperationClaims.AddRange(
@@ -218,50 +180,21 @@ public class OperationClaimConfiguration : IEntityTypeConfiguration<OperationCla
                 new() { Id = ++lastId, Name = LogsOperationClaims.Delete },
             ]
         );
-        #endregion
+        #endregion        
         
-        
-        #region Logs CRUD
+        #region DeviceTokens CRUD
         featureOperationClaims.AddRange(
             [
-                new() { Id = ++lastId, Name = LogsOperationClaims.Admin },
-                new() { Id = ++lastId, Name = LogsOperationClaims.Read },
-                new() { Id = ++lastId, Name = LogsOperationClaims.Write },
-                new() { Id = ++lastId, Name = LogsOperationClaims.Create },
-                new() { Id = ++lastId, Name = LogsOperationClaims.Update },
-                new() { Id = ++lastId, Name = LogsOperationClaims.Delete },
+                new() { Id = ++lastId, Name = DeviceTokensOperationClaims.Admin },
+                new() { Id = ++lastId, Name = DeviceTokensOperationClaims.Read },
+                new() { Id = ++lastId, Name = DeviceTokensOperationClaims.Write },
+                new() { Id = ++lastId, Name = DeviceTokensOperationClaims.Create },
+                new() { Id = ++lastId, Name = DeviceTokensOperationClaims.Update },
+                new() { Id = ++lastId, Name = DeviceTokensOperationClaims.Delete },
             ]
         );
-        #endregion
-        
-        
-        #region ExceptionLogs CRUD
-        featureOperationClaims.AddRange(
-            [
-                new() { Id = ++lastId, Name = ExceptionLogsOperationClaims.Admin },
-                new() { Id = ++lastId, Name = ExceptionLogsOperationClaims.Read },
-                new() { Id = ++lastId, Name = ExceptionLogsOperationClaims.Write },
-                new() { Id = ++lastId, Name = ExceptionLogsOperationClaims.Create },
-                new() { Id = ++lastId, Name = ExceptionLogsOperationClaims.Update },
-                new() { Id = ++lastId, Name = ExceptionLogsOperationClaims.Delete },
-            ]
-        );
-        #endregion
-        
-        
-        #region Logs CRUD
-        featureOperationClaims.AddRange(
-            [
-                new() { Id = ++lastId, Name = LogsOperationClaims.Admin },
-                new() { Id = ++lastId, Name = LogsOperationClaims.Read },
-                new() { Id = ++lastId, Name = LogsOperationClaims.Write },
-                new() { Id = ++lastId, Name = LogsOperationClaims.Create },
-                new() { Id = ++lastId, Name = LogsOperationClaims.Update },
-                new() { Id = ++lastId, Name = LogsOperationClaims.Delete },
-            ]
-        );
-        #endregion
-        
+        #endregion               
+      
         return featureOperationClaims;
     }
 #pragma warning restore S1854 // Unused assignments should be removed

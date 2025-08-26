@@ -17,6 +17,7 @@ using Application.Services.UserSessions;
 using Application.Services.UsersService;
 using FluentValidation;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NArchitectureTemplate.Core.Application.Pipelines.Authorization;
 using NArchitectureTemplate.Core.Application.Pipelines.Caching;
@@ -35,6 +36,7 @@ using NArchitectureTemplate.Core.Mailing.MailKit;
 using NArchitectureTemplate.Core.Security.DependencyInjection;
 using NArchitectureTemplate.Core.Security.JWT;
 using System.Reflection;
+using Application.Services.DeviceTokens;
 
 namespace Application;
 
@@ -115,8 +117,8 @@ public static class ApplicationServiceRegistration
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"SerilogFileLogger oluþturulurken hata: {ex.Message}");
-                // Fallback: Basit bir console logger döndür
+                Console.WriteLine($"SerilogFileLogger oluï¿½turulurken hata: {ex.Message}");
+                // Fallback: Basit bir console logger dï¿½ndï¿½r
                 return new SerilogFileLogger(new FileLogConfiguration("/logs/"));
             }
         });
@@ -125,7 +127,7 @@ public static class ApplicationServiceRegistration
         {
             var loggers = new List<ILogger>();
 
-            // SerilogFileLogger'ý dene
+            // SerilogFileLogger'ï¿½ dene
             try
             {
                 var fileLogger = sp.GetRequiredService<SerilogFileLogger>();
@@ -133,10 +135,10 @@ public static class ApplicationServiceRegistration
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"SerilogFileLogger alýnamadý: {ex.Message}");
+                Console.WriteLine($"SerilogFileLogger alï¿½namadï¿½: {ex.Message}");
             }
 
-            // DatabaseLogger'ý ekle
+            // DatabaseLogger'ï¿½ ekle
             try
             {
                 var dbLogger = sp.GetRequiredService<DatabaseLogger>();
@@ -144,16 +146,16 @@ public static class ApplicationServiceRegistration
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"DatabaseLogger alýnamadý: {ex.Message}");
+                Console.WriteLine($"DatabaseLogger alï¿½namadï¿½: {ex.Message}");
             }
 
-            // Hiç logger yoksa fallback
+            // Hiï¿½ logger yoksa fallback
             if (!loggers.Any())
             {
                 loggers.Add(new ConsoleFallbackLogger());
             }
 
-            // Hedef seçimine göre filtrele
+            // Hedef seï¿½imine gï¿½re filtrele
             IEnumerable<ILogger> filteredLoggers = loggingConfig.Target?.ToLowerInvariant() switch
             {
                 "file" => loggers.OfType<SerilogFileLogger>(),
@@ -167,15 +169,25 @@ public static class ApplicationServiceRegistration
 
         services.AddSingleton<ISmsServiceFactory, SmsServiceFactory>();
         services.AddScoped<ISmsService, MultiProviderSmsService>();
+
+        services.AddScoped<IPushNotificationService, FirebasePushNotificationService>(provider =>
+        {
+            var logger = provider.GetRequiredService<ILogger>();
+            var configuration = provider.GetRequiredService<IConfiguration>();
+
+            return new FirebasePushNotificationService(
+                logger,
+                configuration["Firebase:CredentialPath"], // appsettings'den oku
+                configuration["Firebase:CredentialJson"]  // veya JSON direkt olarak
+            );
+        });
+
+        services.AddScoped<IDeviceTokenService, DeviceTokenService>();
+
         return services;
     }
 
-
-
-    public static IServiceCollection AddSubClassesOfType(
-        this IServiceCollection services,
-        Assembly assembly,
-        Type type,
+    public static IServiceCollection AddSubClassesOfType(this IServiceCollection services,Assembly assembly,Type type,
         Func<IServiceCollection, Type, IServiceCollection>? addWithLifeCycle = null
     )
     {

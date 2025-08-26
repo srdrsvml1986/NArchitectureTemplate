@@ -317,8 +317,3 @@ public enum ContactType
     Teams,
     Other
 }
-
-public interface IPushNotificationService
-{
-    Task SendPushNotificationAsync(string deviceId, string title, string message, string severity);
-}

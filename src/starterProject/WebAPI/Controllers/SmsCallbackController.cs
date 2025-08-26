@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
+using ILogger = NArchitectureTemplate.Core.CrossCuttingConcerns.Logging.Abstraction.ILogger;
 
 namespace WebAPI.Controllers;
 
@@ -25,8 +26,8 @@ public class SmsCallbackController : BaseController
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
             );
 
-            _logger.LogInformation("SMS delivery report received: {MessageId}, Status: {Status}",
-                report?.CallbackData, report?.DeliveryStatus);
+            _logger.Information(string.Format("SMS delivery report received: {MessageId}, Status: {Status}",
+                report?.CallbackData, report?.DeliveryStatus));
 
             // Here you can update your database with the delivery status
             // or trigger other actions based on the delivery status
@@ -35,7 +36,7 @@ public class SmsCallbackController : BaseController
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error processing SMS delivery report");
+            _logger.Error(ex, "Error processing SMS delivery report");
             return StatusCode(500);
         }
     }

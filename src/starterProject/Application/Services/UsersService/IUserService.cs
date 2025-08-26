@@ -31,5 +31,8 @@ public interface IUserService
     Task<User> UpdateAsync(User user);
     Task<User> DeleteAsync(User user, bool permanent = false);
     Task<User> CreateOrUpdateExternalUserAsync(ExternalAuthUser externalUser);
-
+    Task AddDeviceTokenAsync(Guid userId, string token, string deviceType, string deviceName = null);
+    Task RemoveDeviceTokenAsync(string token);
+    Task<List<string>> GetUserDeviceTokensAsync(Guid userId);
+    Task DeactivateDeviceTokenAsync(string token);
 }
