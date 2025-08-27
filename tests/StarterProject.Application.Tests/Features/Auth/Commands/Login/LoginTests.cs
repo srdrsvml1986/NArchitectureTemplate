@@ -21,6 +21,7 @@ using NArchitectureTemplate.Core.Localization.Abstraction;
 using NArchitectureTemplate.Core.Localization.Resource.Yaml;
 using NArchitectureTemplate.Core.Mailing;
 using NArchitectureTemplate.Core.Mailing.MailKit;
+using NArchitectureTemplate.Core.Notification.Services;
 using NArchitectureTemplate.Core.Security.EmailAuthenticator;
 using NArchitectureTemplate.Core.Security.JWT;
 using NArchitectureTemplate.Core.Security.OtpAuthenticator;

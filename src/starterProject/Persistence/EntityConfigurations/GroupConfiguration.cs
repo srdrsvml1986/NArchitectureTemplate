@@ -42,6 +42,12 @@ public class GroupConfiguration : IEntityTypeConfiguration<Group>
                     Id = 3,
                     Name = "Sales",
                     Description = "Satýþ Departmaný",
+                },
+                new Group
+                {
+                    Id = 4,
+                    Name = "User",
+                    Description = "Kullanýcý",
                 }
             };
 

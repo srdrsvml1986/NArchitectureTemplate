@@ -9,11 +9,15 @@ using NArchitectureTemplate.Core.Security.Enums;
 
 namespace Application.Features.Auth.Commands.DisableOtpAuthenticator;
 
-public class DisableOtpAuthenticatorCommand : IRequest, ISecuredRequest
+public class DisableOtpAuthenticatorCommand : IRequest, IRequestAdvancedAuthorization
 {
     public Guid UserId { get; set; }
 
-    public string[] Roles => [];
+    public string[] Roles => ["User"];
+
+    public string[] Permissions => [];
+
+    public string[] Groups => [];
 
     public class DisableOtpAuthenticatorCommandHandler : IRequestHandler<DisableOtpAuthenticatorCommand>
     {

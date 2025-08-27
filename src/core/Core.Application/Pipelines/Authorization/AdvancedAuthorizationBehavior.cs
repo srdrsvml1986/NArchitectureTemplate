@@ -13,6 +13,8 @@ public class AdvancedAuthorizationBehavior<TRequest, TResponse> : IPipelineBehav
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IConfiguration _configuration;
     private readonly ICurrentUserAuthorizationService _authorizationService;
+    private readonly Dictionary<string, List<string>> _roleHierarchy;
+    private readonly Dictionary<string, List<string>> _groupHierarchy;
 
     public AdvancedAuthorizationBehavior(
         IHttpContextAccessor httpContextAccessor,
@@ -22,6 +24,36 @@ public class AdvancedAuthorizationBehavior<TRequest, TResponse> : IPipelineBehav
         _httpContextAccessor = httpContextAccessor;
         _configuration = configuration;
         _authorizationService = authorizationService;
+
+        // Rol hiyerarşisini yapılandırmadan yükle
+        _roleHierarchy = new Dictionary<string, List<string>>();
+        var roleHierarchySection = _configuration.GetSection("RoleHierarchy");
+        if (roleHierarchySection.Exists())
+        {
+            foreach (var item in roleHierarchySection.GetChildren())
+            {
+                var roles = item.Get<List<string>>();
+                if (roles != null)
+                {
+                    _roleHierarchy[item.Key] = roles;
+                }
+            }
+        }
+
+        // Grup hiyerarşisini yapılandırmadan yükle
+        _groupHierarchy = new Dictionary<string, List<string>>();
+        var groupHierarchySection = _configuration.GetSection("GroupHierarchy");
+        if (groupHierarchySection.Exists())
+        {
+            foreach (var item in groupHierarchySection.GetChildren())
+            {
+                var groups = item.Get<List<string>>();
+                if (groups != null)
+                {
+                    _groupHierarchy[item.Key] = groups;
+                }
+            }
+        }
     }
 
     public async Task<TResponse> Handle(
@@ -67,7 +99,31 @@ public class AdvancedAuthorizationBehavior<TRequest, TResponse> : IPipelineBehav
         if (isAdmin) return true;
 
         var userRoles = await _authorizationService.GetUserRolesAsync(userId, cancellationToken);
-        return requiredRoles.Any(role => userRoles.Contains(role));
+        var allUserRoles = GetAllRolesInHierarchy(userRoles);
+        return requiredRoles.Any(requiredRole => allUserRoles.Contains(requiredRole));
+    }
+
+    private HashSet<string> GetAllRolesInHierarchy(IEnumerable<string> userRoles)
+    {
+        var allRoles = new HashSet<string>(userRoles);
+        var queue = new Queue<string>(userRoles);
+
+        while (queue.Count > 0)
+        {
+            var currentRole = queue.Dequeue();
+            if (_roleHierarchy.TryGetValue(currentRole, out var subRoles))
+            {
+                foreach (var subRole in subRoles)
+                {
+                    if (allRoles.Add(subRole))
+                    {
+                        queue.Enqueue(subRole);
+                    }
+                }
+            }
+        }
+
+        return allRoles;
     }
 
     private async Task<bool> HasRequiredPermission(Guid userId, IEnumerable<string> requiredPermissions, bool isAdmin, CancellationToken cancellationToken)
@@ -83,6 +139,30 @@ public class AdvancedAuthorizationBehavior<TRequest, TResponse> : IPipelineBehav
         if (isAdmin) return true;
 
         var userGroups = await _authorizationService.GetUserGroupsAsync(userId, cancellationToken);
-        return requiredGroups.Any(group => userGroups.Contains(group));
+        var allUserGroups = GetAllGroupsInHierarchy(userGroups);
+        return requiredGroups.Any(requiredGroup => allUserGroups.Contains(requiredGroup));
+    }
+
+    private HashSet<string> GetAllGroupsInHierarchy(IEnumerable<string> userGroups)
+    {
+        var allGroups = new HashSet<string>(userGroups);
+        var queue = new Queue<string>(userGroups);
+
+        while (queue.Count > 0)
+        {
+            var currentGroup = queue.Dequeue();
+            if (_groupHierarchy.TryGetValue(currentGroup, out var subGroups))
+            {
+                foreach (var subGroup in subGroups)
+                {
+                    if (allGroups.Add(subGroup))
+                    {
+                        queue.Enqueue(subGroup);
+                    }
+                }
+            }
+        }
+
+        return allGroups;
     }
 }

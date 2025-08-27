@@ -1,4 +1,5 @@
-﻿using Application.Features.Auth.Rules;
+﻿using Application.Features.Auth.Constants;
+using Application.Features.Auth.Rules;
 using Application.Services.AuthService;
 using Application.Services.Repositories;
 using Application.Services.UsersService;
@@ -9,11 +10,15 @@ using NArchitectureTemplate.Core.Security.Enums;
 
 namespace Application.Features.Auth.Commands.DisableEmailAuthenticator;
 
-public class DisableEmailAuthenticatorCommand : IRequest, ISecuredRequest
+public class DisableEmailAuthenticatorCommand : IRequest, IRequestAdvancedAuthorization
 {
     public Guid UserId { get; set; }
 
-    public string[] Roles => [];
+    public string[] Roles => ["User"];
+
+    public string[] Permissions => [];
+
+    public string[] Groups => [];
 
     public class DisableEmailAuthenticatorCommandHandler : IRequestHandler<DisableEmailAuthenticatorCommand>
     {

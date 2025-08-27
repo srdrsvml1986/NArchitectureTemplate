@@ -1,5 +1,5 @@
-﻿using Application.Services.NotificationServices;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using NArchitectureTemplate.Core.Notification.Services;
 using ILogger = NArchitectureTemplate.Core.CrossCuttingConcerns.Logging.Abstraction.ILogger;
 
 namespace WebAPI.Controllers;

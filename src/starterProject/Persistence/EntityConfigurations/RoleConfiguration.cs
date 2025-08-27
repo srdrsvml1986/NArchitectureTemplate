@@ -32,7 +32,7 @@ public class RoleConfiguration : IEntityTypeConfiguration<Role>
             new Role
             {
                 Id = 3,
-                Name = "Employee",
+                Name = "User",
                 Description = "Temel kullanýcý yetkilerine sahiptir"
             }
         );

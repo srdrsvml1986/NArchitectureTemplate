@@ -1,4 +1,4 @@
-﻿namespace Application.Services.NotificationServices;
+﻿namespace NArchitectureTemplate.Core.Notification.Services;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 

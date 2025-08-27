@@ -1,10 +1,9 @@
-﻿using Application.Services.NotificationServices;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using MimeKit;
 using NArchitectureTemplate.Core.CrossCuttingConcerns.Logging.Abstraction;
 using NArchitectureTemplate.Core.Mailing;
 
-namespace Application.Services.EmergencyAndSecretServices;
+namespace NArchitectureTemplate.Core.Notification.Services;
 
 public interface IEmergencyNotifier
 {

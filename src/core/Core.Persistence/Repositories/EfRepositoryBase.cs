@@ -108,7 +108,7 @@ public class EfRepositoryBase<TEntity, TEntityId, TContext>
         if (update.Count > 0)
         {
             foreach (TEntity entity in update)
-                EditEntityPropertiesToAdd(entity);
+                EditEntityPropertiesToUpdate(entity);
 
             Context.UpdateRange(update);
             Context.SaveChanges();

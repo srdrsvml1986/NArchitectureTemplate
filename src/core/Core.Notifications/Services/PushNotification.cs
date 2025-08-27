@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Application.Services.NotificationServices
+namespace NArchitectureTemplate.Core.Notification.Services
 {
     public enum PushNotificationPriority
     {

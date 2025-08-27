@@ -34,20 +34,28 @@ public class RegisterCommand : IRequest<RegisteredResponse>
         private readonly IUserRepository _userRepository;
         private readonly IUserOperationClaimRepository _userOperationClaimRepository;
         private readonly IOperationClaimRepository _operationClaimRepository;
+        private readonly IUserGroupRepository _userGroupRepository;
+        private readonly IUserRoleRepository _userRoleRepository;
         private readonly IAuthService _authService;
         private readonly AuthBusinessRules _authBusinessRules;
 
         public RegisterCommandHandler(
             IUserRepository userRepository,
             IAuthService authService,
-            AuthBusinessRules authBusinessRules
+            AuthBusinessRules authBusinessRules,
+            IOperationClaimRepository operationClaimRepository,
+            IUserOperationClaimRepository userOperationClaimRepository
 ,
-            IOperationClaimRepository operationClaimRepository)
+            IUserGroupRepository userGroupRepository,
+            IUserRoleRepository userRoleRepository)
         {
             _userRepository = userRepository;
             _authService = authService;
             _authBusinessRules = authBusinessRules;
             _operationClaimRepository = operationClaimRepository;
+            _userOperationClaimRepository = userOperationClaimRepository;
+            _userGroupRepository = userGroupRepository;
+            _userRoleRepository = userRoleRepository;
         }
 
         public async Task<RegisteredResponse> Handle(RegisterCommand request, CancellationToken cancellationToken)
@@ -71,15 +79,30 @@ public class RegisterCommand : IRequest<RegisteredResponse>
 
             foreach (var claim in allClaims)
             {
-                await _userOperationClaimRepository.AddAsync(new UserOperationClaim
+                if (claim.Name.Contains("Read"))
                 {
-                    Id = new Guid(),
-                    UserId = createdUser.Id,
-                    OperationClaimId = claim.Id,
-                    CreatedDate = DateTime.UtcNow,
-                    User = createdUser
-                });
+                    await _userOperationClaimRepository.AddAsync(new UserOperationClaim
+                    {
+                        Id = new Guid(),
+                        UserId = createdUser.Id,
+                        OperationClaimId = claim.Id,
+                        CreatedDate = DateTime.UtcNow,
+                        User = createdUser
+                    });
+                }
             }
+
+            await _userGroupRepository.AddAsync(new UserGroup
+            {
+                UserId = createdUser.Id,
+                GroupId = 4
+            });
+
+            await _userRoleRepository.AddAsync(new UserRole
+            {
+                UserId = createdUser.Id,
+                RoleId = 3
+            });
 
             AccessToken createdAccessToken = await _authService.CreateAccessToken(createdUser);
 

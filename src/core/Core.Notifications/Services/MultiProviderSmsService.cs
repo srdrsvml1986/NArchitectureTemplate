@@ -1,20 +1,20 @@
 ﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
+using NArchitectureTemplate.Core.CrossCuttingConcerns.Logging.Abstraction;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Application.Services.NotificationServices
+namespace NArchitectureTemplate.Core.Notification.Services
 {
     public class MultiProviderSmsService : ISmsService
     {
         private readonly ISmsServiceFactory _serviceFactory;
-        private readonly ILogger<MultiProviderSmsService> _logger;
+        private readonly ILogger _logger;
         private readonly IConfiguration _configuration;
 
         public MultiProviderSmsService(
             ISmsServiceFactory serviceFactory,
-            ILogger<MultiProviderSmsService> logger,
+            ILogger logger,
             IConfiguration configuration)
         {
             _serviceFactory = serviceFactory;
@@ -37,8 +37,8 @@ namespace Application.Services.NotificationServices
             // Eğer başarısızsa, yedek sağlayıcıyı dene
             if (!response.IsSuccess)
             {
-                _logger.LogWarning("Birincil SMS sağlayıcı ({Provider}) başarısız oldu, yedek sağlayıcı deneniyor",
-                    preferredProvider);
+                _logger.Warning(string.Format("Birincil SMS sağlayıcı ({Provider}) başarısız oldu, yedek sağlayıcı deneniyor",
+                    preferredProvider));
 
                 var fallbackProvider = GetFallbackProvider(preferredProvider);
                 var fallbackService = _serviceFactory.GetService(fallbackProvider);
@@ -67,8 +67,8 @@ namespace Application.Services.NotificationServices
             // Eğer başarısızsa, yedek sağlayıcıyı dene
             if (!response.IsSuccess)
             {
-                _logger.LogWarning("Birincil SMS sağlayıcı ({Provider}) başarısız oldu, yedek sağlayıcı deneniyor",
-                    provider);
+                _logger.Warning(string.Format("Birincil SMS sağlayıcı ({Provider}) başarısız oldu, yedek sağlayıcı deneniyor",
+                    provider));
 
                 var fallbackProvider = GetFallbackProvider(provider);
                 var fallbackService = _serviceFactory.GetService(fallbackProvider);

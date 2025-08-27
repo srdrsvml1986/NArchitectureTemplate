@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using NArchitectureTemplate.Core.Notification.Services;
 
 namespace Application.Services.EmergencyAndSecretServices;
 public class HealthCheckService : BackgroundService

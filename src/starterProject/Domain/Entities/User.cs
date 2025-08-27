@@ -53,6 +53,12 @@ public partial class User : NArchitectureTemplate.Core.Security.Entities.User<Gu
         Deleted
     }
 
+    public enum Gender
+    {
+        Male,
+        Female
+    }
+
     public string? FirstName { get; set; }
     public string? LastName { get; set; }
     [Display(Name = "Full Name")]
@@ -64,7 +70,7 @@ public partial class User : NArchitectureTemplate.Core.Security.Entities.User<Gu
         }
     }
     public string? PhotoURL { get; set; }
-    public bool? Gender { get; set; }
+    public Gender? Sex { get; set; }
     public string? PhoneNumber { get; set; }
     public string? Notes { get; set; }
     public DateTime? BirthDate { get; set; }

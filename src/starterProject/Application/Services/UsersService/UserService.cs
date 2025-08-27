@@ -5,6 +5,7 @@ using Application.Services.Repositories;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
+using NArchitectureTemplate.Core.Notification.Services;
 using NArchitectureTemplate.Core.Persistence.Paging;
 using NArchitectureTemplate.Core.Security.OAuth.Models;
 using System.Linq.Expressions;

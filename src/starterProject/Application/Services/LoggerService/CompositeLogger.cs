@@ -1,4 +1,5 @@
-﻿using NArchitectureTemplate.Core.CrossCuttingConcerns.Logging;
+﻿// CompositeLogger.cs
+using NArchitectureTemplate.Core.CrossCuttingConcerns.Logging;
 using NArchitectureTemplate.Core.CrossCuttingConcerns.Logging.Abstraction;
 using NArchitectureTemplate.Core.CrossCuttingConcerns.Logging.Configurations;
 
@@ -22,7 +23,6 @@ public class CompositeLogger : ILogger
 
     private LogLevel GetLogLevel(string category)
     {
-        // Eğer category null ise veya Override dictionary'sinde yoksa DefaultLogLevel kullan
         if (category != null && _config.Override != null && _config.Override.TryGetValue(category, out var levelStr))
         {
             if (Enum.TryParse<LogLevel>(levelStr, true, out var level))
@@ -31,41 +31,53 @@ public class CompositeLogger : ILogger
             }
         }
 
-        // Varsayılan log seviyesini döndür
         if (Enum.TryParse<LogLevel>(_config.DefaultLogLevel, true, out var defaultLevel))
         {
             return defaultLevel;
         }
 
-        // Varsayılan olarak Information seviyesini döndür
         return LogLevel.Information;
     }
 
-    public void Trace(string message) => Log(LogLevel.Trace, message);
-    public void Debug(string message) => Log(LogLevel.Debug, message);
-    public void Information(string message) => Log(LogLevel.Information, message);
-    public void Warning(string message) => Log(LogLevel.Warning, message);
-    public void Critical(string message) => Log(LogLevel.Critical, message);
-    public void Error(Exception exception, string message) => Log(LogLevel.Error, message,exception);
-    private void Log(LogLevel level, string message,Exception exception=null)
+    public void Trace(string message, params object[] args) => Log(LogLevel.Trace, message, null, args);
+    public void Debug(string message, params object[] args) => Log(LogLevel.Debug, message, null, args);
+    public void Information(string message, params object[] args) => Log(LogLevel.Information, message, null, args);
+    public void Warning(string message, params object[] args) => Log(LogLevel.Warning, message, null, args);
+    public void Critical(string message, params object[] args) => Log(LogLevel.Critical, message, null, args);
+    public void Error(string message, params object[] args) => Log(LogLevel.Error, message, null, args);
+    public void Error(Exception exception, string message, params object[] args) => Log(LogLevel.Error, message, exception, args);
+
+    private void Log(LogLevel level, string message, Exception exception = null, params object[] args)
     {
         if (!IsEnabled(level, null)) return;
-        if (exception == null && level == LogLevel.Error)
-        {
-            Console.WriteLine("LogLevel.Error olduğu halde exception null geldi");
-            return;
-        }
+
+        var formattedMessage = args?.Length > 0 ? string.Format(message, args) : message;
 
         foreach (var logger in _loggers)
         {
             switch (level)
             {
-                case LogLevel.Trace: logger.Trace(message); break;
-                case LogLevel.Debug: logger.Debug(message); break;
-                case LogLevel.Information: logger.Information(message); break;
-                case LogLevel.Warning: logger.Warning(message); break;
-                case LogLevel.Error: logger.Error(exception,message); break;
-                case LogLevel.Critical: logger.Critical(message); break;
+                case LogLevel.Trace:
+                    logger.Trace(formattedMessage);
+                    break;
+                case LogLevel.Debug:
+                    logger.Debug(formattedMessage);
+                    break;
+                case LogLevel.Information:
+                    logger.Information(formattedMessage);
+                    break;
+                case LogLevel.Warning:
+                    logger.Warning(formattedMessage);
+                    break;
+                case LogLevel.Error:
+                    if (exception != null)
+                        logger.Error(exception, formattedMessage);
+                    else
+                        logger.Error(formattedMessage);
+                    break;
+                case LogLevel.Critical:
+                    logger.Critical(formattedMessage);
+                    break;
             }
         }
     }

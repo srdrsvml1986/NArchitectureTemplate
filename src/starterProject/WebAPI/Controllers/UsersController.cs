@@ -14,7 +14,6 @@ using Application.Features.Users.Queries.GetById;
 using Application.Features.Users.Queries.GetClaimsByUserId;
 using Application.Features.Users.Queries.GetGroupsByUserId;
 using Application.Features.Users.Queries.GetList;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NArchitectureTemplate.Core.Application.Requests;
 using NArchitectureTemplate.Core.Application.Responses;
@@ -25,7 +24,7 @@ namespace WebAPI.Controllers;
 /// <summary>
 /// Kullanıcı işlemlerinin yönetildiği API controller sınıfı.
 /// </summary>
-[Route("api/[controller]")] 
+[Route("api/[controller]")]
 [ApiController]
 public class UsersController : BaseController
 {
@@ -89,25 +88,13 @@ public class UsersController : BaseController
     /// Kullanıcı bilgilerini almak için kullanılan API metodu.
     /// </summary>
     /// <returns></returns>
-
     [HttpGet("me")]
     public async Task<IActionResult> GetCurrentUser()
     {
-        try
-        {
-            var userId = getUserIdFromRequest();
-            var query = new GetByIdUserQuery { Id = userId };
-            var result = await Mediator.Send(query);
-            return Ok(result);
-        }
-        catch (UnauthorizedAccessException ex)
-        {
-            return Unauthorized(new { message = ex.Message });
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, new { message = "Bir hata oluştu" });
-        }
+        var userId = getUserIdFromRequest();
+        var query = new GetByIdUserQuery { Id = userId };
+        var result = await Mediator.Send(query);
+        return Ok(result);
     }
 
 

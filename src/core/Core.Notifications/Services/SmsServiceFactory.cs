@@ -1,25 +1,25 @@
 ﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
+using NArchitectureTemplate.Core.CrossCuttingConcerns.Logging.Abstraction;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Application.Services.NotificationServices
+namespace NArchitectureTemplate.Core.Notification.Services
 {
     public class SmsServiceFactory : ISmsServiceFactory
     {
         private readonly IConfiguration _configuration;
-        private readonly ILoggerFactory _loggerFactory;
+        private readonly ILogger _logger;
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly Dictionary<SmsProvider, ISmsService> _services;
 
         public SmsServiceFactory(
             IConfiguration configuration,
-            ILoggerFactory loggerFactory,
+            ILogger logger,
             IHttpClientFactory httpClientFactory)
         {
             _configuration = configuration;
-            _loggerFactory = loggerFactory;
+            _logger = logger;
             _httpClientFactory = httpClientFactory;
             _services = new Dictionary<SmsProvider, ISmsService>();
         }
@@ -36,14 +36,14 @@ namespace Application.Services.NotificationServices
                 case SmsProvider.Vodafone:
                     service = new VodafoneSmsService(
                         _configuration,
-                        _loggerFactory.CreateLogger<VodafoneSmsService>(),
+                        _logger,
                         _httpClientFactory.CreateClient("VodafoneSms"));
                     break;
 
                 case SmsProvider.Turkcell:
                     service = new TurkcellSmsService(
                         _configuration,
-                        _loggerFactory.CreateLogger<TurkcellSmsService>(),
+                        _logger,
                         _httpClientFactory.CreateClient("TurkcellSms"));
                     break;
 

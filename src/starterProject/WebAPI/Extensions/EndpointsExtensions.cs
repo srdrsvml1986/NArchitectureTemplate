@@ -1,6 +1,7 @@
 ﻿using Application.Services.EmergencyAndSecretServices;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using NArchitectureTemplate.Core.Notification.Services;
 using WebAPI.Extensions;
 
 public static class EndpointsExtensions

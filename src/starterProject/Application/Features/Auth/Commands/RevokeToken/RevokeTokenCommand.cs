@@ -8,12 +8,17 @@ using static Application.Features.Auth.Constants.AuthOperationClaims;
 
 namespace Application.Features.Auth.Commands.RevokeToken;
 
-public class RevokeTokenCommand : IRequest<RevokedTokenResponse>
+public class RevokeTokenCommand : IRequest<RevokedTokenResponse>, IRequestAdvancedAuthorization
 {
+
+    public string[] Roles => ["User"];
+
+    public string[] Permissions => [AuthOperationClaims.RevokeToken];
+
+    public string[] Groups => [];
+
     public string Token { get; set; }
     public string IpAddress { get; set; }
-
-    public string[] Roles => [Admin, AuthOperationClaims.RevokeToken];
 
     public RevokeTokenCommand()
     {

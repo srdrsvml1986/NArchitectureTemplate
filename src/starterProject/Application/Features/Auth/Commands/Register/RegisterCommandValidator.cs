@@ -13,14 +13,13 @@ public class RegisterCommandValidator : AbstractValidator<RegisterCommand>
             .MinimumLength(6)
             .Must(StrongPassword)
             .WithMessage(
-                "Password must contain at least one uppercase letter, one lowercase letter, one number and one special character."
+                "Şifrenizde en az bir büyük harf, bir küçük harf, bir rakam ve bir özel karakter bulunmalıdır."
             );
     }
 
     private bool StrongPassword(string value)
     {
-        Regex strongPasswordRegex = new("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$", RegexOptions.Compiled);
-
+        Regex strongPasswordRegex = new("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*+-]).{8,}$", RegexOptions.Compiled);
         return strongPasswordRegex.IsMatch(value);
     }
 }

@@ -4,6 +4,7 @@ using Application.Services.Repositories;
 using Application.Services.UsersService;
 using Microsoft.EntityFrameworkCore.Query;
 using NArchitectureTemplate.Core.CrossCuttingConcerns.Logging.Abstraction;
+using NArchitectureTemplate.Core.Notification.Services;
 using NArchitectureTemplate.Core.Persistence.Paging;
 using System.Linq.Expressions;
 

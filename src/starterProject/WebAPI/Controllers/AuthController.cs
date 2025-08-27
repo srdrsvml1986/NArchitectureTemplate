@@ -99,10 +99,11 @@ public class AuthController : BaseController
     [HttpPost("Register")]
     public async Task<IActionResult> Register([FromBody] UserForRegisterDto userForRegisterDto)
     {
-        RegisterCommand registerCommand = new() { UserForRegisterDto = userForRegisterDto, IpAddress = getIpAddress() };
+        var ua = Request.Headers["User-Agent"].ToString();
+        RegisterCommand registerCommand = new() { UserForRegisterDto = userForRegisterDto, IpAddress = getIpAddress(), UserAgent = ua };
         RegisteredResponse result = await Mediator.Send(registerCommand);
         setRefreshTokenToCookie(result.RefreshToken);
-        return Created(uri: "", result.AccessToken);
+        return Ok(new { AccessToken = result.AccessToken, RefreshToken = result.RefreshToken.Token });
     }
     /// <summary>
     /// Refresh token'ı kullanarak yeni bir access token alır.

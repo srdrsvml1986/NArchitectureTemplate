@@ -12,11 +12,11 @@ public class GetByIdUserQuery : IRequest<GetByIdUserResponse>, IRequestAdvancedA
 {
     public Guid Id { get; set; }
 
-    public string[] Roles => [UsersOperationClaims.Read];
+    public string[] Roles => [];
 
-    public string[] Permissions => ["Admin", UsersOperationClaims.Read];
+    public string[] Permissions => [UsersOperationClaims.Read];
 
-    public string[] Groups => [];
+    public string[] Groups => ["User"];
 
     public class GetByIdUserQueryHandler : IRequestHandler<GetByIdUserQuery, GetByIdUserResponse>
     {

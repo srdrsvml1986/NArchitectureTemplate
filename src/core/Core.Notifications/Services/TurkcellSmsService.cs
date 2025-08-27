@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
+using NArchitectureTemplate.Core.CrossCuttingConcerns.Logging.Abstraction;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -9,12 +9,12 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace Application.Services.NotificationServices
+namespace NArchitectureTemplate.Core.Notification.Services
 {
     public class TurkcellSmsService : ISmsService
     {
         private readonly IConfiguration _configuration;
-        private readonly ILogger<TurkcellSmsService> _logger;
+        private readonly ILogger _logger;
         private readonly HttpClient _httpClient;
         private readonly string _username;
         private readonly string _password;
@@ -24,7 +24,7 @@ namespace Application.Services.NotificationServices
         public SmsProvider Provider => SmsProvider.Vodafone; // Yeni property
         public TurkcellSmsService(
             IConfiguration configuration,
-            ILogger<TurkcellSmsService> logger,
+            ILogger logger,
             HttpClient httpClient)
         {
             _configuration = configuration;
@@ -69,7 +69,7 @@ namespace Application.Services.NotificationServices
                 {
                     var turkcellResponse = JsonSerializer.Deserialize<TurkcellSmsResponse>(responseContent);
 
-                    _logger.LogInformation("Turkcell SMS gönderildi: {To}, Message ID: {MessageId}",
+                    _logger.Information("Turkcell SMS gönderildi: {To}, Message ID: {MessageId}",
                         message.To, turkcellResponse?.MessageId);
 
                     return new SmsResponse
@@ -82,7 +82,7 @@ namespace Application.Services.NotificationServices
                 }
                 else
                 {
-                    _logger.LogError("Turkcell SMS gönderimi başarısız: {To}. Status: {StatusCode}, Response: {Response}",
+                    _logger.Warning("Turkcell SMS gönderimi başarısız: {To}. Status: {StatusCode}, Response: {Response}",
                         message.To, response.StatusCode, responseContent);
 
                     return new SmsResponse
@@ -96,7 +96,7 @@ namespace Application.Services.NotificationServices
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Turkcell SMS gönderim hatası: {To}", message.To);
+                _logger.Error(ex, "Turkcell SMS gönderim hatası: {To}", message.To);
 
                 return new SmsResponse
                 {
@@ -149,7 +149,7 @@ namespace Application.Services.NotificationServices
                 {
                     var turkcellResponse = JsonSerializer.Deserialize<TurkcellSmsResponse>(responseContent);
 
-                    _logger.LogInformation("Turkcell toplu SMS gönderildi: {Count} numara", phoneNumbers.Count);
+                    _logger.Information("Turkcell toplu SMS gönderildi: {Count} numara", phoneNumbers.Count);
 
                     return new SmsResponse
                     {
@@ -161,8 +161,8 @@ namespace Application.Services.NotificationServices
                 }
                 else
                 {
-                    _logger.LogError("Turkcell toplu SMS gönderimi başarısız. Status: {StatusCode}, Response: {Response}",
-                        response.StatusCode, responseContent);
+                    _logger.Warning(string.Format("Turkcell toplu SMS gönderimi başarısız. Status: {StatusCode}, Response: {Response}",
+                        response.StatusCode, responseContent));
 
                     return new SmsResponse
                     {
@@ -175,7 +175,7 @@ namespace Application.Services.NotificationServices
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Turkcell toplu SMS gönderim hatası");
+                _logger.Error(ex, "Turkcell toplu SMS gönderim hatası");
 
                 return new SmsResponse
                 {
@@ -204,12 +204,12 @@ namespace Application.Services.NotificationServices
                     return userInfo?.Credit ?? 0;
                 }
 
-                _logger.LogError("Turkcell bakiye sorgulama başarısız. Status: {StatusCode}", response.StatusCode);
+                _logger.Error("Turkcell bakiye sorgulama başarısız. Status: {StatusCode}", response.StatusCode);
                 return 0;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Turkcell bakiye sorgulama hatası");
+                _logger.Error(ex, "Turkcell bakiye sorgulama hatası");
                 return 0;
             }
         }
@@ -260,7 +260,7 @@ namespace Application.Services.NotificationServices
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Turkcell durum sorgulama hatası: {MessageId}", messageId);
+                _logger.Error(ex, "Turkcell durum sorgulama hatası: {MessageId}", messageId);
 
                 return new SmsResponse
                 {
@@ -302,18 +302,18 @@ namespace Application.Services.NotificationServices
                     _authToken = loginResponse?.Token;
                     _tokenExpiry = DateTime.UtcNow.AddHours(23); // 24 saat geçerli, 1 saat önceden yenilemek için
 
-                    _logger.LogInformation("Turkcell token başarıyla alındı");
+                    _logger.Information("Turkcell token başarıyla alındı");
                 }
                 else
                 {
-                    _logger.LogError("Turkcell token alma başarısız. Status: {StatusCode}, Response: {Response}",
+                    _logger.Error("Turkcell token alma başarısız. Status: {StatusCode}, Response: {Response}",
                         response.StatusCode, responseContent);
                     throw new Exception($"Token alınamadı: {responseContent}");
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Turkcell token alma hatası");
+                _logger.Error(ex, "Turkcell token alma hatası");
                 throw;
             }
         }

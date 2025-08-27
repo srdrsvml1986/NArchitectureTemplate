@@ -15,6 +15,7 @@
     <ProjectReference Include="..\..\core\Core.Localization.Resource.Yaml.DependencyInjection\Core.Localization.Resource.Yaml.DependencyInjection.csproj" />
     <ProjectReference Include="..\..\core\Core.Mailing.MailKit\Core.Mailing.MailKit.csproj" />
     <ProjectReference Include="..\..\core\Core.Mailing\Core.Mailing.csproj" />
+    <ProjectReference Include="..\..\Core\Core.Notifications\Core.Notifications.csproj" />
     <ProjectReference Include="..\..\core\Core.Security.DependencyInjection\Core.Security.DependencyInjection.csproj" />
     <ProjectReference Include="..\Domain\Domain.csproj" />
   </ItemGroup>

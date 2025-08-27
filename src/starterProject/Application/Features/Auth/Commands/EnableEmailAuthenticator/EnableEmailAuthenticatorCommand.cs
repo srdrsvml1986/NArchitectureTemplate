@@ -13,12 +13,16 @@ using Microsoft.Extensions.Configuration;
 
 namespace Application.Features.Auth.Commands.EnableEmailAuthenticator;
 
-public class EnableEmailAuthenticatorCommand : IRequest, ISecuredRequest
+public class EnableEmailAuthenticatorCommand : IRequest, IRequestAdvancedAuthorization
 {
     public Guid UserId { get; set; }
     public string VerifyEmailUrlPrefix { get; set; }
 
-    public string[] Roles => [];
+    public string[] Roles => ["User"];
+
+    public string[] Permissions => [];
+
+    public string[] Groups => [];
 
     public EnableEmailAuthenticatorCommand()
     {

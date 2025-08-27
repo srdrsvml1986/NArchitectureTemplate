@@ -3,7 +3,7 @@ using FirebaseAdmin.Messaging;
 using Google.Apis.Auth.OAuth2;
 using NArchitectureTemplate.Core.CrossCuttingConcerns.Logging.Abstraction;
 
-namespace Application.Services.NotificationServices
+namespace NArchitectureTemplate.Core.Notification.Services
 {
     public class FirebasePushNotificationService : IPushNotificationService
     {

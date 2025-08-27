@@ -3,7 +3,6 @@ using Infrastructure;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -21,7 +20,6 @@ using NArchitectureTemplate.Core.Security.OAuth.Middleware;
 using NArchitectureTemplate.Core.Security.OAuth.Services;
 using NArchitectureTemplate.Core.Security.WebApi.Swagger.Extensions;
 using Persistence;
-using Persistence.Contexts;
 using Swashbuckle.AspNetCore.SwaggerUI;
 using System.Text;
 using System.Threading.RateLimiting;
@@ -194,12 +192,21 @@ if (app.Environment.IsDevelopment() || app.Environment.IsStaging())
     });
 }
 //// Middleware'ler
-app.ConfigureCustomExceptionMiddleware(); //bu genel exeptions için Core'dan geliyor
-app.UseCustomExceptionHandler(); // bu middleware EmergencyNotificationService kullandýðýndan Core'a eklenmedi
-app.UseMiddleware<EmergencyMonitoringMiddleware>();
-app.UseMiddleware<SecurityAuditMiddleware>();
-app.UseOAuthSecurity();
+// 1. Rate limit & CSRF check
 app.UseMiddleware<OAuthRateLimitMiddleware>();
+
+// 2. Audit (her request/response’u kaydet)
+app.UseMiddleware<SecurityAuditMiddleware>();
+
+// 3. Emergency monitoring (özel header varsa)
+app.UseMiddleware<EmergencyMonitoringMiddleware>();
+
+// 4. Exception handling (tüm yukarýdakilerin hatalarýný yakalar)
+app.ConfigureCustomExceptionMiddleware();
+
+// 5. OAuth security (kimlik doðrulama / yetkilendirme)
+app.UseOAuthSecurity();
+
 
 
 app.UseDbMigrationApplier();

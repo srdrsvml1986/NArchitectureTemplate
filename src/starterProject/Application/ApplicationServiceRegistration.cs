@@ -17,7 +17,6 @@ using Application.Services.UserSessions;
 using Application.Services.UsersService;
 using FluentValidation;
 using Microsoft.AspNetCore.Identity.UI.Services;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NArchitectureTemplate.Core.Application.Pipelines.Authorization;
 using NArchitectureTemplate.Core.Application.Pipelines.Caching;
@@ -38,7 +37,7 @@ using NArchitectureTemplate.Core.Security.JWT;
 using System.Reflection;
 using Application.Services.DeviceTokens;
 using Application.Services.UserNotificationSettings;
-
+using NArchitectureTemplate.Core.Notification.Services;
 
 namespace Application;
 
@@ -81,9 +80,6 @@ public static class ApplicationServiceRegistration
 
         services.AddScoped<ICurrentUserAuthorizationService, CurrentUserAuthorizationService>();
 
-        services.AddScoped<IGroupService, GroupService>();
-        services.AddScoped<IGroupOperationClaimService, GroupOperationClaimService>();
-        services.AddScoped<IUserGroupService, UserGroupService>();
         services.AddScoped<IGroupService, GroupService>();
         services.AddScoped<IGroupOperationClaimService, GroupOperationClaimService>();
         services.AddScoped<IUserGroupService, UserGroupService>();
@@ -130,7 +126,7 @@ public static class ApplicationServiceRegistration
         {
             var loggers = new List<ILogger>();
 
-            // SerilogFileLogger'� dene
+            // SerilogFileLogger'dene
             try
             {
                 var fileLogger = sp.GetRequiredService<SerilogFileLogger>();
@@ -141,7 +137,7 @@ public static class ApplicationServiceRegistration
                 Console.WriteLine($"SerilogFileLogger al�namad�: {ex.Message}");
             }
 
-            // DatabaseLogger'� ekle
+            // DatabaseLogger' ekle
             try
             {
                 var dbLogger = sp.GetRequiredService<DatabaseLogger>();
@@ -152,7 +148,7 @@ public static class ApplicationServiceRegistration
                 Console.WriteLine($"DatabaseLogger al�namad�: {ex.Message}");
             }
 
-            // Hi� logger yoksa fallback
+            // Hi logger yoksa fallback
             if (!loggers.Any())
             {
                 loggers.Add(new ConsoleFallbackLogger());

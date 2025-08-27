@@ -10,11 +10,16 @@ using QRCoder;
 
 namespace Application.Features.Auth.Commands.EnableOtpAuthenticator;
 
-public class EnableOtpAuthenticatorCommand : IRequest<EnabledOtpAuthenticatorResponse>, ISecuredRequest
+public class EnableOtpAuthenticatorCommand : IRequest<EnabledOtpAuthenticatorResponse>, IRequestAdvancedAuthorization
 {
     public Guid UserId { get; set; }
 
-    public string[] Roles => [];
+
+    public string[] Roles => ["User"];
+
+    public string[] Permissions => [];
+
+    public string[] Groups => [];
 
     public class EnableOtpAuthenticatorCommandHandler
         : IRequestHandler<EnableOtpAuthenticatorCommand, EnabledOtpAuthenticatorResponse>

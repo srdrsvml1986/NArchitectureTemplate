@@ -3,12 +3,16 @@ using Application.Services.AuthService;
 using Application.Services.UsersService;
 using Domain.Entities;
 using MediatR;
+using NArchitectureTemplate.Core.Application.Pipelines.Authorization;
 using NArchitectureTemplate.Core.Security.JWT;
 
 namespace Application.Features.Auth.Commands.RefreshToken;
 
-public class RefreshTokenCommand : IRequest<RefreshedTokensResponse>
+public class RefreshTokenCommand : IRequest<RefreshedTokensResponse>, IRequestAdvancedAuthorization
 {
+    public string[] Roles => [];
+    public string[] Permissions => [];
+    public string[] Groups => [];
     public string RefreshToken { get; set; }
     public string IpAddress { get; set; }
 

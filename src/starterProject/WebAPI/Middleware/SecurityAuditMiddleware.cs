@@ -1,4 +1,5 @@
 ﻿using Application.Services.EmergencyAndSecretServices;
+using NArchitectureTemplate.Core.Notification.Services;
 
 namespace WebAPI.Middleware;
 public class SecurityAuditMiddleware
