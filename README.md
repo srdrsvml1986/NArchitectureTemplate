@@ -70,7 +70,7 @@ Proje, çeşitli işlevler için RESTful API endpointleri sunmaktadır. Başlıc
 -   `UserRolesController`: Kullanıcılara rol atama.
 -   `UserSessionsController`: Kullanıcı oturumlarının yönetimi.
 
-Her bir endpoint'in detaylı açıklaması, metodu, istek/yanıt yapıları için `user_manual.md` dosyasındaki "API Endpointleri" bölümünü inceleyebilirsiniz.
+Her bir endpoint'in detaylı açıklaması, metodu, istek/yanıt yapıları için `support.md` dosyasındaki "API Endpointleri" bölümünü inceleyebilirsiniz.
 
 
 
