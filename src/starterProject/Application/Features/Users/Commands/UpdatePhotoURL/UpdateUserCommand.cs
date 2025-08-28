@@ -11,17 +11,16 @@ using static Application.Features.Users.Constants.UsersOperationClaims;
 
 namespace Application.Features.Users.Commands.UpdatePhotoURL;
 
-public class UpdatePhotoUrlCommand : IRequest<UpdatedUserResponse>, ISecuredRequest
+public class UpdatePhotoUrlCommand : IRequest<UpdatedUserResponse>, IRequestAdvancedAuthorization
 {
     public Guid Id { get; set; }
     public string PhotoURL { get; set; }
+ 
+    public string[] Roles => [];
 
-    public UpdatePhotoUrlCommand()
-    {
+    public string[] Permissions => [Admin, Write, UsersOperationClaims.Update];
 
-    }
-    public string[] Roles => new[] { Admin, Write, UsersOperationClaims.Update };
-
+    public string[] Groups => [];
     public class UpdatePhotoUrlCommandHandler : IRequestHandler<UpdatePhotoUrlCommand, UpdatedUserResponse>
     {
         private readonly IUserRepository _userRepository;

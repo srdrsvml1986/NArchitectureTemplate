@@ -3,6 +3,8 @@ root = true
 
 # C# files
 [*.cs]
+charset = utf-8
+
 
 #### Core EditorConfig Options ####
 

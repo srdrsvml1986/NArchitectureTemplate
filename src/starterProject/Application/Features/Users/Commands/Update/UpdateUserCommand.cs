@@ -5,23 +5,23 @@ using AutoMapper;
 using Domain.Entities;
 using MediatR;
 using NArchitectureTemplate.Core.Application.Pipelines.Authorization;
-using NArchitectureTemplate.Core.Security.Hashing;
 using static Application.Features.Users.Constants.UsersOperationClaims;
+using static Domain.Entities.User;
 
 namespace Application.Features.Users.Commands.Update;
 
-public class UpdateUserCommand : IRequest<UpdatedUserResponse>, ISecuredRequest
+public class UpdateUserCommand : IRequest<UpdatedUserResponse>, IRequestAdvancedAuthorization
 {
     public Guid Id { get; set; }
     public string? FirstName { get; set; }
     public string? LastName { get; set; }
     public string Email { get; set; }
-    public bool? Gender { get; set; }
+    public Gender? Gender { get; set; }
     public string? PhoneNumber { get; set; }
     public string? Notes { get; set; }
     public DateTime? BirthDate { get; set; }
     public DateTime? lastActivityDate { get; set; } = DateTime.Now;
-    public bool Status { get; set; } = true;
+    public UserStatus Status { get; set; } = UserStatus.Active;
 
     public UpdateUserCommand()
     {
@@ -38,7 +38,7 @@ public class UpdateUserCommand : IRequest<UpdatedUserResponse>, ISecuredRequest
         Email = email;
     }
 
-    public UpdateUserCommand(Guid id, string? firstName, string? lastName, string email, string password,bool? gender, string? phoneNumber, string? notes, DateTime? birthDate, DateTime? lastActivityDate) : this(id, firstName, lastName, email, password)
+    public UpdateUserCommand(Guid id, string? firstName, string? lastName, string email, string password, Gender? gender, string? phoneNumber, string? notes, DateTime? birthDate, DateTime? lastActivityDate) : this(id, firstName, lastName, email, password)
     {
         Gender = gender;
         PhoneNumber = phoneNumber;
@@ -47,7 +47,11 @@ public class UpdateUserCommand : IRequest<UpdatedUserResponse>, ISecuredRequest
         this.lastActivityDate = lastActivityDate;
     }
 
-    public string[] Roles => new[] { Admin, Write, UsersOperationClaims.Update };
+    public string[] Roles => [];
+
+    public string[] Permissions => [Admin, Write, UsersOperationClaims.Update];
+
+    public string[] Groups => [];
 
     public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, UpdatedUserResponse>
     {

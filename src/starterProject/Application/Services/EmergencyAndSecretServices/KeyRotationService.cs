@@ -1,5 +1,5 @@
-﻿using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Hosting;
+using NArchitectureTemplate.Core.CrossCuttingConcerns.Logging.Abstraction;
 using System.Security.Cryptography;
 
 namespace Application.Services.EmergencyAndSecretServices;
@@ -7,12 +7,12 @@ namespace Application.Services.EmergencyAndSecretServices;
 public class KeyRotationService : BackgroundService
 {
     private readonly ILocalSecretsManager _secretsManager;
-    private readonly ILogger<KeyRotationService> _logger;
+    private readonly ILogger _logger;
     private readonly TimeSpan _rotationInterval = TimeSpan.FromDays(90);
 
     public KeyRotationService(
         ILocalSecretsManager secretsManager,
-        ILogger<KeyRotationService> logger)
+        ILogger logger)
     {
         _secretsManager = secretsManager;
         _logger = logger;
@@ -25,7 +25,7 @@ public class KeyRotationService : BackgroundService
             {
                 await Task.Delay(_rotationInterval, stoppingToken);
 
-                _logger.LogInformation("Anahtar rotasyonu başlatılıyor...");
+                _logger.Information("Anahtar rotasyonu başlatılıyor...");
 
                 // Yeni master key oluştur
                 var newMasterKey = GenerateSecureKey(32);
@@ -37,11 +37,11 @@ public class KeyRotationService : BackgroundService
                 Environment.SetEnvironmentVariable("MASTER_KEY", newMasterKey,
                     EnvironmentVariableTarget.Machine);
 
-                _logger.LogInformation("Anahtar rotasyonu başarıyla tamamlandı");
+                _logger.Information("Anahtar rotasyonu başarıyla tamamlandı");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Anahtar rotasyonu sırasında hata oluştu");
+                _logger.Error(ex, "Anahtar rotasyonu sırasında hata oluştu");
             }
     }
 

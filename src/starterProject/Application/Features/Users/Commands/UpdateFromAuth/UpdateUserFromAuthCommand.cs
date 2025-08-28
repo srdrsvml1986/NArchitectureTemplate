@@ -1,35 +1,33 @@
-﻿using Application.Features.Users.Rules;
+﻿using Application.Features.Users.Constants;
+using Application.Features.Users.Rules;
 using Application.Services.AuthService;
 using Application.Services.Repositories;
 using AutoMapper;
 using Domain.Entities;
 using MediatR;
-using NArchitectureTemplate.Core.Security.Hashing;
+using NArchitectureTemplate.Core.Application.Pipelines.Authorization;
+using static Domain.Entities.User;
 
 namespace Application.Features.Users.Commands.UpdateFromAuth;
 
-public class UpdateUserFromAuthCommand : IRequest<UpdatedUserFromAuthResponse>
+public class UpdateUserFromAuthCommand : IRequest<UpdatedUserFromAuthResponse>,IRequestAdvancedAuthorization
 {
     public Guid Id { get; set; }
-    public string FirstName { get; set; }
-    public string LastName { get; set; }
-    public string Password { get; set; }
-    public string? NewPassword { get; set; }
+    public string? FirstName { get; set; }
+    public string? LastName { get; set; }
+    public string Email { get; set; }
+    public Gender? Gender { get; set; }
+    public string? PhoneNumber { get; set; }
+    public string? Notes { get; set; }
+    public DateTime? BirthDate { get; set; }
+    public DateTime? lastActivityDate { get; set; } = DateTime.Now;
+    public UserStatus Status { get; set; } = UserStatus.Active;
 
-    public UpdateUserFromAuthCommand()
-    {
-        FirstName = string.Empty;
-        LastName = string.Empty;
-        Password = string.Empty;
-    }
+    public string[] Roles => ["User"];
 
-    public UpdateUserFromAuthCommand(Guid id, string firstName, string lastName, string password)
-    {
-        Id = id;
-        FirstName = firstName;
-        LastName = lastName;
-        Password = password;
-    }
+    public string[] Permissions => [UsersOperationClaims.Update];
+
+    public string[] Groups => [];
 
     public class UpdateUserFromAuthCommandHandler : IRequestHandler<UpdateUserFromAuthCommand, UpdatedUserFromAuthResponse>
     {
@@ -61,20 +59,9 @@ public class UpdateUserFromAuthCommand : IRequest<UpdatedUserFromAuthResponse>
                 cancellationToken: cancellationToken
             );
             await _userBusinessRules.UserShouldBeExistsWhenSelected(user);
-            await _userBusinessRules.UserPasswordShouldBeMatched(user: user!, request.Password);
             await _userBusinessRules.UserEmailShouldNotExistsWhenUpdate(user!.Id, user.Email);
 
             user = _mapper.Map(request, user);
-            if (request.NewPassword != null && !string.IsNullOrWhiteSpace(request.NewPassword))
-            {
-                HashingHelper.CreatePasswordHash(
-                    request.Password,
-                    passwordHash: out byte[] passwordHash,
-                    passwordSalt: out byte[] passwordSalt
-                );
-                user!.PasswordHash = passwordHash;
-                user!.PasswordSalt = passwordSalt;
-            }
 
             User updatedUser = await _userRepository.UpdateAsync(user!);
 

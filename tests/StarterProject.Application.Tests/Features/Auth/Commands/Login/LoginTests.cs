@@ -95,9 +95,9 @@ public class LoginTests
 
         #endregion
         AuditService auditService = new();
-        AuthBusinessRules authBusinessRules = new(_userRepository, localizationService, auditService);
-        UserBusinessRules _userBusinessRules = new(_userRepository, localizationService);
-        IUserService _userService = new UserService(_userRepository, _userBusinessRules,_pushNotificationService,deviceTokenService);
+        IUserService _userService = new UserService(_userRepository, _pushNotificationService, deviceTokenService);
+        UserBusinessRules _userBusinessRules = new(localizationService,_userService);
+        AuthBusinessRules authBusinessRules = new( localizationService, auditService, _userService);
         IAuthService _authService = new AuthService(
                    _userOperationClaimRepository,
                    _refreshTokenRepository,

@@ -1,16 +1,16 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using NArchitectureTemplate.Core.CrossCuttingConcerns.Logging.Abstraction;
 using NArchitectureTemplate.Core.Notification.Services;
 
 namespace Application.Services.EmergencyAndSecretServices;
 public class HealthCheckService : BackgroundService
 {
-    private readonly ILogger<HealthCheckService> _logger;
+    private readonly ILogger _logger;
     private readonly IServiceProvider _serviceProvider;
     private readonly TimeSpan _healthCheckInterval = TimeSpan.FromMinutes(5); // 5 dakikada bir
 
-    public HealthCheckService(ILogger<HealthCheckService> logger, IServiceProvider serviceProvider)
+    public HealthCheckService(ILogger logger, IServiceProvider serviceProvider)
     {
         _logger = logger;
         _serviceProvider = serviceProvider;
@@ -18,7 +18,7 @@ public class HealthCheckService : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        _logger.LogInformation("HealthCheck Service başlatıldı. Kontrol aralığı: {HealthCheckInterval}", _healthCheckInterval);
+        _logger.Information("HealthCheck Service başlatıldı. Kontrol aralığı: {HealthCheckInterval}", _healthCheckInterval);
 
         while (!stoppingToken.IsCancellationRequested)
             try
@@ -42,21 +42,21 @@ public class HealthCheckService : BackgroundService
                             "Secrets manager sağlık kontrolü başarısız!"
                         );
                     else
-                        _logger.LogInformation("Secrets manager sağlık kontrolü başarılı");
+                        _logger.Information("Secrets manager sağlık kontrolü başarılı");
                 }
 
                 await Task.Delay(_healthCheckInterval, stoppingToken);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "HealthCheck Service'de hata oluştu");
+                _logger.Error(ex, "HealthCheck Service'de hata oluştu");
                 await Task.Delay(TimeSpan.FromMinutes(100), stoppingToken); // 100 dakika bekle ve tekrar dene
             }
     }
 
     public override async Task StopAsync(CancellationToken cancellationToken)
     {
-        _logger.LogInformation("HealthCheck Service durduruluyor...");
+        _logger.Information("HealthCheck Service durduruluyor...");
         await base.StopAsync(cancellationToken);
     }
 }

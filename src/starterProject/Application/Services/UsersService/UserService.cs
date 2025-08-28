@@ -16,15 +16,13 @@ namespace Application.Services.UsersService;
 public class UserService : IUserService
 {
     private readonly IUserRepository _userRepository;
-    private readonly UserBusinessRules _userBusinessRules;
     private readonly IPushNotificationService _pushNotificationService;
     private readonly IDeviceTokenService _deviceTokenService;
 
 
-    public UserService(IUserRepository userRepository, UserBusinessRules userBusinessRules, IPushNotificationService pushNotificationService, IDeviceTokenService deviceTokenService)
+    public UserService(IUserRepository userRepository, IPushNotificationService pushNotificationService, IDeviceTokenService deviceTokenService)
     {
         _userRepository = userRepository;
-        _userBusinessRules = userBusinessRules;
         _pushNotificationService = pushNotificationService;
         _deviceTokenService = deviceTokenService;
     }
@@ -67,25 +65,31 @@ public class UserService : IUserService
 
     public async Task<User> AddAsync(User user)
     {
-        await _userBusinessRules.UserEmailShouldNotExistsWhenInsert(user.Email);
-
+        bool doesExists = await UserEmailShouldNotExistsWhenInsert(user.Email);
+        if (doesExists)
+            throw new Exception("User email already exists.");
+        user.CreatedDate = DateTime.UtcNow;
         User addedUser = await _userRepository.AddAsync(user);
 
+        await SendNewUserNotificationToAdmins(user);
         return addedUser;
     }
 
     public async Task<User> UpdateAsync(User user)
     {
-        await _userBusinessRules.UserEmailShouldNotExistsWhenUpdate(user.Id, user.Email);
+        bool doesExists = await UserEmailShouldNotExistsWhenUpdate(user.Id, user.Email);
+        if (doesExists)
+            throw new Exception("User email already exists.");
 
+        user.UpdatedDate = DateTime.UtcNow;
         User updatedUser = await _userRepository.UpdateAsync(user);
-
         return updatedUser;
     }
 
     public async Task<User> DeleteAsync(User user, bool permanent = false)
     {
         user.Status = UserStatus.Deleted;
+        user.DeletedDate = DateTime.UtcNow;
         User deletedUser = await _userRepository.DeleteAsync(user);
 
         return deletedUser;
@@ -102,15 +106,20 @@ public class UserService : IUserService
                 FirstName = externalUser.FirstName,
                 LastName = externalUser.LastName,
                 Status = UserStatus.Active,
-                ExternalAuthProvider = externalUser.Provider
+                ExternalAuthProvider = externalUser.Provider,
+                lastActivityDate = DateTime.UtcNow,
+                CreatedDate= DateTime.UtcNow
             };
             await _userRepository.AddAsync(user);
+            await SendNewUserNotificationToAdmins(user);
         }
         else
         {
             user.FirstName = externalUser.FirstName;
             user.LastName = externalUser.LastName;
             user.ExternalAuthProvider = externalUser.Provider;
+            user.lastActivityDate = DateTime.UtcNow;
+            user.UpdatedDate = DateTime.UtcNow;
             await _userRepository.UpdateAsync(user);
         }
 
@@ -148,41 +157,52 @@ public class UserService : IUserService
     }
     private async Task SendNewUserNotificationToAdmins(User newUser)
     {
-        //try
-        //{
-        //    var adminUsers = await _userRepository.GetListAsync(
-        //        predicate: u => u.UserRoles.Any(ur => ur.Role.Name == "Admin"),
-        //        include: u => u.Include(u => u.UserRoles).ThenInclude(ur => ur.Role)
-        //    );
+        try
+        {
+            var adminUsers = await _userRepository.GetListAsync(
+                predicate: u => u.UserRoles.Any(ur => ur.Role.Name == "Admin"),
+                include: u => u.Include(u => u.UserRoles).ThenInclude(ur => ur.Role)
+            );
 
-        //    var adminTokens = adminUsers.Items
-        //        .Where(u => u.DeviceTokens != null && u.DeviceTokens.Any())
-        //        .SelectMany(u => u.DeviceTokens)
-        //        .ToList();
+            var adminTokens = adminUsers.Items
+                .Where(u => u.DeviceTokens != null && u.DeviceTokens.Any())
+                .SelectMany(u => u.DeviceTokens).Select(d=> d.Token)
+                .ToList(); 
 
-        //    if (adminTokens.Any())
-        //    {
-        //        var notification = new PushNotification
-        //        {
-        //            Title = "Yeni Kullanıcı Kaydı",
-        //            Body = $"{newUser.Email} email adresli yeni bir kullanıcı kayıt oldu.",
-        //            DeviceTokens = adminTokens,
-        //            Data = new Dictionary<string, string>
-        //            {
-        //                {"eventType", "userRegistered"},
-        //                {"userId", newUser.Id.ToString()},
-        //                {"userEmail", newUser.Email}
-        //            },
-        //            Priority = PushNotificationPriority.Normal
-        //        };
+            if (adminTokens.Any())
+            {
+                var notification = new PushNotification
+                {
+                    Title = "Yeni Kullanıcı Kaydı",
+                    Body = $"{newUser.Email} email adresli yeni bir kullanıcı kayıt oldu.",
+                    DeviceTokens = adminTokens,
+                    Data = new Dictionary<string, string>
+                    {
+                        {"eventType", "userRegistered"},
+                        {"userId", newUser.Id.ToString()},
+                        {"userEmail", newUser.Email}
+                    },
+                    Priority = PushNotificationPriority.Normal
+                };
 
-        //        await _pushNotificationService.SendAsync(notification);
-        //    }
-        //}
-        //catch (Exception ex)
-        //{
-        //    // Bildirim hatası ana işlemi etkilememeli
-        //    // Loglama yapılabilir
-        //}
+                await _pushNotificationService.SendAsync(notification);
+            }
+        }
+        catch (Exception ex)
+        {
+            // Bildirim hatası ana işlemi etkilememeli
+            // Loglama yapılabilir
+        }
     }
+
+    public Task AddLoginAttempt(User user)
+    {
+        user.lastActivityDate = DateTime.UtcNow;
+        return _userRepository.UpdateAsync(user);
+    }
+
+    public Task<bool> UserEmailShouldBeNotExists(string email) => _userRepository.AnyAsync(predicate: u => u.Email == email);
+    public Task<bool> UserEmailShouldNotExistsWhenInsert(string email) => _userRepository.AnyAsync(predicate: u => u.Email == email);
+    public Task<bool> UserIdShouldBeExistsWhenSelected(Guid id) => _userRepository.AnyAsync(predicate: u => u.Id == id);
+    public Task<bool> UserEmailShouldNotExistsWhenUpdate(Guid id, string email) => _userRepository.AnyAsync(predicate: u => u.Id != id && u.Email == email);
 }

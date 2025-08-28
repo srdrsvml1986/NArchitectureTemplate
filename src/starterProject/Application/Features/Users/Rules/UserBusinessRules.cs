@@ -1,5 +1,5 @@
 using Application.Features.Users.Constants;
-using Application.Services.Repositories;
+using Application.Services.UsersService;
 using Domain.Entities;
 using NArchitectureTemplate.Core.Application.Rules;
 using NArchitectureTemplate.Core.CrossCuttingConcerns.Exception.Types;
@@ -10,13 +10,13 @@ namespace Application.Features.Users.Rules;
 
 public class UserBusinessRules : BaseBusinessRules
 {
-    private readonly IUserRepository _userRepository;
+    private readonly IUserService _userService;
     private readonly ILocalizationService _localizationService;
 
-    public UserBusinessRules(IUserRepository userRepository, ILocalizationService localizationService)
+    public UserBusinessRules(ILocalizationService localizationService, IUserService userService)
     {
-        _userRepository = userRepository;
         _localizationService = localizationService;
+        _userService = userService;
     }
 
     private async Task throwBusinessException(string messageKey)
@@ -33,7 +33,7 @@ public class UserBusinessRules : BaseBusinessRules
 
     public async Task UserIdShouldBeExistsWhenSelected(Guid id)
     {
-        bool doesExist = await _userRepository.AnyAsync(predicate: u => u.Id == id);
+        bool doesExist = await _userService.UserIdShouldBeExistsWhenSelected(id);
         if (doesExist)
             await throwBusinessException(UsersMessages.UserDontExists);
     }
@@ -46,14 +46,14 @@ public class UserBusinessRules : BaseBusinessRules
 
     public async Task UserEmailShouldNotExistsWhenInsert(string email)
     {
-        bool doesExists = await _userRepository.AnyAsync(predicate: u => u.Email == email);
+        bool doesExists = await _userService.UserEmailShouldNotExistsWhenInsert(email);
         if (doesExists)
             await throwBusinessException(UsersMessages.UserMailAlreadyExists);
     }
 
     public async Task UserEmailShouldNotExistsWhenUpdate(Guid id, string email)
     {
-        bool doesExists = await _userRepository.AnyAsync(predicate: u => u.Id != id && u.Email == email);
+        bool doesExists = await _userService.UserEmailShouldNotExistsWhenUpdate(id,email);
         if (doesExists)
             await throwBusinessException(UsersMessages.UserMailAlreadyExists);
     }

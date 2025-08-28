@@ -1,6 +1,7 @@
 using Application.Features.Users.Constants;
 using Application.Features.Users.Rules;
 using Application.Services.Repositories;
+using Application.Services.UsersService;
 using AutoMapper;
 using Domain.Entities;
 using MediatR;
@@ -21,8 +22,6 @@ public class UpdateUserStatusCommand : IRequest<UpdatedUserStatusResponse>, ISec
     /// <example>Active</example>
     public UserStatus Status { get; set; }
 
-    public DateTime? lastActivityDate { get;} = DateTime.Now;
-
     public UpdateUserStatusCommand()
     {
         Status = UserStatus.Inactive;
@@ -38,27 +37,27 @@ public class UpdateUserStatusCommand : IRequest<UpdatedUserStatusResponse>, ISec
 
     public class UpdateUserStatusCommandHandler : IRequestHandler<UpdateUserStatusCommand, UpdatedUserStatusResponse>
     {
-        private readonly IUserRepository _userRepository;
+        private readonly IUserService _userService;
         private readonly IMapper _mapper;
         private readonly UserBusinessRules _userBusinessRules;
 
-        public UpdateUserStatusCommandHandler(IUserRepository userRepository, IMapper mapper, UserBusinessRules userBusinessRules)
+        public UpdateUserStatusCommandHandler(IMapper mapper, UserBusinessRules userBusinessRules, IUserService userService)
         {
-            _userRepository = userRepository;
             _mapper = mapper;
             _userBusinessRules = userBusinessRules;
+            _userService = userService;
         }
 
         public async Task<UpdatedUserStatusResponse> Handle(UpdateUserStatusCommand request, CancellationToken cancellationToken)
         {            
-            User? user = await _userRepository.GetAsync(
+            User? user = await _userService.GetAsync(
                 predicate: u => u.Id.Equals(request.Id),
                 cancellationToken: cancellationToken
             );
             await _userBusinessRules.UserShouldBeExistsWhenSelected(user);
             user = _mapper.Map(request, user);
             user.Status = request.Status;
-            await _userRepository.UpdateAsync(user);
+            await _userService.UpdateAsync(user);
 
             UpdatedUserStatusResponse response = _mapper.Map<UpdatedUserStatusResponse>(user);
             return response;

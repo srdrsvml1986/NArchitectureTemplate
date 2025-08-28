@@ -33,7 +33,7 @@ WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 builder.Configuration
     .AddJsonFile("appsettings.json", optional: false)
     .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true);
-// HTTP client'larý kaydet
+// HTTP client'larÄ± kaydet
 builder.Services.AddHttpClient("VodafoneSms", client =>
 {
     client.BaseAddress = new Uri(builder.Configuration["Sms:Vodafone:BaseUrl"] ?? "https://api.vodafone.com/");
@@ -63,6 +63,8 @@ builder.Services.Configure<GoogleAuthConfig>(
     builder.Configuration.GetSection("Authentication:Google"));
 builder.Services.Configure<FacebookAuthConfig>(
     builder.Configuration.GetSection("Authentication:Facebook"));
+builder.Services.Configure<FrontedConfig>(
+    builder.Configuration.GetSection("FrontedConfig"));
 
 EncryptionHelper.Initialize(builder.Configuration);
 
@@ -84,7 +86,6 @@ builder.Services.AddAuthentication(options =>
         options.AppId = builder.Configuration["Authentication:Facebook:AppId"]!;
         options.AppSecret = builder.Configuration["Authentication:Facebook:AppSecret"]!;
     });
-
 
 builder.Services.AddScoped<IGoogleAuthService, GoogleAuthService>();
 builder.Services.AddScoped<IFacebookAuthService, FacebookAuthService>();
@@ -119,7 +120,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateIssuer = true,
             ValidateAudience = true,
             ValidateLifetime = true,
-            ClockSkew = TimeSpan.Zero, // Token süresi bitiminden sonra 0 saniye bekle
+            ClockSkew = TimeSpan.Zero, // Token sÃ¼resi bitiminden sonra 0 saniye bekle
             ValidIssuer = tokenOptions.Issuer,
             ValidAudience = tokenOptions.Audience,
             ValidateIssuerSigningKey = true,
@@ -137,15 +138,15 @@ builder.Services.AddCors(opt =>
 );
 builder.Services.AddSwaggerGen(opt =>
 {
-    // API'nin genel bilgilerini tanýmlama
+    // API'nin genel bilgilerini tanÄ±mlama
     opt.SwaggerDoc("v2", new OpenApiInfo
     {
         Version = "v2",
         Title = "Auth API",
-        Description = "Authentication ve Authorization iþlemleri için REST API",
+        Description = "Authentication ve Authorization iÅŸlemleri iÃ§in REST API",
         Contact = new OpenApiContact
         {
-            Name = "API Geliþtirici Ekibi",
+            Name = "API GeliÅŸtirici Ekibi",
             Email = "bilgi@serdarsevimli.tr"
         }
     });
@@ -195,16 +196,16 @@ if (app.Environment.IsDevelopment() || app.Environment.IsStaging())
 // 1. Rate limit & CSRF check
 app.UseMiddleware<OAuthRateLimitMiddleware>();
 
-// 2. Audit (her request/response’u kaydet)
+// 2. Audit (her request/responseâ€™u kaydet)
 app.UseMiddleware<SecurityAuditMiddleware>();
 
-// 3. Emergency monitoring (özel header varsa)
+// 3. Emergency monitoring (Ã¶zel header varsa)
 app.UseMiddleware<EmergencyMonitoringMiddleware>();
 
-// 4. Exception handling (tüm yukarýdakilerin hatalarýný yakalar)
+// 4. Exception handling (tÃ¼m yukarÄ±dakilerin hatalarÄ±nÄ± yakalar)
 app.ConfigureCustomExceptionMiddleware();
 
-// 5. OAuth security (kimlik doðrulama / yetkilendirme)
+// 5. OAuth security (kimlik doÄŸrulama / yetkilendirme)
 app.UseOAuthSecurity();
 
 
@@ -236,7 +237,7 @@ app.UseHsts();
 
 app.UseHttpsRedirection();
 
-// OAuth callback'ler için HTTPS zorunluluðu
+// OAuth callback'ler iÃ§in HTTPS zorunluluÄŸu
 app.Use(async (context, next) =>
 {
     if (context.Request.Path.StartsWithSegments("/auth")
@@ -249,7 +250,7 @@ app.Use(async (context, next) =>
     await next();
 });
 
-// Secret yönetimi için endpoint (sadece development)
+// Secret yÃ¶netimi iÃ§in endpoint (sadece development)
 if (app.Environment.IsDevelopment() || app.Environment.IsStaging())
 {
     app.MapSecretManagerEndpoints();
@@ -257,11 +258,11 @@ if (app.Environment.IsDevelopment() || app.Environment.IsStaging())
     app.MapEmergencyEndpoints();
 }
 
-//// Database migration iþlemleri
-//// Bu kýsým, EF Core migration'larýný uygulamak için kullanýlýr.
-//// Eðer veritabaný henüz oluþturulmamýþsa, önce veritabanýný oluþturur, ardýndan migration'larý uygular.
-//// Bu iþlem, uygulama baþlatýlýrken otomatik olarak yapýlýr.
-//// Bu, genellikle geliþtirme ortamýnda kullanýlýr.
+//// Database migration iÅŸlemleri
+//// Bu kÄ±sÄ±m, EF Core migration'larÄ±nÄ± uygulamak iÃ§in kullanÄ±lÄ±r.
+//// EÄŸer veritabanÄ± henÃ¼z oluÅŸturulmamÄ±ÅŸsa, Ã¶nce veritabanÄ±nÄ± oluÅŸturur, ardÄ±ndan migration'larÄ± uygular.
+//// Bu iÅŸlem, uygulama baÅŸlatÄ±lÄ±rken otomatik olarak yapÄ±lÄ±r.
+//// Bu, genellikle geliÅŸtirme ortamÄ±nda kullanÄ±lÄ±r.
 //using (var scope = app.Services.CreateScope())
 //{
 //    var env = scope.ServiceProvider.GetRequiredService<IWebHostEnvironment>();
@@ -283,18 +284,18 @@ if (app.Environment.IsDevelopment() || app.Environment.IsStaging())
 //    }
 //}
 
-// Uygulama baþlarken örnek log
+// Uygulama baÅŸlarken Ã¶rnek log
 using (var scope = app.Services.CreateScope())
 {
     try
     {
         var logger = scope.ServiceProvider.GetRequiredService<NArchitectureTemplate.Core.CrossCuttingConcerns.Logging.Abstraction.ILogger>();
-        logger.Information($"Uygulama baþlatýldý: {DateTime.UtcNow}, Environment: {builder.Environment.EnvironmentName}");
+        logger.Information($"Uygulama baÅŸlatÄ±ldÄ±: {DateTime.UtcNow}, Environment: {builder.Environment.EnvironmentName}");
 
     }
     catch (Exception ex)
     {
-        Console.WriteLine($"Loglama hatasý: {ex.Message}");
+        Console.WriteLine($"Loglama hatasÄ±: {ex.Message}");
     }
 }
 

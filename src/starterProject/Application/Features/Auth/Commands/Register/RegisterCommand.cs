@@ -1,6 +1,10 @@
 ﻿using Application.Features.Auth.Rules;
 using Application.Services.AuthService;
-using Application.Services.Repositories;
+using Application.Services.OperationClaims;
+using Application.Services.UserGroups;
+using Application.Services.UserOperationClaims;
+using Application.Services.UserRoles;
+using Application.Services.UsersService;
 using Domain.Entities;
 using MediatR;
 using NArchitectureTemplate.Core.Application.Dtos;
@@ -31,31 +35,30 @@ public class RegisterCommand : IRequest<RegisteredResponse>
 
     public class RegisterCommandHandler : IRequestHandler<RegisterCommand, RegisteredResponse>
     {
-        private readonly IUserRepository _userRepository;
-        private readonly IUserOperationClaimRepository _userOperationClaimRepository;
-        private readonly IOperationClaimRepository _operationClaimRepository;
-        private readonly IUserGroupRepository _userGroupRepository;
-        private readonly IUserRoleRepository _userRoleRepository;
+        private readonly IUserService _userService;
+        private readonly IUserOperationClaimService _userOperationClaimService;
+        private readonly IUserGroupService _userGroupService;
+        private readonly IOperationClaimService _operationClaimService;
+        private readonly IUserRoleService _userRoleService;
         private readonly IAuthService _authService;
         private readonly AuthBusinessRules _authBusinessRules;
 
         public RegisterCommandHandler(
-            IUserRepository userRepository,
             IAuthService authService,
             AuthBusinessRules authBusinessRules,
-            IOperationClaimRepository operationClaimRepository,
-            IUserOperationClaimRepository userOperationClaimRepository
-,
-            IUserGroupRepository userGroupRepository,
-            IUserRoleRepository userRoleRepository)
+            IUserService userService,
+            IUserOperationClaimService userOperationClaimService,
+            IUserGroupService userGroupService,
+            IOperationClaimService operationClaimService,
+            IUserRoleService userRoleService)
         {
-            _userRepository = userRepository;
             _authService = authService;
             _authBusinessRules = authBusinessRules;
-            _operationClaimRepository = operationClaimRepository;
-            _userOperationClaimRepository = userOperationClaimRepository;
-            _userGroupRepository = userGroupRepository;
-            _userRoleRepository = userRoleRepository;
+            _userService = userService;
+            _userOperationClaimService = userOperationClaimService;
+            _userGroupService = userGroupService;
+            _operationClaimService = operationClaimService;
+            _userRoleService = userRoleService;
         }
 
         public async Task<RegisteredResponse> Handle(RegisterCommand request, CancellationToken cancellationToken)
@@ -74,14 +77,14 @@ public class RegisterCommand : IRequest<RegisteredResponse>
                     PasswordHash = passwordHash,
                     PasswordSalt = passwordSalt,
                 };
-            User createdUser = await _userRepository.AddAsync(newUser);
-            var allClaims = _operationClaimRepository.Query().ToList();
+            User createdUser = await _userService.AddAsync(newUser);
+            var allClaims = await _operationClaimService.GetListAsync();
 
-            foreach (var claim in allClaims)
+            foreach (var claim in allClaims.Items)
             {
                 if (claim.Name.Contains("Read"))
                 {
-                    await _userOperationClaimRepository.AddAsync(new UserOperationClaim
+                    await _userOperationClaimService.AddAsync(new UserOperationClaim
                     {
                         Id = new Guid(),
                         UserId = createdUser.Id,
@@ -92,13 +95,13 @@ public class RegisterCommand : IRequest<RegisteredResponse>
                 }
             }
 
-            await _userGroupRepository.AddAsync(new UserGroup
+            await _userGroupService.AddAsync(new UserGroup
             {
                 UserId = createdUser.Id,
                 GroupId = 4
             });
 
-            await _userRoleRepository.AddAsync(new UserRole
+            await _userRoleService.AddAsync(new UserRole
             {
                 UserId = createdUser.Id,
                 RoleId = 3

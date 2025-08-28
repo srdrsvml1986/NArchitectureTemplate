@@ -1,30 +1,27 @@
 using Application.Features.Auth.Constants;
 using Application.Services.EmergencyAndSecretServices;
-using Application.Services.Repositories;
+using Application.Services.UsersService;
 using Domain.Entities;
-using Elasticsearch.Net;
 using NArchitectureTemplate.Core.Application.Rules;
 using NArchitectureTemplate.Core.CrossCuttingConcerns.Exception.Types;
 using NArchitectureTemplate.Core.Localization.Abstraction;
 using NArchitectureTemplate.Core.Security.Enums;
 using NArchitectureTemplate.Core.Security.Hashing;
-using Nest;
-using Org.BouncyCastle.Asn1.Ocsp;
 using static Domain.Entities.User;
 
 namespace Application.Features.Auth.Rules;
 
 public class AuthBusinessRules : BaseBusinessRules
 {
-    private readonly IUserRepository _userRepository;
+    private readonly IUserService _userService;
     private readonly ILocalizationService _localizationService;
     private readonly AuditService _auditService;
 
-    public AuthBusinessRules(IUserRepository userRepository, ILocalizationService localizationService, AuditService auditService)
+    public AuthBusinessRules(ILocalizationService localizationService, AuditService auditService, IUserService userService)
     {
-        _userRepository = userRepository;
         _localizationService = localizationService;
         _auditService = auditService;
+        _userService = userService;
     }
 
     private async Task throwBusinessException(string messageKey)
@@ -91,7 +88,7 @@ public class AuthBusinessRules : BaseBusinessRules
 
     public async Task UserEmailShouldBeNotExists(string email)
     {
-        bool doesExists = await _userRepository.AnyAsync(predicate: u => u.Email == email);
+        bool doesExists = await _userService.UserEmailShouldBeNotExists(email);
         if (doesExists)
             await throwBusinessException(AuthMessages.UserMailAlreadyExists);
     }

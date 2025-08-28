@@ -1,5 +1,7 @@
+using Application.Features.Users.Commands.ForgotPassword;
 using Application.Services;
 using Application.Services.AuthService;
+using Application.Services.DeviceTokens;
 using Application.Services.EmergencyAndSecretServices;
 using Application.Services.ExceptionLogs;
 using Application.Services.GroupOperationClaims;
@@ -12,6 +14,7 @@ using Application.Services.PasswordResetTokens;
 using Application.Services.RoleOperationClaims;
 using Application.Services.Roles;
 using Application.Services.UserGroups;
+using Application.Services.UserNotificationSettings;
 using Application.Services.UserRoles;
 using Application.Services.UserSessions;
 using Application.Services.UsersService;
@@ -32,12 +35,10 @@ using NArchitectureTemplate.Core.ElasticSearch.Models;
 using NArchitectureTemplate.Core.Localization.Resource.Yaml.DependencyInjection;
 using NArchitectureTemplate.Core.Mailing;
 using NArchitectureTemplate.Core.Mailing.MailKit;
+using NArchitectureTemplate.Core.Notification.Services;
 using NArchitectureTemplate.Core.Security.DependencyInjection;
 using NArchitectureTemplate.Core.Security.JWT;
 using System.Reflection;
-using Application.Services.DeviceTokens;
-using Application.Services.UserNotificationSettings;
-using NArchitectureTemplate.Core.Notification.Services;
 
 namespace Application;
 
@@ -50,7 +51,7 @@ public static class ApplicationServiceRegistration
         ElasticSearchConfig elasticSearchConfig,
         TokenOptions tokenOptions,
         LoggingConfig loggingConfig
-    )
+        )
     {
         services.AddAutoMapper(cfg => { }, Assembly.GetExecutingAssembly());
         services.AddMediatR(configuration =>

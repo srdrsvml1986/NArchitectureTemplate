@@ -35,4 +35,9 @@ public interface IUserService
     Task RemoveDeviceTokenAsync(string token);
     Task<List<string>> GetUserDeviceTokensAsync(Guid userId);
     Task DeactivateDeviceTokenAsync(string token);
+    Task AddLoginAttempt(User user);
+    Task<bool> UserEmailShouldBeNotExists(string email);
+    Task<bool> UserEmailShouldNotExistsWhenUpdate(Guid id, string email);
+    Task<bool> UserEmailShouldNotExistsWhenInsert(string email);
+    Task<bool> UserIdShouldBeExistsWhenSelected(Guid id);
 }

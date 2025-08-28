@@ -74,6 +74,18 @@ public class UsersController : BaseController
         return Ok(result);
     }
     /// <summary>
+    /// Kullanıcı bilgilerini güncellemek için kullanılan API metodu.
+    /// </summary>
+    /// <param name="updateUserCommand"></param>
+    /// <returns></returns>
+    [HttpPut("UpdateFromAuth")]
+    public async Task<IActionResult> UpdateUserFromAuthCommand([FromBody] UpdateUserFromAuthCommand updateUserCommand)
+    {
+        updateUserCommand.Id = getUserIdFromRequest();
+        UpdatedUserFromAuthResponse result = await Mediator.Send(updateUserCommand);
+        return Ok(result);
+    }
+    /// <summary>
     /// Kullanıcı bilgilerini silmek için kullanılan API metodu.
     /// </summary>
     /// <param name="deleteUserCommand"></param>

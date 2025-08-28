@@ -74,7 +74,7 @@ public class LoginCommand : IRequest<LoggedResponse>
                 await _authService.VerifyAuthenticatorCode(user, request.UserForLoginDto.AuthenticatorCode);
             }
 
-
+            
             AccessToken createdAccessToken = await _authService.CreateAccessToken(user);
 
             Domain.Entities.RefreshToken createdRefreshToken = await _authService.CreateRefreshToken(user, request.IpAddress, request.UserAgent);
@@ -90,6 +90,7 @@ public class LoginCommand : IRequest<LoggedResponse>
 
             loggedResponse.AccessToken = createdAccessToken;
             loggedResponse.RefreshToken = addedRefreshToken;
+            await _userService.AddLoginAttempt(user);
             return loggedResponse;
         }
     }
