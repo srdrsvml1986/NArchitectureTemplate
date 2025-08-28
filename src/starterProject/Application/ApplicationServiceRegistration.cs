@@ -102,6 +102,7 @@ public static class ApplicationServiceRegistration
         // Background servisler
         services.AddHostedService<BackupService>();
         services.AddHostedService<HealthCheckService>();
+        services.AddHostedService<KeyRotationService>();
 
 
         services.AddSingleton<IMailService, MailKitMailService>(_ => new MailKitMailService(mailSettings));
